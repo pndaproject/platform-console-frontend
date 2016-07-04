@@ -1,0 +1,30 @@
+<div class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" ng-show="title">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4>About</h4>
+      </div>
+      <div class="modal-body">
+        <h4 class="modal-title modal-info">PNDA 3</h4>
+        <table id="pndaInfo" class="table table-hover table-condensed">
+          <thead>
+          <tr>
+            <th>Component</th>
+            <th class="value">Version</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr ng-repeat="component in components">
+            <td class="componentName">{{component.name}}</td>
+            <td class="value">{{component.version}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

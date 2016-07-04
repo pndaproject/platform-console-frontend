@@ -1,0 +1,42 @@
+<div class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" ng-show="title">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4>{{title}}</h4>
+      </div>
+      <div class="modal-body" ng-show="content">
+        <div ng-if="severity == 'WARN' || severity == 'ERROR'">
+          <h4>Causes:</h4>
+          <div class="causes-list">
+            <ul>
+              <li ng-repeat="cause in content">{{cause | formatNumbers: ".nodes"}}</li>
+            </ul>
+          </div>
+
+          <h4>To Resolve:</h4>
+          <p>Please follow <a target="_blank" href="{{link}}" class="tooltip-test" data-title="{{link}}" bs-tooltip>this</a> link to fix issues related to {{title}}.</p>
+          <hr/>
+        </div>
+
+        <h4 class="modal-title modal-info">Broker Info</h4>
+        <table id="metrics" class="table table-hover table-condensed">
+          <thead>
+          <tr>
+            <th>Broker ID</th>
+            <th>Used / Total Physical Memory</th>
+          </tr>
+          </thead>
+
+          <tr ng-repeat="(key, broker) in brokers">
+            <td class="text">{{key}}</td>
+            <td class="text"><div class="memory"><div class="right">{{(broker.system.TotalPhysicalMemorySize - broker.system.FreePhysicalMemorySize) | formatNumbers: 'kafka.broker.UsedPhysicalMemorySize':false}}/{{broker.system.TotalPhysicalMemorySize | formatNumbers: 'kafka.broker.TotalPhysicalMemorySize':false}}</div></div></td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

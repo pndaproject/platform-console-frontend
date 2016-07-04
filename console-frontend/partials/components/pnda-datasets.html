@@ -1,0 +1,58 @@
+<div class="{{class}}">
+  <!-- title and health status -->
+  <div class="health {{healthClass}}" ng-click="showDetails()">
+    Data Management
+    <timer ng-attr-start-time="timestamp">Last update: {{millis | simplifyTime: days:hours:minutes:seconds}}</timer>
+  </div>
+  <div class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-hover table-condensed">
+          <thead>
+	  		<tr>
+	  			<td><b>Dataset</b></td>
+	  			<td><b>Mode</b></td>
+	  			<td><b>Policy</b></td>
+	  			<td><b>Limit</b></td>
+	  		</tr>
+          </thead>
+          <tbody>
+	  		<tr ng-repeat="dataset in datasets">
+	  			<td>{{dataset.id}}</td>
+	  			<td>
+	  				<select ng-model="dataset.mode" ng-change="datasetChanged()">
+	  			      	<option ng-repeat="m in modes">{{m}}</option>
+	  				</select>
+	  			</td>
+	  			<td>
+	  				<select ng-model="dataset.policy" ng-change="datasetChanged()">
+	  			      	<option ng-repeat="p in policies">{{p}}</option>
+	  				</select>
+	  			</td>
+	  			<td>
+	  				<div ng-show="dataset.policy == 'age'">
+	  					<input type="number" 
+	  						ng-model="dataset.max_age_days"  
+	  						ng-change="datasetChanged()" 
+	  						min="1" 
+	  						required style="width: 50px"> days
+	  				</div>
+	  				<div ng-show="dataset.policy == 'size'">
+	  					<input type="number" 
+	  						ng-model="dataset.max_size_gigabytes"  
+	  						ng-change="datasetChanged()" 
+	  						min="1" 
+	  						required style="width: 50px"> GB
+	  				</div>
+	  			</td>
+	  		</tr>
+          </tbody>
+        </table>
+		<div ng-if="changed == true" align="right">
+          <button class="btn btn-sm btn-default" ng-click="revert()">&nbsp;Revert&nbsp;</button>&nbsp;&nbsp;
+          <button class="btn btn-sm btn-default" ng-click="save()">&nbsp;&nbsp;Save&nbsp;&nbsp;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

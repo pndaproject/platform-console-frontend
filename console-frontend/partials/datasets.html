@@ -1,0 +1,67 @@
+<div id="data-management">
+  <h3>Data Management</h3>
+
+  <div class="row first-row row-eq-height">
+    <div class="col-sm-12 col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Datasets
+        </div>
+        <div class="panel-body">
+          <div ng-if="filteredDatasetCount === 0">
+            No datasets.
+          </div>
+          <div ng-if="filteredDatasetCount > 0">
+            <table class="table table-hover table-condensed">
+            <thead>
+              <tr>
+                <th class="col-md-6">Dataset</th>
+                <th class="col-md-2">Mode</th>
+                <th class="col-md-2">Policy</th>
+                <th class="col-md-2">Limit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="dataset in datasets | filter:filterDatasets | orderBy:orderProp">
+                <td>{{dataset.id}}</td>
+                <td class="padding-select">
+                  <select ng-model="dataset.mode" ng-change="datasetChanged()">
+                    <option ng-repeat="m in modes">{{m}}</option>
+                  </select>
+                </td>
+                <td class="padding-select">
+                  <div ng-show="dataset.mode !== 'keep'">
+                    <select ng-model="dataset.policy" ng-change="datasetChanged()">
+                      <option ng-repeat="p in policies">{{p}}</option>
+                    </select>
+                  </div>
+                </td>
+                <td class="padding-input">
+                  <div ng-show="dataset.mode !== 'keep' && dataset.policy === 'age'">
+                    <input type="number"
+                      ng-model="dataset.max_age_days"
+                      ng-change="datasetChanged()"
+                      min="1"
+                      required> days
+                  </div>
+                  <div ng-show="dataset.mode !== 'keep' && dataset.policy === 'size'">
+                    <input type="number"
+                      ng-model="dataset.max_size_gigabytes"
+                      ng-change="datasetChanged()"
+                      min="1"
+                      required> GB
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            </table>           
+            <div ng-if="changed === true" align="right">
+              <button class="btn btn-default" ng-click="revert()">Cancel</button>
+              <button class="btn btn-primary" ng-click="save()">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

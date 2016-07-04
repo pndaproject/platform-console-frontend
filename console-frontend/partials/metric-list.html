@@ -1,0 +1,79 @@
+
+<div class="row first-row row-eq-height">
+  <div class="col-sm-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Overall Platform Health
+      </div>
+      <div class="panel-body">
+        <div id="lightContainer" class="col-sm-2 hidden">
+          <div id="light">
+            <span ng-class="{ 'active': trafficLightStatus.status==='ERROR'}" id="red"></span>
+            <span ng-class="{ 'active': trafficLightStatus.status==='WARN'}" id="orange"></span>
+            <span ng-class="{ 'active': trafficLightStatus.status==='OK'}" id="green"></span>
+          </div>
+        </div>
+        <div class="col-sm-10">
+          <div class="list-group">
+            <div ng-switch="trafficLightStatus.errors.length">
+              <div ng-switch-when="0"></div>
+              <div ng-click="showModalTable(trafficLightStatus.errors, 'Errors')" ng-switch-default class="list-group-item list-group-item-danger"><span class="badge">{{trafficLightStatus.errors.length}}</span>Error - some components are offline</div>
+            </div>
+            <div ng-switch="trafficLightStatus.warnings.length">
+              <div ng-switch-when="0"></div>
+              <div ng-click="showModalTable(trafficLightStatus.warnings, 'Warnings')" ng-switch-default class="list-group-item list-group-item-warning"><span class="badge">{{trafficLightStatus.warnings.length}}</span>Warning - some components are degraded</div>
+            </div>
+            <div class="list-group" ng-switch="trafficLightStatus.status">
+              <div ng-switch-when="OK" class="list-group-item list-group-item-success">All components are online</div>
+              <div ng-switch-default></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">Quick Links</div>
+      <div class="panel-body">
+        <ul id="interfaces">
+          <li ng-repeat="(name, link) in sortedLinks()"><a target="_blank" href="{{link}}">{{name}}</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Metrics
+        <div id="search">Search: <input ng-model="query"></div>
+      </div>
+      <div class="panel-body">
+        <table id="metrics" class="table table-hover table-condensed">
+          <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Source</th>
+            <th class="value">Value</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tr ng-repeat="metric in metrics | filter:query | orderBy:orderProp"
+              ng-class="{ 'list-group-item-danger': metric.info.value==='ERROR', 'list-group-item-warning': metric.info.value==='WARN'}">
+            <td class="metric">{{metric.name}}</td>
+            <td class="source">{{metric.info.source}}</td>
+            <td class="value">{{metric.info.value | formatNumbers: metric.name}}</td>
+            <td align="middle">
+              <div ng-show="metric.info.displayCauses">
+                <button type="button" class="btn btn-link causes" ng-click="showModal(metric)">More Info</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

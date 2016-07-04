@@ -1,0 +1,58 @@
+<div class="{{class}}">
+  <!-- title and health status -->
+  <div class="health {{healthClass}}">
+    {{metricName}}
+    <timer ng-attr-start-time="timestamp">Last update: {{millis | simplifyTime: days:hours:minutes:seconds}}</timer>
+    <div class="info">
+      <span ng-class="{'disabled': !showInfoIcon}" ng-click="showDetails(); $event.stopPropagation()" class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span ng-click="showHelp()" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+      <span ng-click="clickCog()" class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+    </div>
+  </div>
+  <div class="content">
+    <div class="row">
+      <div class="col-md-6 db-container">
+        <div class="database">
+          <div class="available">
+            <div class="top"></div>
+          </div>
+          <div class="used" style="{{capacity.usedPercentageStyle}}">
+            <div class="top"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <table class="table table-hover table-condensed">
+          <thead>
+          <tr>
+            <th>Metric</th>
+            <th class="value">Value</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>Used Capacity</td>
+            <td class="value">{{ capacity.non_dfs_used+capacity.dfs_used | formatNumbers: "bytes":false }}/{{ capacity.total | formatNumbers: "bytes":false }}</td>
+          </tr>
+          <tr>
+            <td>JVM Heap Used</td>
+            <td class="value">{{ metrics.jvm_heap_used | formatNumbers: "MB" }}</td>
+          </tr>
+          <tr>
+            <td>Total No. of Files</td>
+            <td class="value">{{ metrics.total_files | number }}</td>
+          </tr>
+          <tr>
+            <td>Live Datanodes</td>
+            <td class="value">{{ metrics.live_datanodes | number }}</td>
+          </tr>
+          <tr>
+            <td>Dead Datanodes</td>
+            <td class="value">{{ metrics.dead_datanodes | number }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

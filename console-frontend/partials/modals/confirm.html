@@ -1,0 +1,28 @@
+<div id="modal-confirm" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" ng-show="modalOptions.title">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4>{{modalOptions.title}}</h4>
+      </div>
+      <div class="modal-body" ng-show="modalOptions.body">
+        {{modalOptions.body}}
+      </div>
+      <div class="modal-body" ng-show="modalOptions.bodyArray">
+        <div ng-repeat="body in modalOptions.bodyArray">
+          {{body}}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" 
+          ng-click="modalOptions.close()" 
+          ng-if="modalOptions.closeButtonText != null">
+          {{modalOptions.closeButtonText}}</button>
+        <button type="button" class="btn btn-primary" 
+          ng-click="modalOptions.ok()"
+          ng-if="modalOptions.actionButtonText != null">
+          {{modalOptions.actionButtonText}}</button>
+      </div>
+    </div>
+  </div>
+</div>

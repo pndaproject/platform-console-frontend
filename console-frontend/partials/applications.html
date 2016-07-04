@@ -1,0 +1,241 @@
+<div id="app-management">
+  <h3>Application Management</h3>
+  <div class="row first-row row-eq-height">
+    <div class="col-sm-12 col-md-12">
+      <div ng-if="response || dmError">
+        <div class="alert {{ alertClass}} alert-dismissable top-right">
+          <a class="close" ng-click="dismissAlert()" aria-hidden="true">&times;</a>
+          {{ responseText }}
+        </div>
+      </div>
+      <div class="panel panel-default" ng-if="!dmError">
+        <div class="panel-heading">
+          Applications
+        </div>
+        <div class="panel-body">
+          <div ng-if="applications.length === 0" class="no-app-available">
+            No applications available.
+          </div>
+          <div ng-if="applications.length > 0">
+            <table class="table table-hover table-bordered">
+              <thead>
+              <tr>
+                <th class="col-md-4">Application</th>
+                <th class="col-md-3">Status</th>
+                <th class="col-md-5">Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat-start="app in applications | orderBy:orderProp" ng-class="{'started': app.status === 'STARTED', 'app-selected': app.name === fullApplicationDetail.name && !newApp}" id="{{app.name | applicationNameId}}">
+                <td ng-click="getApplicationDetails(app)" style="cursor:pointer"><a ng-click="getApplicationDetails(app)" href="#/applications">{{ app.name }}</a></td>
+                <td ng-click="getApplicationDetails(app)" style="cursor:pointer">{{ app.status | changeAppStatusForDisplay }}</td>
+                <td class="application" >
+                  <div ng-if="app.status === 'CREATED'">
+                    <button type="button" class="btn btn-default btn-sm" ng-click="startOrStopApplication(app.name, app.status)">
+                      <span class="glyphicon glyphicon-play icon-start" aria-hidden="true"></span>Start
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="destroyApplication(app.name)">
+                      <span class="glyphicon glyphicon-trash icon-undeploy " aria-hidden="true"></span>Delete
+                    </button>
+                  </div>
+                  <div ng-if="app.status === 'STARTING'">
+                    <button type="button" class="btn btn-default btn-sm disabled">
+                      <span class="glyphicon glyphicon-play icon-start" aria-hidden="true"></span>Starting
+                    </button>
+                  </div>
+                  <div ng-if="app.status === 'STARTED'">
+                    <button type="button" class="btn btn-default btn-sm" ng-click="startOrStopApplication(app.name, app.status)">
+                      <span class="glyphicon glyphicon-stop icon-stop" aria-hidden="true"></span>Stop
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="destroyApplication(app.name)">
+                      <span class="glyphicon glyphicon-trash icon-undeploy " aria-hidden="true"></span>Delete
+                    </button>
+                  </div>
+                  <div ng-if="app.status === 'STOPPING'">
+                    <button type="button" class="btn btn-default btn-sm disabled">
+                      <span class="glyphicon glyphicon-stop icon-stop" aria-hidden="true"></span>Stopping
+                    </button>
+                  </div>
+                  <div ng-if="app.status === 'DESTROYING'">
+                    <button type="button" class="btn btn-default btn-sm disabled">
+                      <span class="glyphicon glyphicon-stop icon-stop" aria-hidden="true"></span>Deleting
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Display application details when the application is selected -->
+              <tr ng-if="showApplicationDetail === true && fullApplicationDetail.name === app.name" ng-hide="newApp"
+                  class="no-hover app-selected">
+                <td colspan="3">
+                  <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab-overview">Overview</a></li>
+                    <li><a data-toggle="tab" href="#tab-deployment-properties">Deployment Properties</a></li>
+                    <li class="disabled"><a data-toggle="tab" href="#tab-menu2" disabled>Logs</a></li>
+                    <li class="disabled"><a data-toggle="tab" href="#tab-menu3" disabled>Stats</a></li>
+                    <li><a data-toggle="tab" href="#tab-metrics">Metrics</a></li>
+                  </ul>
+
+                  <div class="tab-content">
+                    <div id="tab-overview" class="tab-pane fade in active">
+                      <table class="table table-condensed">
+                        <tr>
+                          <th>Name</th>
+                          <td>{{ fullApplicationDetail.name }}</td>
+                        </tr>
+                        <tr>
+                          <th>Package</th>
+                          <td>{{ fullApplicationDetail.package_name }}</td>
+                        </tr>
+                        <tr>
+                          <th>Status</th>
+                          <td>{{ fullApplicationDetail.status | changeAppStatusForDisplay }}</td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div id="tab-deployment-properties" class="tab-pane fade" ng-if="viewAppProps">
+                      <pnda-tree-view json="{{ appDetailJson }}" editable="false" on-confirm-overrides="getOverrides(overrides)"></pnda-tree-view>
+                    </div>
+                    <div id="tab-metrics" class="tab-pane fade">
+                      <div ng-if="appMetrics.length === 0" class="no-metrics-available">No metrics available.</div>
+                      <div ng-if="appMetrics.length > 0">
+                        <table id="app-metrics" class="table table-hover table-condensed">
+                          <thead>
+                          <tr>
+                            <th>Metric</th>
+                            <th class="value">Value</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr ng-repeat="metric in appMetrics">
+                            <td class="metric">{{metric.name}}</td>
+                            <td class="value">{{metric.info.value}}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr ng-repeat-end></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <button type="button" id="new-app" class="btn btn-success btn-primary" ng-click="createNewApp()" ng-hide="newApp">Create New Application</button>
+
+          <div ng-show="newApp">
+            <div class="row second-row row-eq-height">
+              <div class="col-sm-12">
+                <div class="panel panel-primary">
+                  <div class="panel-heading">
+                    New Application
+                    <div pnda-loader animation-condition="gettingDeployedPackages" class="include-loader"></div>
+                  </div>
+                  <div class="panel-body">
+                    <div class="tab-content">
+                      <div ng-if="packagesList.length === 0">
+                        Please <a href="/#/packages">deploy a package</a> before continuing.
+                      </div>
+
+                      <!-- alerts -->
+                      <div class="row">
+                        <div ng-if="appNameError">
+                          <div class="alert alert-danger top-right">
+                            <a class="close" ng-click="dismissAppSubmitErrorAlert()" aria-hidden="true">&times;</a>
+                            {{ appNameErrorText }}
+                          </div>
+                        </div>
+                        <div ng-if="submitAppResponse">
+                          <div class="alert {{ alertClass}} top-right">
+                            <a class="close" ng-click="dismissAppSubmitErrorAlert()" aria-hidden="true">&times;</a>
+                            {{ responseText }}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div ng-if="packagesList.length > 0">
+                        <table class="table table-hover" id="app-creation-steps">
+                          <!-- package selection -->
+                          <tr>
+                            <td class="align-right">
+                              <div class="number" ng-class="{selected: choosePackage}">1</div>
+                            </td>
+                            <td colspan="2" ng-if="choosePackage">
+                              <div ng-if="choosePackage">Select Package
+                                <table class="table table-hover table-bordered" id="choose-package">
+                                  <thead>
+                                  <tr>
+                                    <th class="col-md-8">Package</th>
+                                    <th class="col-md-4">Version</th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  <tr ng-repeat="package in packagesList" ng-click="chooseApplicationProperties(package.detail)" style="cursor:pointer">
+                                    <td><a ng-click="chooseApplicationProperties(package.detail)">{{ package.name }}</a></td>
+                                    <td>{{ package.version }}</td>
+                                  </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </td>
+                            <th ng-if="!choosePackage">Selected package</th>
+                            <td ng-if="!choosePackage">{{ appDetail }}</td>
+                          </tr>
+
+                          <!-- overrides -->
+                          <tr ng-if="!choosePackage">
+                            <td class="align-right">
+                              <div class="number" ng-class="{selected: showProperties}">2</div>
+                            </td>
+                            <td colspan="2" ng-if="showProperties">
+                              Choose Default Application Properties
+                              <pnda-tree-view json="{{ appJson }}" editable="true" auto-save="true" on-confirm-overrides="getOverrides(overrides)"></pnda-tree-view>
+                            </td>
+                            <th ng-if="!showProperties">Application overrides</th>
+                            <td ng-if="!showProperties">{{ appProperties | addJsonSpaces }}</td>
+                          </tr>
+
+                          <!-- application name -->
+                          <tr ng-if="!choosePackage && !showProperties" id="app-name">
+                            <td class="align-right">
+                              <div class="number selected">3</div>
+                            </td>
+                            <th>Application name</th>
+                            <td class="no-padding-right">
+                              <input type="text" id="applicationName" name="applicationName"
+                                     placeholder="Enter application name" class="form-control" autocomplete="off" />
+                            </td>
+                          </tr>
+                        </table>
+                      </div> <!-- if there's at least one deployed package -->
+
+                      <nav>
+                        <ul class="pager" ng-show="showPagerForPropertiesView">
+                          <li class="previous"><a ng-click="createNewApp()" style="cursor:pointer"><span aria-hidden="true">&larr;</span> Previous</a></li>
+                          <li class="next"><a ng-click="confirmApplication(appDetail)" style="cursor:pointer">Next <span aria-hidden="true">&rarr;</span></a></li>
+                        </ul>
+                      </nav>
+                      <nav>
+                        <ul class="pager" ng-show="showPagerForSubmitView">
+                          <li class="previous"><a ng-click="chooseApplicationProperties(appDetail)" style="cursor:pointer"><span aria-hidden="true">&larr;</span> Previous</a></li>
+                          <div class="app-creation-footer">
+                            <button type="button" class="btn btn-default" ng-click="getAppsList()" data-ng-disabled="creatingApp">Cancel</button>
+                            <button type="button" class="btn btn-primary" ng-click="submitApplication(appDetail)" data-ng-disabled="creatingApp">Confirm</button>
+                          </div>
+                        </ul>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- newApp -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

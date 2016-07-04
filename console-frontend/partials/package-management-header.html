@@ -1,0 +1,22 @@
+<div class="input-group col-md-8">
+  <input type="text" class="form-control" placeholder="Find packages" aria-describedby="basic-addon2" ng-model="search">
+  <span class="input-group-addon glyphicon glyphicon-search"></span>
+</div>
+<div class="search-box-results col-md-8" ng-if="search.length > 0">
+  <div class="search-box-results-inner">
+    <table id="packages" class="table table-hover table-condensed borderless">
+      <tr ng-repeat="p in packages | filter:search | orderBy:orderProp" ng-click="selectPackage(p.name)">
+        <td>{{p.name}}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<h3>Package Management</h3>
+
+<div ng-if="response" class="response col-md-6">
+  <div class="alert {{ alertClass}} alert-dismissable">
+    <a class="close" ng-click="dismissAlert()" aria-hidden="true">&times;</a>
+    <b>{{ choosenPackageName }}:</b> {{ responseText }}
+  </div>
+</div>

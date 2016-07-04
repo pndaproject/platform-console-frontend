@@ -1,0 +1,6 @@
+package-version.json
+console-frontend-*.tar.gz
+MANIFEST
+conf/PNDA.json
+backup
+*/generated

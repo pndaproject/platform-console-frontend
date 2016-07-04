@@ -1,0 +1,313 @@
+@import "mixins";
+@import "variables";
+@import "appManagement";
+@import "dataManagement";
+@import "packageManagement";
+@import "homeView";
+@import "fonts";
+
+/* style */
+html {
+    font-size: 0.15vw;
+}
+@media all and (max-width: 500px) {
+    html {
+        font-size: 1px;
+    }
+}
+body {
+    padding-top: 50px;
+    .font-normal;
+
+    input, textarea, keygen, select, button {
+        .font-normal;
+    }
+    b, strong {
+        .font-bold;
+    }
+}
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+    & > div.container-fluid {
+        height: ~"calc(100vh - 50px)";
+    }
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: #e5e5e5;
+    margin: 30px 0 0;
+}
+
+.app-status {
+    margin-top: -28px;
+    margin-right: -50px;
+    display: inline;
+    padding:0px;
+    float:right;
+}
+
+.app-status-icon {
+    padding:0px;
+    float:left;
+}
+
+.action-button {
+    margin-top: -40px;
+}
+
+th {
+    .font-bold;
+}
+.navbar {
+    #version {
+        &::before {
+            content: "";
+            margin-left: 10px;
+        }
+        display: inline;
+        font-weight: 300;
+        font-size: 14px;
+    }
+    #clustername {
+        &:before {
+            content: "[";
+        }
+        &:after {
+            content: "]";
+            margin-righ: 10px;
+        }
+        font-size: 14px;
+    }
+}
+.navbar-brand:not(#clustername) {
+    padding-top: 13px;
+    cursor: pointer;
+}
+table#metrics, pnda-db-metric, pnda-hdfs {
+    .value {
+        text-align: right;
+    }
+    & .causes {
+        padding: 0;
+        border: 0;
+    }
+}
+.first-row {
+    padding-top: 15px;
+}
+#search, .curated-view-link {
+    display: inline-flex;
+    float: right;
+}
+#search {
+    & > input {
+        margin: -3px 0 0 10px;
+    }
+}
+
+body > .container-fluid {
+    background: #fcfcfc;
+}
+
+// modal views
+.modal {
+    .modal-content {
+        .modal-body {
+            padding: 0 15px;
+            .modal-title {
+                padding: 10px 20px;
+                margin: 0 -15px 15px;
+
+                .sectionTopBottomBorder(@bgColor) {
+                    background-color: @bgColor;
+                    border: 1px solid darken(@bgColor, 18%);
+                    border-left: none;
+                    border-right: none;
+                    margin-top: -1px;
+                }
+                &.modal-info {
+                    .sectionTopBottomBorder(#f5f5f5);
+                }
+                &.modal-WARN {
+                    .sectionTopBottomBorder(@bgColor-WARN);
+                }
+                &.modal-ERROR {
+                    .sectionTopBottomBorder(@bgColor-ERROR);
+                }
+            }
+            div:not(:last-of-type) {
+                padding-bottom: 10px;
+            }
+            div.causes-list {
+                padding-bottom: 5px;
+                background-color: #f5f5f5;
+                border: 1px solid #ccc;
+                padding: 17px 20px 8px 0px;
+                border-radius: 4px;
+                margin-bottom: 15px;
+            }
+        }
+    }
+}
+
+@spinnerSize: 28;
+.action-icon {
+    position: relative;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+    height: @spin-animation-icon-height;
+    float: right;
+    &:hover {
+        transform: scale(1.15);
+        transform-origin: "50% 50%";
+        .bar {
+            stroke: #333;
+        }
+        span {
+            color: #333;
+        }
+    }
+    svg {
+        circle {
+            stroke-dashoffset: 0;
+            stroke-dasharray: (3.14 * @spinnerSize);
+            stroke: #666;
+            stroke-width: 2px;
+            fill: transparent;
+        }
+    }
+    .bar {
+        stroke: #aaa;
+        transition: stroke .2s linear;
+    }
+    span {
+        position: absolute;
+        color: #888;
+        transition: color .2s linear;
+        &.pause {
+            top: 2.5px;
+            left: 1.5px;
+        }
+        &.play {
+            top: 3px;
+            left: 2px;
+        }
+    }
+}
+
+.icon-undeploy, .icon-deploy, .icon-start, .icon-stop {
+    margin-right: 8px;
+}
+.icon-refresh {
+    margin-right: 3px;
+}
+.left {
+    float: left;
+    margin-right: 6px;
+}
+
+#modal-confirm {
+    .modal-body {
+        padding: 25px 15px;
+    }
+}
+
+pnda-tree-view {
+    .table>tbody>tr>td {
+        vertical-align: middle;
+        .form-control {
+            padding: 0 12px;
+            height: 20px;
+            box-shadow: none;
+        }
+    }
+    tr {
+        &:first-of-type {
+            td {
+                border-top: none;
+            }
+        }
+        &.value-changed {
+            background-color: @row-selection-color;
+            font-weight: bold;
+            &:hover {
+                background-color: @row-selection-color-hover;
+            }
+            button.revert {
+                padding: 0 5px;
+            }
+        }
+        div.toggle-collapse {
+            display: inline;
+            &:hover {
+                cursor: pointer;
+            }
+            span {
+                top: 0;
+                vertical-align: middle;
+            }
+        }
+        td.right {
+            text-align: right;
+        }
+    }
+}
+
+/*
+ * Row with equal height columns
+ * --------------------------------------------------
+ */
+.row-eq-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:         flex;
+}
+.no-margin-right {
+    margin-right: 0;
+}
+
+.hidden  { display: none; }
+
+.row-no-padding {
+    [class*="col-"] {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
+
+.am-fade.aside-backdrop, .am-fade.modal-backdrop {
+    background-color: rgba(0,0,0,.5);
+}
+.top-right {
+    position:fixed;
+    z-index: 1050;
+    margin: 20px;
+    top: 50px;
+    right: 0;
+}
+
+.close {
+    padding-left: 10px;
+}
+
+.loader-container {
+    height: 30px;
+    margin-left: 10px;
+    margin-top: 6px;
+    font-size: 0;
+    @circleSize: 12px;
+    .circle {
+        border-radius: 50%;
+        width: @circleSize;
+        height: @circleSize;
+        background-color: #ccc;
+        display: inline-block;
+        margin-right: 1px;
+    }
+}

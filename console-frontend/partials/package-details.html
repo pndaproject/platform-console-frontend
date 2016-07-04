@@ -1,0 +1,87 @@
+<div id="package-management">
+  <ng-include src="'partials/package-management-header.html'"></ng-include>
+
+  <div class="row first-row row-eq-height">
+    <div class="col-md-12">
+      <div class="panel panel-default" ng-class="{'panel-danger': packageDetails === undefined && !gettingPackages, 'panel-default-darker': packageDetails !== undefined && !gettingPackages}">
+        <div class="panel-heading">
+          {{packageName}}
+          <div pnda-loader animation-condition="gettingPackages" class="include-loader"></div>
+        </div>
+        <div class="panel-body">
+          <div ng-if="packageDetails === undefined && !gettingPackages">
+            Package {{packageName}} not found
+          </div>
+          <div ng-if="packageDetails !== undefined">
+            <div class="row row-eq-height">
+              <div class="col-md-6">
+                <div class="panel panel-default" id="latest-version">
+                  <div class="panel-heading">
+                    Latest Version
+                  </div>
+                  <div class="panel-body">
+                    <div ng-if="packageDetails.available_versions.length === 0">
+                      No release found for this package
+                    </div>
+                    <div ng-if="packageDetails.available_versions.length > 0">
+                      Version <b>{{packageDetails.available_versions[0].version}}</b> is the latest of {{packageDetails.available_versions.length | plural:"release"}}<br />
+                      <button class="btn btn-success" ng-click="deploy(packageName, packageDetails.available_versions[0].version)">Deploy latest version</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    All releases
+                  </div>
+                  <div class="panel-body">
+                    <div ng-if="packageDetails.available_versions.length === 0">
+                      No release found for this package
+                    </div>
+                    <div ng-if="packageDetails.available_versions.length > 0">
+                      <table id="packages" class="table table-hover table-condensed">
+                        <thead>
+                        <tr>
+                          <th class="col-md-3">Version</th>
+                          <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tr ng-repeat="p in packageDetails.available_versions | orderBy:orderProp">
+                          <td class="package-versions">{{p.version}}</td>
+                          <td>
+                            <div ng-if="p.status === 'DEPLOYED'">
+                              <button type="button" class="btn btn-default btn-sm" ng-click="undeploy(packageName, p.version)">
+                                <span class="glyphicon glyphicon-trash icon-undeploy" aria-hidden="true"></span>Undeploy
+                              </button>
+                            </div>
+                            <div ng-if="p.status === 'UNDEPLOYING'">
+                              <button type="button" class="btn btn-default btn-sm disabled">
+                                <span class="glyphicon glyphicon-plus icon-deploy" aria-hidden="true"></span>Undeploying...
+                              </button>
+                            </div>
+                            <div ng-if="p.status === 'NOTDEPLOYED'">
+                              <button type="button" class="btn btn-default btn-sm" ng-click="deploy(packageName, p.version)">
+                                <span class="glyphicon glyphicon-plus icon-deploy" aria-hidden="true"></span>Deploy
+                              </button>
+                            </div>
+                            <div ng-if="p.status === 'DEPLOYING'">
+                              <button type="button" class="btn btn-default btn-sm disabled">
+                                <span class="glyphicon glyphicon-plus icon-undeploy" aria-hidden="true"></span>Deploying...
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

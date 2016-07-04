@@ -1,0 +1,17 @@
+<div class="col-md-6 col-md-offset-3">
+  <h2>Login to the console</h2>
+  <div ng-if="loginError">
+  <div class="alert alert-danger fade in">
+  <a href="#" class="close" onclick="$('.alert').hide()">&times;</a>
+  {{loginError}}
+  </div>
+  </div>
+    <form ng-submit="login(username, password)" class="ng-scope ng-pristine ng-valid form-signin">
+      <label>User name</label>
+      <input type="text" ng-model="username" class="ng-pristine ng-valid form-control">
+      <label>Password</label>
+      <input type="password" ng-model="password" class="ng-pristine ng-valid form-control">
+      <br/>
+      <button class="btn btn-success" ng-click="">Submit</button>
+    </form>
+</div>

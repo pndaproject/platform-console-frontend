@@ -1,0 +1,78 @@
+<div id="package-management">
+  <ng-include src="'partials/package-management-header.html'"></ng-include>
+
+  <div class="row first-row row-eq-height">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Deployed Packages
+          <div pnda-loader animation-condition="gettingDeployedPackages" class="include-loader"></div>
+        </div>
+        <div class="panel-body">
+          <div ng-if="deployedPackages.length === 0 && !gettingDeployedPackages">
+            No package deployed yet
+          </div>
+          <div ng-if="deployedPackages.length > 0">
+            <table id="deployedPackages" class="table table-hover table-condensed">
+              <thead>
+              <tr>
+                <th class="col-md-6">Package Name</th>
+                <th class="col-md-3">Deployed Version</th>
+                <th class="col-md-3">Action</th>
+              </tr>
+              </thead>
+              <tr ng-repeat="p in deployedPackages">
+                <td>{{p.name}}</td>
+                <td>{{p.version}}</td>
+                <td>
+                  <button type="button" class="btn btn-default btn-sm" ng-click="undeploy(p.name, p.version)">
+                    <span class="glyphicon glyphicon-trash icon-undeploy" aria-hidden="true"></span>Undeploy
+                  </button>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-eq-height">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Available Packages
+          <div pnda-loader animation-condition="gettingPackages" class="include-loader"></div>
+        </div>
+        <div class="panel-body">
+          <div ng-if="packages.length === 0 && !gettingPackages">
+            No package available
+          </div>
+          <div ng-if="packages.length > 0">
+            <table id="packages" class="table table-hover table-condensed">
+              <thead>
+              <tr>
+                <th class="col-md-6">Package Name</th>
+                <th class="col-md-3">Latest Version</th>
+                <th class="col-md-3">Other versions</th>
+              </tr>
+              </thead>
+              <tr ng-repeat="p in packages | orderBy:orderProp" ng-click="selectPackage(p.name)">
+                <td>{{p.name}}</td>
+                <td class="package-versions">
+                  <div ng-if="p.available_versions.length > 0">
+                    {{p.available_versions[0].version}}
+                  </div>
+                </td>
+                <td>
+                  <div ng-if="p.available_versions.length > 1">{{p.available_versions.length-1 | plural:"other version"}}</div>
+                  <div ng-if="p.available_versions.length === 1">-</div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,174 @@
+<link rel="stylesheet" type="text/css" id="theme" ng-href="{{theme}}">
+<div id="curatedView">
+  <div class="row first-row">
+    <div id="platform" class="col-md-9 no-padding-right">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          PNDA Data Platform
+          <div class="operational-endpoints">
+            <div class="endpoint">
+              <button class="btn name copy-to-clipboard" data-clipboard-text="{{ operationalEndpoints.edgeNode }}" data-title="Copied" data-trigger="focus" data-delay="0,1000" bs-tooltip>
+                <div>Edge node</div>
+                <div class="glyphicon glyphicon-copy"></div>
+              </button>
+              <div class="value">{{ operationalEndpoints.edgeNode }}</div>
+            </div>
+            <div class="endpoint" ng-if="operationalEndpoints.httpFS !== ''">
+              <button class="btn name copy-to-clipboard" data-clipboard-text="{{ operationalEndpoints.httpFS }}" data-title="Copied" data-trigger="focus" data-delay="0,1000" bs-tooltip>
+                <div>HttpFS</div>
+                <div class="glyphicon glyphicon-copy"></div>
+              </button>
+              <div class="value">{{ operationalEndpoints.httpFS }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body row">
+
+          <!-- first column: Data Distribution -->
+          <div class="col-md-4">
+            <div class="col-md-12 group" id="pubSubBus">
+              <div class="title">Data Distribution</div>
+              <div class="content">
+                <pnda-kafka on-get-metric-data="getMetricData('kafka',cbFn,healthStatusCbFn)" show-info="showModalComponentInfo(brokers, metricObj)"></pnda-kafka>
+                <pnda-basic-component on-get-metric-data="getMetricData('zookeeper',cbFn,healthStatusCbFn)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
+              </div>
+            </div>
+<!--
+            <div class="col-md-12">
+              <pnda-basic-component on-get-metric-data="getMetricData('hadoop.HUE.health',cbFn,healthStatusCbFn)" show-overview="showModal(metricObj, metrics)"></pnda-basic-component>
+            </div>
+-->
+          </div>
+
+          <!-- second column: Data Processing & Data Storage -->
+          <div class="col-md-8">
+            <!-- first row: Data Processing -->
+            <div class="row">
+              <div class="col-md-8 group" id="hadoop">
+                <div class="title">Data Processing</div>
+                <div class="content">
+                  <div class="row">
+                    <!-- row 1: Stream Processing, Batch Processing ; row 2: Yarn -->
+                    <div class="col-md-12">
+                      <div class="row reduce-space-between-two-columns">
+                        <div class="col-md-6">
+                          <div class="col-md-12 group">
+                            <div class="title">Stream</div>
+                            <div class="content">
+                              <pnda-basic-component overwrite-display-name="Spark Streaming" force-wrap-display-name="true" on-get-metric-data="getMetricData('hadoop.SPARK_ON_YARN',cbFn,healthStatusCbFn)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="col-md-12 group">
+                            <div class="title">Batch</div>
+                            <div class="content row">
+                              <div class="col-md-12">
+                                <pnda-basic-component on-get-metric-data="getMetricData('hadoop.SPARK_ON_YARN',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
+                              </div>
+                            </div>
+                            <div class="content row">
+                              <div class="col-md-12">
+                                <pnda-basic-component on-get-metric-data="getMetricData('hadoop.OOZIE',cbFn,healthStatusCbFn)" show-overview="showModal(metricObj, metrics)"  show-config="showConfigPage(metricObj)"></pnda-basic-component>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- second row: Yarn -->
+                        <div class="col-md-12">
+                          <pnda-yarn on-get-metric-data="getMetricData('hadoop.YARN',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-yarn>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- third column: Query, Explore, Metrics -->
+              <div class="col-md-4">
+                <div class="col-md-12 group" id="query">
+                  <div class="title">Query</div>
+                  <div class="content">
+                    <pnda-basic-component on-get-metric-data="getMetricData('hadoop.IMPALA',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)" ></pnda-basic-component>
+                  </div>
+                </div>
+                <div class="col-md-12 group" id="explore">
+                  <div class="title">Explore</div>
+                  <div class="content">
+                    <div pnda-basic-component class="fake-component clickable">
+                      <a target="_blank" href="{{findComponentUrl('Jupyter')}}">
+                        <div class="ui-link">Jupyter</div>
+                        <div class="overlay">
+                          <span class="glyphicon glyphicon-new-window"></span>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12 group" id="metrics-UIs">
+                  <div class="title">Metrics</div>
+                  <div class="content">
+                    <div pnda-basic-component class="fake-component">
+                      <a target="_blank" href="{{findFirstComponentUrl('OpenTSDB')}}">
+                        <div class="ui-link">OpenTSDB</div>
+                        <div class="overlay">
+                          <span class="glyphicon glyphicon-new-window"></span>
+                        </div>
+                      </a>
+                    </div>
+                    <div pnda-basic-component class="fake-component">
+                      <a target="_blank" href="{{findComponentUrl('Grafana')}}">
+                        <div class="ui-link">Grafana</div>
+                        <div class="overlay">
+                          <span class="glyphicon glyphicon-new-window"></span>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- second row: Data Storage -->
+            <div class="row no-margin-right">
+              <div class="col-md-12 group" id="storage">
+                <div class="title">Data Storage</div>
+                <div class="content row reduce-space-between-two-columns">
+                  <div class="col-md-6">
+                    <pnda-basic-component on-get-metric-data="getMetricData('hadoop.HBASE',cbFn,healthStatusCbFn)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
+                  </div>
+                  <div class="col-md-6">
+                    <pnda-basic-component on-get-metric-data="getMetricData('hadoop.HIVE',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
+                  </div>
+                  <div class="col-md-12">
+                    <pnda-hdfs on-get-metric-data="getMetricData('hadoop.HDFS',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj)" show-config="showConfigPage(metricObj)"></pnda-hdfs>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- fourth column: Applications -->
+    <div id="applications" class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">Applications</div>
+        <div class="panel-body row">
+          <div class="content">
+            <pnda-deployment-manager on-get-metric-data="getMetricData('deployment-manager',cbFn,healthStatusCbFn)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-deployment-manager>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <pnda-data-flow id="dataFlow" on-get-metric-data="getMetricData('kafka.brokers',cbFn,healthStatusCbFn,true)" on-register-window-resize-cb="registerWindowResizeCallback(topic, cbFn)">
+  </pnda-data-flow>
+</div>

@@ -1,0 +1,38 @@
+<div class="{{class}}">
+  <!-- title and health status -->
+  <div class="health {{healthClass}}" ng-click="showDetails()">
+    {{metricName}}
+    <timer ng-attr-start-time="timestamp">Last update: {{millis | simplifyTime: days:hours:minutes:seconds}}</timer>
+    <div class="info">
+      <span ng-click="showComponentInfo(); $event.stopPropagation()" class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span ng-click="showHelp()" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+      <span ng-click="showConfig()" class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+    </div>
+  </div>
+  <div class="content">
+    <div ng-if="numberOfTopicsShown() === 0">
+      No active topics
+    </div>
+    <div ng-if="numberOfTopicsShown() > 0">
+      <div class="rateChoice">
+        <label>Select rate:&nbsp;</label>
+        <button type="button" class="btn btn-default btn-sm" ng-model="chosenRate" data-html="1" bs-options="rate.value as rate.label for rate in rates" bs-select>
+          Action <span class="caret"></span>
+        </button>
+      </div>
+      <div ng-repeat="(topic, data) in topics" class="row topic group" id="topic_{{topic | metricNameClass}}">
+        <div class="col-md-12">
+          {{topic}}
+        </div>
+        <div class="col-md-6 rate in">
+          <span class="glyphicon glyphicon-arrow-right"></span>
+          {{data.BytesInPerSec[chosenRate] | sumValues | number:1}} Bytes/s
+        </div>
+        <div class="col-md-6 rate out">
+          {{data.BytesOutPerSec[chosenRate] | sumValues | number:1}} Bytes/s
+          <span class="glyphicon glyphicon-arrow-right"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

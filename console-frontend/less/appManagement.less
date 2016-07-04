@@ -1,0 +1,133 @@
+@import "variables";
+@import "mixins";
+@import "fonts";
+
+#app-management {
+    .application {
+        border: @box-border;
+        margin: 0 0 6px 0;
+        border-radius: 4px;
+        padding: 5px 0;
+        line-height: @spin-animation-icon-height;
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+
+        button {
+            margin-left: 8px;
+        }
+    }
+
+    .no-app-available {
+        margin-bottom: 10px;
+    }
+
+    #app-creation-steps {
+        tr {
+            &:first-of-type {
+                & > td, & > th {
+                    border-top: none;
+                }
+            }
+            & > td:first-of-type {
+                width: 40px;
+            }
+            & > th {
+                width: 15%;
+            }
+        }
+    }
+
+    .number {
+        @number-size: 24px;
+        @number-size-selected: 30px;
+        width: @number-size;
+        height: @number-size;
+        line-height: @number-size;
+        font-size: inherit;
+        background-color: #888;
+        &.selected {
+            width: @number-size-selected;
+            height: @number-size-selected;
+            line-height: @number-size-selected;
+            font-size: 1.5em;
+            background-color: #337ab7;
+        }
+        border-radius: 50%;
+        text-align: center;
+        display: inline-block;
+        color: white;
+        .transition(all 0.3s ease);
+    }
+    .align-right {
+        text-align: right;
+    }
+
+    table#choose-package, pnda-tree-view table, #tab-overview table, #tab-metrics table {
+        margin-bottom: 0;
+    }
+
+    #app-name {
+        th {
+            line-height: 30px;
+        }
+        td:last-of-type > input {
+            height: 28px;
+        }
+    }
+
+    .app-selected, tr.no-hover:hover {
+        background-color: @row-selection-color;
+    }
+    .app-selected {
+        .tab-content {
+            border: 1px solid #ddd;
+            border-top: none;
+            background-color: #fff;
+        }
+        ul li:not(.active) {
+            a:hover {
+                background-color: rgba(255, 255, 255, 0.6);
+            }
+        }
+    }
+
+    #tab-overview table {
+        th, td {
+            border: none;
+        }
+        th {
+            width: 10%;
+        }
+    }
+
+    #tab-overview, #tab-deployment-properties, #tab-metrics {
+        padding: 0 10px;
+    }
+
+    .no-metrics-available {
+        padding: 15px 10px;
+    }
+
+    .include-loader {
+        display: inline-block;
+        position: absolute;
+        .loader-container {
+            .circle {
+                background-color: #fff;
+                opacity: 0.5;
+            }
+        }
+    }
+
+    .no-padding-right {
+        padding-right: 0;
+    }
+
+    .app-creation-footer {
+        text-align: right;
+    }
+    .pager {
+        margin: 0;
+    }
+}

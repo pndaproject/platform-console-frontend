@@ -1,0 +1,25 @@
+<table class="table table-hover table-condensed">
+  <tr ng-repeat="row in jsonObject" ng-class="{'value-changed': row.value !== row.newValue}" ng-if="row.visible">
+    <td style="padding-left: {{calculatePadding(row)}}px" class="key col-md-4">
+      <div ng-click="toggleCollapse(row, $index)" class="toggle-collapse">
+        <span ng-if="isNode(row) && row.collapsed" class="glyphicon glyphicon-plus-sign"></span>
+        <span ng-if="isNode(row) && !row.collapsed" class="glyphicon glyphicon-minus-sign"></span>
+      </div>
+      {{row.key}}
+    </td>
+    <td class="col-md-5">
+      <div ng-if="editable === 'true' && !isNode(row)">
+        <input type="text" class="form-control" placeholder="{{row.value}}" ng-model="row.newValue"
+               ng-change="confirmOverrides()" />
+      </div>
+      <div ng-if="editable === 'false' || isNode(row)">{{row.value}}</div>
+    </td>
+    <td class="col-md-1 right" ng-if="editable === 'true'">
+      <button ng-if="row.value !== row.newValue" class="btn btn-default btn-xs revert" ng-click="revertValue(row)">Revert</button>
+    </td>
+  </tr>
+</table>
+<div ng-if="editable === 'true' && autoSave !== 'true'">
+  <button class="btn btn-default btn-sm">Cancel</button>
+  <button class="btn btn-primary btn-sm" ng-click="confirmOverrides(true)">Save</button>
+</div>

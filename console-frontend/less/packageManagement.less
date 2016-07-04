@@ -1,0 +1,105 @@
+@import "mixins";
+
+#package-management {
+    #latest-version {
+        button {
+            margin-top: 10px;
+        }
+    }
+
+    .table-condensed {
+        td {
+            button {
+                padding: 1px 7px;
+                .icon-undeploy {
+                    top: 2px;
+                }
+            }
+        }
+    }
+
+    #packages {
+        .package-versions > div {
+            display: inline;
+        }
+        tr {
+            cursor: pointer;
+        }
+    }
+
+    #deployedPackages {
+        tr > td {
+            line-height: 26px;
+        }
+    }
+
+    #packages, #deployedPackages {
+        margin-bottom: 0;
+    }
+
+    .input-group {
+        float: right;
+        span {
+            top: 0;
+        }
+    }
+
+    .response {
+        float: right;
+        position: absolute;
+        right: 0;
+        top: 60px;
+        z-index: 2;
+    }
+
+    h3, h4 {
+        margin-top: 20px;
+    }
+
+    .search-box-results {
+        position: absolute;
+        float: right;
+        right: 0;
+        margin-top: 33px;
+        padding-left: 6px;
+        z-index: 1;
+        .search-box-results-inner {
+            border: 1px solid #ccc;
+            background: white;
+
+            ul {
+                list-style-type: none;
+                padding-left: 20px;
+            }
+            table.borderless {
+                margin-bottom: 0;
+                tr {
+                    cursor: pointer;
+                    td, th {
+                        border: none;
+                    }
+                }
+            }
+        }
+    }
+
+    .include-loader {
+        display: inline-block;
+        position: absolute;
+    }
+
+    .panel {
+        .transition(all 0.5s ease);
+        .panel-heading {
+            .transition(all 0.5s ease);
+        }
+
+        &.panel-default-darker {
+            border-color: #c5c5c5;
+            & > .panel-heading {
+                background-color: #ddd;
+                border-color: #c5c5c5;
+            }
+        }
+    }
+}

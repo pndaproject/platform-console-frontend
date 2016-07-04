@@ -1,0 +1,25 @@
+<svg>
+</svg>
+<div id="animatedElements">
+
+  <!-- test buttons
+  <div style="position: fixed; top: 500px;left: 100px; width: 100px;">
+    <button ng-click="startStopParticles(true)" class="btn btn-success" >start</button>
+    <button ng-click="startStopParticles(false)" class="btn btn-danger" >stop</button>
+    <button ng-click="randomise(5)" class="btn btn-info" >randomise density</button>
+    <div>
+      density={{density}}<br />
+      nbParticles={{nbParticles}}
+    </div>
+  </div>
+-->
+  <div class="particles">
+    <div ng-repeat="(key, topicData) in topics" id="particles_{{key | metricNameClass}}">
+      <!--
+      <div ng-repeat="n in [] | range:density" id="particles_{{key | metricNameClass}}_{{$index}}" class="particle">
+        {{animateParticle(key, $index)}}
+      </div>
+      -->
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+{
+  "metrics":
+  {
+    "hadoop.HDFS.capacity_remaining": "B",
+    "hadoop.HDFS.dfs_capacity_used_non_hdfs": "B",
+    "hadoop.HDFS.jvm_heap_used_mb": "MB",
+    "hadoop.HDFS.total_dfs_capacity_across_datanodes": "B",
+    "hadoop.HDFS.total_dfs_capacity_used_across_datanodes": "B",
+    "hadoop.YARN.total_available_memory_mb_across_yarn_pools": "MB",
+    "hadoop.YARN.allocated_memory_mb_across_yarn_pools": "MB",
+    "kafka.broker.TotalPhysicalMemorySize": "B",
+    "kafka.broker.UsedPhysicalMemorySize": "B",
+    "bytes": "B",
+    "MB": "MB"
+  },
+  "datasets":
+  {
+	  "hidden": ["testbot"]
+  }
+}
