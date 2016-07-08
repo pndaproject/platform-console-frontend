@@ -9,7 +9,7 @@ node {
    	echo $BRANCH_NAME
    	cd $PWD@script/console-frontend;
       npm install
-      echo "{ \"name\": \"console-frontend\", \"version\": \"$BRANCH_NAME\" }" > package-version.json
+      echo "{ \\"name\\": \\"console-frontend\\", \\"version\\": \\"$BRANCH_NAME\\" }" > package-version.json
       grunt package
 	'''
 
