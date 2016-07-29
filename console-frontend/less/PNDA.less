@@ -5,6 +5,7 @@
 @import "packageManagement";
 @import "homeView";
 @import "fonts";
+@import "charts";
 
 /* style */
 html {
@@ -108,6 +109,9 @@ table#metrics, pnda-db-metric, pnda-hdfs {
     & > input {
         margin: -3px 0 0 10px;
     }
+}
+.metric-selected, tr.no-hover:hover {
+    background-color: @row-selection-color;
 }
 
 body > .container-fluid {

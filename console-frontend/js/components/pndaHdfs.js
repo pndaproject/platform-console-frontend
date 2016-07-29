@@ -24,8 +24,11 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService', function($filter, HelpService) {
-  return {
+angular.module('appComponents').directive('pndaHdfs',
+  ['$filter', 'HelpService',
+  function($filter, HelpService)
+{
+    return {
     restrict: 'E',
     scope: {
       onGetMetricData: '&',
@@ -44,7 +47,8 @@ angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService',
       scope.metrics = { live_datanodes: 0, total_files:0, non_dfs_used:0,
         dfs_used:0, total_size: 0, total_used: 0, jvm_heap_used:0, dead_datanodes:0 };
       scope.metricObj = {};
-
+      scope.updateCounter = 0;
+      
       // the callback function expects an array of matching metrics
       scope.showDetails = function() {
         if (enableModalView(scope.severity)) {
@@ -106,6 +110,7 @@ angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService',
             } else if (metric.name.endsWith(".total_dfs_capacity_used_across_datanodes")) {
               if (!isNaN(metric.info.value)) {
                 scope.capacity.dfs_used = parseInt(metric.info.value, Constants.RADIX_DECIMAL);
+                scope.updateCounter++; // update chart
               }
             } else if (metric.name.endsWith(".live_datanodes")) {
               scope.metrics.live_datanodes = metric.info.value;

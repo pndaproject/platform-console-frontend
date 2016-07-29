@@ -42,7 +42,8 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
       scope.metricObj = {};
       scope.fullMetrics = {};
       scope.severity = '';
-
+      scope.updateCounter = 0;
+      
       // total = allocated + available
       scope.memory = { total: 0, available: 0, allocated: 0, allocatedPercentage: 0, allocatedPercentageStyle: '' };
       scope.vcores = { total: 0, available: 0, allocated: 0, allocatedPercentage: 0, allocatedPercentageStyle: '' };
@@ -85,6 +86,7 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
               scope.latestHealthStatus = metric.info.value;
             } else if (metric.name.endsWith(".allocated_memory_mb_across_yarn_pools")) {
               scope.memory.allocated = parseInt(metric.info.value, Constants.RADIX_DECIMAL);
+              scope.updateCounter++; // update chart
             } else if (metric.name.endsWith(".total_available_memory_mb_across_yarn_pools")) {
               scope.memory.available = parseInt(metric.info.value, Constants.RADIX_DECIMAL);
             } else if (metric.name.endsWith(".allocated_vcores_across_yarn_pools")) {

@@ -43,6 +43,13 @@ metricFilters.filter('formatNumbers', ['ConfigService', '$filter', function(Conf
       return input;
     }
 
+    // if the metric ends in ".health", and the value is a number, convert it back to a string for display
+    if (metricName.endsWith(".health")) {
+      if (input === 0) return "OK";
+      if (input === 1) return "WARN";
+      if (input === 2) return "ERROR";
+    }
+  
     var value = input;
     var metricUnit = ConfigService.metrics[metricName];
     if (metricUnit !== undefined) {

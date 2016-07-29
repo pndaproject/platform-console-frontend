@@ -55,6 +55,19 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
 
       ModalService.createModalView('partials/modals/component-overview.html', fields);
     };
+    
+    $scope.selectedMetric = "hadoop.HDFS.jvm_heap_used_mb";
+    $scope.from = 240;
+    $scope.until = 0;
+    $scope.updateCounter = 0; // increment this to update the graph
+    $scope.selectMetric = function(metric) {
+      $scope.selectedMetric = metric;
+    };
+
+    $scope.clickme = function(metric) {
+      console.log("clickme");
+    };
+
 
     $scope.showModalTable = function(data, titleContext) {
       angular.forEach(data, function(metric) {
@@ -270,6 +283,10 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
           }
         };
         $scope.metrics.push(found);
+      }
+      
+      if (obj.metric == $scope.selectedMetric) {
+        $scope.updateCounter++;
       }
 
       // if there is a callback function for this metric, call it

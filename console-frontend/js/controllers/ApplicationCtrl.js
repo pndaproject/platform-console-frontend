@@ -347,7 +347,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         $scope.json = json;
         $scope.saved = true;
       };
-
+      
       $scope.confirmProperties = false;
       DeploymentManagerService.getPackageInfo($scope.appDetail).then(function(data) {
         $scope.changeParentValue(data, $scope);

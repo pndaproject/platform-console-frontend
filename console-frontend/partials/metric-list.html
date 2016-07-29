@@ -1,6 +1,6 @@
-
 <div class="row first-row row-eq-height">
-  <div class="col-sm-6">
+  
+  <div class="col-sm-4">
     <div class="panel panel-default">
       <div class="panel-heading">
         Overall Platform Health
@@ -13,7 +13,7 @@
             <span ng-class="{ 'active': trafficLightStatus.status==='OK'}" id="green"></span>
           </div>
         </div>
-        <div class="col-sm-10">
+        <div class="col-sm-12">
           <div class="list-group">
             <div ng-switch="trafficLightStatus.errors.length">
               <div ng-switch-when="0"></div>
@@ -31,8 +31,7 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-sm-6">
+    
     <div class="panel panel-default">
       <div class="panel-heading">Quick Links</div>
       <div class="panel-body">
@@ -42,6 +41,25 @@
       </div>
     </div>
   </div>
+  <div class="col-sm-8">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Metric History
+      </div>
+      <div class="panel-body">
+        <div ng-if="selectedMetric != ''">
+          <center>
+            <pnda-chart chartid="selected-metric-chart" from="{{from}}" until="{{until}}" metric="{{selectedMetric}}" update-counter="{{updateCounter}}" height="224"></pnda-chart>
+            <div>{{selectedMetric}}</div>
+            <div style="margin-top: 10px">from <input ng-model="from" size="4" type="number" min="0" max="14400"> until
+               <input ng-model="until" size="4" type="number" min="0" max="14400"> minutes ago</div>
+          </center>
+        </div>
+        <div ng-if="selectedMetric == ''"><center>Select a metric…</center></div>
+      </div>
+    </div>
+  </div>
+  
 </div>
 
 <div class="row">
@@ -62,7 +80,7 @@
           </tr>
           </thead>
           <tr ng-repeat="metric in metrics | filter:query | orderBy:orderProp"
-              ng-class="{ 'list-group-item-danger': metric.info.value==='ERROR', 'list-group-item-warning': metric.info.value==='WARN'}">
+              ng-class="{ 'list-group-item-danger': metric.info.value==='ERROR', 'list-group-item-warning': metric.info.value==='WARN', 'metric-selected': metric.name === selectedMetric}" ng-click="selectMetric(metric.name)"  style="cursor:pointer">
             <td class="metric">{{metric.name}}</td>
             <td class="source">{{metric.info.source}}</td>
             <td class="value">{{metric.info.value | formatNumbers: metric.name}}</td>
