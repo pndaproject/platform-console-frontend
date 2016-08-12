@@ -44,7 +44,7 @@ angular.module('appServices').factory('GraphiteService', ['$resource', 'ConfigSe
           if (response !== undefined) {
             var metricData = response['data'];
             if (metricData !== undefined && metricData[0] !== undefined) {
-              return metricData[0].datapoints;
+              return metricData;
             } else {
               console.log("Couldn't get data for metric. " + JSON.stringify(response));
               return null;
@@ -61,20 +61,26 @@ angular.module('appServices').factory('GraphiteService', ['$resource', 'ConfigSe
       // into an array of {x: time, y: value} objects
       // datapoints: [[null, 101], [42, 102], [43, 103], [null, 104]]
       // returns: [{x: 102, y: 42}, {x: 103, y: 43}]
-      filterDatapoints: function(datapoints) {
-        if (datapoints == null) return null;
-        
-        var filtered = [];
-        var count = datapoints.length;
-        for (var i = 0; i < count; i++) {
-          var point = datapoints[i];
-          var y = point[0];
-          if (y != null) {
-            filtered.push({ x: point[1], y: y });
-          }
-        }
+      filterMetricData: function(metricData) {
+        if (metricData == null) return null;
 
-        return filtered;
+        var results = [];
+        for (var j = 0; j < metricData.length; j++) {
+          var datapoints = metricData[j].datapoints;
+          var filtered = [];
+          var count = datapoints.length;
+          for (var i = 0; i < count; i++) {
+            var point = datapoints[i];
+            var y = point[0];
+            if (y != null) {
+              filtered.push({ x: point[1], y: y });
+            }
+          }
+          results.push(filtered);
+        }
+        
+
+        return results;
       }
       
     };

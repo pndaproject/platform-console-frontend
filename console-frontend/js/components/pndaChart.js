@@ -30,7 +30,8 @@ angular.module('appComponents').directive('pndaChart',
     return {
       restrict: 'E',
       scope: {
-        chartid: '@',
+        chartId: '@',
+        chartClass: '@',
         metric: '@',
         from: '@',
         until: '@',
@@ -71,33 +72,34 @@ angular.module('appComponents').directive('pndaChart',
         }
         
         scope.makeChart = function() {
-          GraphiteService.getMetric(scope.metric, minutesAgo(scope.from), minutesAgo(scope.until)).then(function(datapoints) {
-            var chartDiv = '#' + scope.chartid;
+          GraphiteService.getMetric(scope.metric, minutesAgo(scope.from), minutesAgo(scope.until)).then(function(metricData) {
+            var chartDiv = '#' + scope.chartId.replace(/\./g, "\\.");
             var noDataMessage = 'No history available for';
-            if (datapoints != null && datapoints.length > 0) {
-              var series = GraphiteService.filterDatapoints(datapoints);
+            if (metricData != null && metricData.length > 0) {
+              var series = GraphiteService.filterMetricData(metricData);
     
               var chartOptions = {
                 width: scope.width, // if undefined, will use responsive layout
                 height: scope.height,
                 showPoint: true,
+                showArea: true,
                 lineSmooth: true, // Chartist.Interpolation.step()
                 axisX: {
                   showGrid: false,
                   showLabel: true,
-                  scaleMinSpace: 80,
+                  scaleMinSpace: 60,
                   type: Chartist.AutoScaleAxis,
                   labelInterpolationFnc: scope.formatDate
                 },
                 axisY: {
                     offset: 65,
-                    scaleMinSpace: 35,
+                    scaleMinSpace: 25,
                     onlyInteger: true,
                     labelInterpolationFnc: scope.formatValue
                 }
               };
     
-              var data = {series: [series]};
+              var data = {series: series};
               if ($(chartDiv).html() == noDataMessage) $(chartDiv).html('');
               scope.chart = new Chartist.Line(chartDiv, data, chartOptions);
             } else {

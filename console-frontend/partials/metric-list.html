@@ -49,7 +49,9 @@
       <div class="panel-body">
         <div ng-if="selectedMetric != ''">
           <center>
-            <pnda-chart chartid="selected-metric-chart" from="{{from}}" until="{{until}}" metric="{{selectedMetric}}" update-counter="{{updateCounter}}" height="224"></pnda-chart>
+            <pnda-chart chart-id="selected-metric-chart" chart-class="green-chart" 
+              metric="{{selectedMetric}}" update-counter="{{updateCounter}}" 
+              from="{{from}}" until="{{until}}" height="224"></pnda-chart>
             <div>{{selectedMetric}}</div>
             <div style="margin-top: 10px">from <input ng-model="from" size="4" type="number" min="0" max="14400"> until
                <input ng-model="until" size="4" type="number" min="0" max="14400"> minutes ago</div>

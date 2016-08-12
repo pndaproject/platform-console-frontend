@@ -24,13 +24,18 @@
         <div class="col-md-12">
           {{topic}}
         </div>
+        <div class="col-md-12">
+          <pnda-chart chart-id="{{topic}}-chart" chart-class="kafka-chart"
+            metric="kafka.brokers.2.topics.{{topic}}.Bytes{In,Out}PerSec.{{chosenRate}}"
+            update-counter="{{updateCounter}}" from="60" until="0" height="90"></pnda-chart>
+        </div>
         <div class="col-md-6 rate in">
-          <span class="glyphicon glyphicon-arrow-right"></span>
+          <span class="glyphicon glyphicon-arrow-right data-in"></span>
           {{data.BytesInPerSec[chosenRate] | sumValues | number:1}} Bytes/s
         </div>
         <div class="col-md-6 rate out">
           {{data.BytesOutPerSec[chosenRate] | sumValues | number:1}} Bytes/s
-          <span class="glyphicon glyphicon-arrow-right"></span>
+          <span class="glyphicon glyphicon-arrow-right data-out"></span>
         </div>
       </div>
     </div>

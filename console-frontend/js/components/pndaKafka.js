@@ -25,7 +25,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-var hideInternalTopics = true;
+var hideInternalTopics = false;
 
 angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'HelpService', 'ConfigService',
   function($filter, $window, HelpService, ConfigService) {
@@ -48,6 +48,7 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
       scope.metricObj = {};
       scope.severity = '';
       scope.chosenRate = 'MeanRate';
+      scope.graphMetric = "kafka.brokers.2.topics.avro.internal.testbot.MessagesInPerSec.MeanRate";
       scope.rates = [
         { value:"FifteenMinuteRate", label:"15 minutes rate" },
         { value:"FiveMinuteRate", label:"5 minutes rate" },
@@ -61,6 +62,9 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
         }
       };
       */
+      
+      scope.updateCounter = 0;
+      
       scope.showComponentInfo = function() {
         scope.showInfo({ brokers: scope.brokers, metricObj: scope.metricObj });
       };
@@ -100,7 +104,6 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
 
       // the callback function expects an array of matching metrics
       var callbackFn = function(metricData) {
-
         if (metricData.length > 0) {
           // for kafka we're looking for:
           // .health,
@@ -184,6 +187,11 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
                   addTopic(broker.topics, topic, inOutMetric, subMetric, value, brokerId);
                   addTopic(scope.topics, topic, inOutMetric, subMetric, value, brokerId);
                 }
+                
+                if ((inOutMetric === 'BytesInPerSec' || inOutMetric === 'BytesOutPerSec') && subMetric === scope.chosenRate) {
+                  console.log("Match bytes!")
+                  scope.updateCounter++; // update charts
+                }
               } else if ((match = metric.name.match(/^kafka\.brokers\.(\d+)\.(.*)/i)) !== null) {
                 // parse the other kafka brokers metrics
                 brokerId = match[1];
@@ -199,6 +207,9 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
                   }
 
                   current = current[fields[i]];
+                  
+                  // console.log("Match other!")
+                  // scope.updateCounter++; // update charts
                 }
               } else if (metric.name === "kafka.nodes") {
                 // list of nodes

@@ -1,32 +1,48 @@
+@import "variables";
+
 .ct-chart {
   display: block;
   margin-top: 0px;
   margin-left: -15px;
 }
 
+.kafka-chart {
+  margin-top: -5px;
+  margin-bottom: -15px;
+  margin-left: -26px;
+  margin-right: -15px;
+}
+
 .ct-series-a .ct-line {
   stroke-width: 2px;
 }
 
-.green-chart .ct-series-a .ct-line {
-  stroke: limegreen;
+.ct-series-b .ct-line {
+  stroke-width: 2px;
 }
 
-.orange-chart .ct-series-a .ct-line {
-  stroke: orange;
+.kafka-chart .ct-line {
+  stroke-width: 1.5px;
 }
+.green-chart .ct-series-a .ct-line  { stroke: limegreen; }
+.green-chart .ct-series-a .ct-point { stroke: limegreen; }
+.green-chart .ct-series-b .ct-area { fill: limegreen; }
 
-.ct-series-a .ct-point {
-  stroke-width: 0px;
-}
+.kafka-chart .ct-series-a .ct-line  { stroke: @data-in-color; }
+.kafka-chart .ct-series-a .ct-point { stroke: @data-in-color; }
+.kafka-chart .ct-series-a .ct-area { fill: @data-in-color; }
 
-.green-chart .ct-series-a .ct-point {
-  stroke: limegreen;
-}
+.kafka-chart .ct-series-b .ct-line  { stroke: @data-out-color; }
+.kafka-chart .ct-series-b .ct-point { stroke: @data-out-color; }
+.kafka-chart .ct-series-b .ct-area { fill: @data-out-color; }
 
-.orange-chart .ct-series-a .ct-point {
-  stroke: orange;
-}
+.data-in { color: @data-in-color; }
+.data-out { color: @data-out-color; }
+
+.ct-series-a .ct-point { stroke-width: 0px; }
+.ct-series-b .ct-point { stroke-width: 0px; }
+
+
 
 span.ct-label {
   font-size: 10pt;
