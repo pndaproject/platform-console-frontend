@@ -61,7 +61,7 @@ angular.module('appServices').factory('GraphiteService', ['$resource', 'ConfigSe
       // into an array of {x: time, y: value} objects
       // datapoints: [[null, 101], [42, 102], [43, 103], [null, 104]]
       // returns: [{x: 102, y: 42}, {x: 103, y: 43}]
-      filterMetricData: function(metricData) {
+      filterMetricData: function(metricData, mirror) {
         if (metricData == null) return null;
 
         var results = [];
@@ -69,10 +69,12 @@ angular.module('appServices').factory('GraphiteService', ['$resource', 'ConfigSe
           var datapoints = metricData[j].datapoints;
           var filtered = [];
           var count = datapoints.length;
+          var negate = mirror && j == 1;
           for (var i = 0; i < count; i++) {
             var point = datapoints[i];
             var y = point[0];
             if (y != null) {
+              if (negate) y = 0 - y;
               filtered.push({ x: point[1], y: y });
             }
           }

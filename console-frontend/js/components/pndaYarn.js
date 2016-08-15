@@ -43,6 +43,7 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
       scope.fullMetrics = {};
       scope.severity = '';
       scope.updateCounter = 0;
+      scope.showChart = false;
       
       // total = allocated + available
       scope.memory = { total: 0, available: 0, allocated: 0, allocatedPercentage: 0, allocatedPercentageStyle: '' };
@@ -63,6 +64,10 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
         HelpService.showHelp(scope.metricName, scope.metricObj.name);
       };
 
+      scope.toggleChart = function() {
+        scope.showChart = !scope.showChart;
+      }
+      
       var callbackFn = function(metricData) {
         if (metricData.length > 0) {
           // for yarn we're looking for:

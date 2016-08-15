@@ -64,6 +64,11 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
       */
       
       scope.updateCounter = 0;
+      scope.showChart = true;
+      
+      scope.toggleChart = function() {
+        scope.showChart = !scope.showChart;
+      }
       
       scope.showComponentInfo = function() {
         scope.showInfo({ brokers: scope.brokers, metricObj: scope.metricObj });

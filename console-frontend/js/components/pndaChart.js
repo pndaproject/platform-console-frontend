@@ -68,6 +68,7 @@ angular.module('appComponents').directive('pndaChart',
         };
         
         scope.formatValue = function(value) {
+          if (value < 0) value = 0 - value; // display positive label for mirrored data
           return formatNumbersFilter(value, scope.metric);
         }
         
@@ -76,7 +77,7 @@ angular.module('appComponents').directive('pndaChart',
             var chartDiv = '#' + scope.chartId.replace(/\./g, "\\.");
             var noDataMessage = 'No history available for';
             if (metricData != null && metricData.length > 0) {
-              var series = GraphiteService.filterMetricData(metricData);
+              var series = GraphiteService.filterMetricData(metricData, true);
     
               var chartOptions = {
                 width: scope.width, // if undefined, will use responsive layout
@@ -92,8 +93,8 @@ angular.module('appComponents').directive('pndaChart',
                   labelInterpolationFnc: scope.formatDate
                 },
                 axisY: {
-                    offset: 65,
-                    scaleMinSpace: 25,
+                    offset: 70,
+                    scaleMinSpace: 30,
                     onlyInteger: true,
                     labelInterpolationFnc: scope.formatValue
                 }
