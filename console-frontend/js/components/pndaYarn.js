@@ -66,7 +66,7 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
 
       scope.toggleChart = function() {
         scope.showChart = !scope.showChart;
-      }
+      };
       
       var callbackFn = function(metricData) {
         if (metricData.length > 0) {

@@ -70,7 +70,8 @@ module.exports = function(grunt) {
                   healthStatus: false,
                   showMetricUpdateAnimation: false,
                   Constants: true,
-                  Clipboard: false
+                  Clipboard: false,
+                  Chartist: false,
                 }
             },
             files: ['Gruntfile.js', 'js/**/*.js']

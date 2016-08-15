@@ -24,7 +24,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appComponents').directive('pndaChart', 
+angular.module('appComponents').directive('pndaChart',
   ['$filter', 'GraphiteService', 'formatNumbersFilter',
   function(filter, GraphiteService, formatNumbersFilter) {
     return {
@@ -45,14 +45,14 @@ angular.module('appComponents').directive('pndaChart',
         var updateDelay = 750;
         
         function minutesAgo(minutes) {
-          if (minutes == undefined || minutes == '') return undefined;
+          if (minutes === undefined || minutes === '') return undefined;
           return Date.now() - minutes * 60000;
         }
         
         scope.formatDate = function(value) {
           var date = new Date(value * 1000);
 
-          // var year = date.getFullYear(); 
+          // var year = date.getFullYear();
           // var month = date.getMonth() + 1;
           // var day = date.getDate();
           var hours = date.getHours();
@@ -60,7 +60,8 @@ angular.module('appComponents').directive('pndaChart',
           var seconds = date.getSeconds();
       
           function pad(number) {
-            if (number < 10) { number = ("0"+number); }
+            if (number < 10) { number = ("0" + number); }
+
             return number;
           }
       
@@ -70,10 +71,11 @@ angular.module('appComponents').directive('pndaChart',
         scope.formatValue = function(value) {
           if (value < 0) value = 0 - value; // display positive label for mirrored data
           return formatNumbersFilter(value, scope.metric);
-        }
+        };
         
         scope.makeChart = function() {
-          GraphiteService.getMetric(scope.metric, minutesAgo(scope.from), minutesAgo(scope.until)).then(function(metricData) {
+          GraphiteService.getMetric(scope.metric, minutesAgo(scope.from), minutesAgo(scope.until))
+			.then(function(metricData) {
             var chartDiv = '#' + scope.chartId.replace(/\./g, "\\.");
             var noDataMessage = 'No history available for';
             if (metricData != null && metricData.length > 0) {
@@ -93,15 +95,15 @@ angular.module('appComponents').directive('pndaChart',
                   labelInterpolationFnc: scope.formatDate
                 },
                 axisY: {
-                    offset: 70,
-                    scaleMinSpace: 30,
-                    onlyInteger: true,
-                    labelInterpolationFnc: scope.formatValue
+                  offset: 70,
+                  scaleMinSpace: 30,
+                  onlyInteger: true,
+                  labelInterpolationFnc: scope.formatValue
                 }
               };
     
-              var data = {series: series};
-              if ($(chartDiv).html() == noDataMessage) $(chartDiv).html('');
+              var data = { series: series };
+              if ($(chartDiv).html() === noDataMessage) $(chartDiv).html('');
               scope.chart = new Chartist.Line(chartDiv, data, chartOptions);
             } else {
               $(chartDiv).html(noDataMessage);
@@ -111,16 +113,16 @@ angular.module('appComponents').directive('pndaChart',
 
         scope.makeChart();
         
-        scope.$watch('metric', function(newval) { scope.makeChart(); });
-        scope.$watch('from', function(newval) { scope.makeChart(); });
-        scope.$watch('until', function(newval) { scope.makeChart(); });
+        scope.$watch('metric', function() { scope.makeChart(); });
+        scope.$watch('from', function() { scope.makeChart(); });
+        scope.$watch('until', function() { scope.makeChart(); });
         scope.$watch('updateCounter', function(newval) {
           if (newval != null) {
             // console.log('updateCounter changed: ' + newval);
             // wait a tick for data to be available in graphite, as Socket.IO is faster
             setTimeout(function() {
               scope.makeChart();
-            }, updateDelay); 
+            }, updateDelay);
           }
         });
       }

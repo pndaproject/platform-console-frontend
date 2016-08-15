@@ -28,13 +28,13 @@ angular.module('appServices').factory('GraphiteService', ['$resource', 'ConfigSe
     return {
       // from and until specify a date range in milliseconds
       getMetric: function(metric, from, until) {
-        var graphiteManager = ConfigService.backend["graphite"];
+        var graphiteManager = ConfigService.backend.graphite;
         
-        var graphiteUrl = "http://" + graphiteManager.host + ":" + graphiteManager.port + 
+        var graphiteUrl = "http://" + graphiteManager.host + ":" + graphiteManager.port +
           "/render?target=" + metric + "&format=json";
-        if (from !== undefined && from !== "") 
+        if (from !== undefined && from !== "")
           graphiteUrl += "&from=" + Math.floor(from / 1000);
-        if (until !== undefined && until !== "") 
+        if (until !== undefined && until !== "")
           graphiteUrl += "&until=" + Math.floor(until / 1000);
         
         // console.log(graphiteUrl);
@@ -42,7 +42,7 @@ angular.module('appServices').factory('GraphiteService', ['$resource', 'ConfigSe
         return $q.all([$http.get(graphiteUrl)]).then(function(data) {
           var response = data[0];
           if (response !== undefined) {
-            var metricData = response['data'];
+            var metricData = response.data;
             if (metricData !== undefined && metricData[0] !== undefined) {
               return metricData;
             } else {
@@ -69,7 +69,7 @@ angular.module('appServices').factory('GraphiteService', ['$resource', 'ConfigSe
           var datapoints = metricData[j].datapoints;
           var filtered = [];
           var count = datapoints.length;
-          var negate = mirror && j == 1;
+          var negate = mirror && j === 1;
           for (var i = 0; i < count; i++) {
             var point = datapoints[i];
             var y = point[0];
@@ -78,10 +78,10 @@ angular.module('appServices').factory('GraphiteService', ['$resource', 'ConfigSe
               filtered.push({ x: point[1], y: y });
             }
           }
+
           results.push(filtered);
         }
         
-
         return results;
       }
       

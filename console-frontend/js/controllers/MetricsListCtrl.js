@@ -64,10 +64,9 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
       $scope.selectedMetric = metric;
     };
 
-    $scope.clickme = function(metric) {
+    $scope.clickme = function() {
       console.log("clickme");
     };
-
 
     $scope.showModalTable = function(data, titleContext) {
       angular.forEach(data, function(metric) {
@@ -285,7 +284,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
         $scope.metrics.push(found);
       }
       
-      if (obj.metric == $scope.selectedMetric) {
+      if (obj.metric === $scope.selectedMetric) {
         $scope.updateCounter++;
       }
 

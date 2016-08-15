@@ -68,7 +68,7 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
       
       scope.toggleChart = function() {
         scope.showChart = !scope.showChart;
-      }
+      };
       
       scope.showComponentInfo = function() {
         scope.showInfo({ brokers: scope.brokers, metricObj: scope.metricObj });
@@ -194,7 +194,6 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
                 }
                 
                 if ((inOutMetric === 'BytesInPerSec' || inOutMetric === 'BytesOutPerSec') && subMetric === scope.chosenRate) {
-                  console.log("Match bytes!")
                   scope.updateCounter++; // update charts
                 }
               } else if ((match = metric.name.match(/^kafka\.brokers\.(\d+)\.(.*)/i)) !== null) {

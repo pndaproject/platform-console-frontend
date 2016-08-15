@@ -67,7 +67,7 @@ angular.module('appComponents').directive('pndaHdfs',
 
       scope.toggleChart = function() {
         scope.showChart = !scope.showChart;
-      }
+      };
 
       // query the DOM to identify dimensions set in PNDA.less. Dimensions are in px
       var dbHeight = $("pnda-hdfs .database").height();
@@ -163,4 +163,4 @@ angular.module('appComponents').directive('pndaHdfs',
       scope.onGetMetricData({ cbFn: callbackFn, healthStatusCbFn: healthStatusCallbackFn });
     }
   };
-}]);
+  }]);
