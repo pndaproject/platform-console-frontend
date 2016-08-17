@@ -27,8 +27,8 @@
 
 var hideInternalTopics = false;
 
-angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'HelpService', 'ConfigService',
-  function($filter, $window, HelpService, ConfigService) {
+angular.module('appComponents').directive('pndaKafka', ['$filter', '$cookies', '$window', 'HelpService', 'ConfigService',
+  function($filter, $cookies, $window, HelpService, ConfigService) {
   return {
     restrict: 'E',
     scope: {
@@ -39,6 +39,9 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
     templateUrl: 'partials/components/pnda-kafka.html',
     link: function(scope) {
       // initialise the scope, which will be updated when the callback function gets called by the controller
+      var showChartCookie = 'showKafkaChart';
+      var showChartDefault = true;
+
       scope.metricName = '';
       scope.class = 'hidden';
       scope.healthClass = '';
@@ -64,10 +67,12 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
       */
       
       scope.updateCounter = 0;
-      scope.showChart = true;
+      scope.showChart = $cookies.get(showChartCookie) === 'true';
+      if (scope.showChart === undefined) scope.showChart = showChartDefault;
       
       scope.toggleChart = function() {
         scope.showChart = !scope.showChart;
+        $cookies.put(showChartCookie, scope.showChart);
       };
       
       scope.showComponentInfo = function() {

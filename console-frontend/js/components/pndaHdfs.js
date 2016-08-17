@@ -25,8 +25,8 @@
 *-------------------------------------------------------------------------------*/
 
 angular.module('appComponents').directive('pndaHdfs',
-  ['$filter', 'HelpService',
-  function($filter, HelpService)
+  ['$filter', '$cookies', 'HelpService',
+  function($filter, $cookies, HelpService)
 {
     return {
     restrict: 'E',
@@ -38,6 +38,9 @@ angular.module('appComponents').directive('pndaHdfs',
     templateUrl: 'partials/components/pnda-hdfs.html',
     link: function(scope) {
       // initialise the scope, which will be updated when the callback function gets called by the controller
+      var showChartCookie = 'showHdfsChart';
+      var showChartDefault = false;
+
       scope.metricName = '';
       scope.class = 'hidden';
       scope.healthClass = '';
@@ -48,7 +51,8 @@ angular.module('appComponents').directive('pndaHdfs',
         dfs_used:0, total_size: 0, total_used: 0, jvm_heap_used:0, dead_datanodes:0 };
       scope.metricObj = {};
       scope.updateCounter = 0;
-      scope.showChart = false;
+      scope.showChart = $cookies.get(showChartCookie) === 'true';
+      if (scope.showChart === undefined) scope.showChart = showChartDefault;
       
       // the callback function expects an array of matching metrics
       scope.showDetails = function() {
@@ -67,6 +71,7 @@ angular.module('appComponents').directive('pndaHdfs',
 
       scope.toggleChart = function() {
         scope.showChart = !scope.showChart;
+        $cookies.put(showChartCookie, scope.showChart);
       };
 
       // query the DOM to identify dimensions set in PNDA.less. Dimensions are in px

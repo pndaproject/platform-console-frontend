@@ -24,7 +24,8 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService', function($filter, HelpService) {
+angular.module('appComponents').directive('pndaYarn', ['$filter', '$cookies', 'HelpService',
+  function($filter, $cookies, HelpService) {
   return {
     restrict: 'E',
     scope: {
@@ -35,6 +36,9 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
     templateUrl: 'partials/components/pnda-yarn.html',
     link: function(scope) {
       // initialise the scope, which will be updated when the callback function gets called by the controller
+      var showChartCookie = 'showYarnChart';
+      var showChartDefault = false;
+
       scope.metricName = '';
       scope.class = 'hidden';
       scope.healthClass = '';
@@ -43,7 +47,8 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
       scope.fullMetrics = {};
       scope.severity = '';
       scope.updateCounter = 0;
-      scope.showChart = false;
+      scope.showChart = $cookies.get(showChartCookie) === 'true';
+      if (scope.showChart === undefined) scope.showChart = showChartDefault;
       
       // total = allocated + available
       scope.memory = { total: 0, available: 0, allocated: 0, allocatedPercentage: 0, allocatedPercentageStyle: '' };
@@ -66,6 +71,7 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
 
       scope.toggleChart = function() {
         scope.showChart = !scope.showChart;
+        $cookies.put(showChartCookie, scope.showChart);
       };
       
       var callbackFn = function(metricData) {
