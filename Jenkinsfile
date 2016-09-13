@@ -6,14 +6,21 @@ node {
 
         def workspace = pwd() 
 
-        sh '''
-            echo $PWD
-            echo $BRANCH_NAME
-            cd $PWD@script/console-frontend;
+        def version = env.BRANCH_NAME
+
+        checkout scm
+
+        if(env.BRANCH_NAME=="master") {
+            version = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
+            checkout([$class: 'GitSCM', branches: [[name: "tags/${version}"]], extensions: [[$class: 'CleanCheckout']]])
+        }
+        
+        sh """
+            cd console-frontend
             npm install
-            echo "{ \\"name\\": \\"console-frontend\\", \\"version\\": \\"$BRANCH_NAME\\" }" > package-version.json
+            echo "{ \\"name\\": \\"console-frontend\\", \\"version\\": \\"${version}\\" }" > package-version.json
             grunt package
-        '''
+        """
 
         stage 'Test'
         sh '''
