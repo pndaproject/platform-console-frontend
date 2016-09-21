@@ -16,5 +16,9 @@
   "datasets":
   {
 	  "hidden": ["testbot"]
+  },
+  "topics":
+  {
+    "hidden": ["avro.internal.testbot","__consumer_offsets"]
   }
 }
