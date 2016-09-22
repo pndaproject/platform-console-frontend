@@ -91,7 +91,7 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
         angular.forEach(scope.topics, function(topic) {
           // explicitly convert to String
           topic = topic.toString();
-          if (!hideInternalTopics || topic.match(/^avro\.internal\..*/i) === null) {
+          if (!hideInternalTopics || (ConfigService.topics.hidden).indexOf(topic) === -1) {
             nb++;
           }
         });
@@ -177,7 +177,7 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
                   array[topic][metric][submetric][broker] = value;
                 };
 
-                if (hideInternalTopics && topic.match(/^avro\.internal\..*/i) !== null) {
+                if (hideInternalTopics && (ConfigService.topics.hidden).indexOf(topic) !== -1) {
 //                  console.log("hiding topic", topic);
                 } else {
                   var value = metric.info.value === undefined ? "" : interpreteValue(metric.info.value);
