@@ -95,7 +95,7 @@
                     <pnda-basic-component on-get-metric-data="getMetricData('hadoop.IMPALA',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)" ></pnda-basic-component>
                   </div>
                 </div>
-                <div class="col-md-12 group" id="explore">
+                <div class="col-md-12 group" id="explore" ng-if="findComponentUrl('Jupyter') !== ''">
                   <div class="title">Explore</div>
                   <div class="content">
                     <div pnda-basic-component class="fake-component clickable">
@@ -108,10 +108,10 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-12 group" id="metrics-UIs">
+                <div class="col-md-12 group" id="metrics-UIs" ng-if="findComponentUrl('OpenTSDB') !== '' && findComponentUrl('Grafana') !== ''">
                   <div class="title">Metrics</div>
                   <div class="content">
-                    <div pnda-basic-component class="fake-component">
+                    <div pnda-basic-component class="fake-component" ng-if="findComponentUrl('OpenTSDB') !== ''">
                       <a target="_blank" href="{{findFirstComponentUrl('OpenTSDB')}}">
                         <div class="ui-link">OpenTSDB</div>
                         <div class="overlay">
@@ -119,7 +119,7 @@
                         </div>
                       </a>
                     </div>
-                    <div pnda-basic-component class="fake-component">
+                    <div pnda-basic-component class="fake-component" ng-if="findComponentUrl('Grafana') !== ''">
                       <a target="_blank" href="{{findComponentUrl('Grafana')}}">
                         <div class="ui-link">Grafana</div>
                         <div class="overlay">
