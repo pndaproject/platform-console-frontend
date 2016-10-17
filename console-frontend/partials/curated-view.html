@@ -5,8 +5,8 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           PNDA Data Platform
-          <div class="operational-endpoints">
-            <div class="endpoint">
+          <div class="operational-endpoints" ng-if="operationalEndpoints.edgeNode !== 'None' && operationalEndpoints.httpFS !== ''">
+            <div class="endpoint" ng-if="operationalEndpoints.edgeNode !== 'None'">
               <button class="btn name copy-to-clipboard" data-clipboard-text="{{ operationalEndpoints.edgeNode }}" data-title="Copied" data-trigger="focus" data-delay="0,1000" bs-tooltip>
                 <div>Edge node</div>
                 <div class="glyphicon glyphicon-copy"></div>
@@ -41,7 +41,7 @@
           </div>
 
           <!-- second column: Data Processing & Data Storage -->
-          <div class="col-md-8">
+          <div class="col-md-8" ng-if="operationalEndpoints.edgeNode !== 'None'">
             <!-- first row: Data Processing -->
             <div class="row">
               <div class="col-md-8 group" id="hadoop">
@@ -156,7 +156,7 @@
     </div>
 
     <!-- fourth column: Applications -->
-    <div id="applications" class="col-md-3">
+    <div id="applications" class="col-md-3" ng-if="operationalEndpoints.edgeNode !== 'None'">
       <div class="panel panel-default">
         <div class="panel-heading">Applications</div>
         <div class="panel-body row">
