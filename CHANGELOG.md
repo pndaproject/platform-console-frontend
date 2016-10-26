@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] 2016-10-21
+### Changes
+- PNDA-2272: Only show links to parts of the system which are present to allow modularisation of PNDA
+
 ## [0.1.1] 2016-09-13
 ### Changes
 - Enhanced CI support
