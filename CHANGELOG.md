@@ -1,12 +1,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Changed
+- Externalized build logic from Jenkins to shell script so it can be reused
+
 ## [0.1.2] 2016-10-21
-### Changes
+### Changed
 - PNDA-2272: Only show links to parts of the system which are present to allow modularisation of PNDA
 
 ## [0.1.1] 2016-09-13
-### Changes
+### Changed
 - Enhanced CI support
 
 ## [0.1.0] 2016-07-01
