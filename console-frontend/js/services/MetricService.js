@@ -24,8 +24,8 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appServices').factory('MetricService', ['$resource', 'ConfigService', '$http', '$q',
-  function($resource, ConfigService, $http, $q) {
+angular.module('appServices').factory('MetricService', ['$resource', 'ConfigService', '$http', '$q', '$filter',
+  function($resource, ConfigService, $http, $q, $filter) {
     var dataManager = ConfigService.backend["data-manager"];
     var host = dataManager.host;
     var port = dataManager.port;
@@ -37,6 +37,26 @@ angular.module('appServices').factory('MetricService', ['$resource', 'ConfigServ
         if (json.metrics !== undefined && angular.isArray(json.metrics)) {
           // for each metric, get its latest value asynchronously using the /metrics/metricId API
           var metrics = [];
+
+          var deferDummyMetricValue = function() {
+            var deferred = $q.defer();
+            var resObj = {
+              source: "default",
+              value: "UNAVAILABLE",
+              timestamp: 1451606400000 // 1st Jan 2016 - this date doesn't matter, it just needs to be in the past
+            };
+            deferred.resolve(resObj);
+            return deferred.promise;
+          };
+
+          // add dummy metrics to make sure all components appear
+          angular.forEach(ConfigService.dummy_metrics, function(m) {
+            metrics.push({
+              name: m,
+              info: $q.all([deferDummyMetricValue()])
+            });
+          });
+
           json.metrics.map(function(metric) {
             // defer getting its value using a promise (asynchronously)
             var getMetricInfo = function(m) {
@@ -66,9 +86,15 @@ angular.module('appServices').factory('MetricService', ['$resource', 'ConfigServ
               return deferred.promise;
             };
 
-            // add this metric to the array
-            // at the moment we just have its name but we're using a promise to get its latest value from the API
-            metrics.push({ name: metric, info: $q.all([getMetricInfo(metric)]) });
+            // if we already have this metric, replace the value
+            var foundMetric = $filter('getByName')(metrics, metric);
+            if (foundMetric.length > 0) {
+              foundMetric[0].info = $q.all([getMetricInfo(metric)]);
+            } else {
+              // add this metric to the array
+              // at the moment we just have its name but we're using a promise to get its latest value from the API
+              metrics.push({ name: metric, info: $q.all([getMetricInfo(metric)]) });
+            }
           });
           return metrics;
         } else {

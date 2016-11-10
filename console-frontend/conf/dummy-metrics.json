@@ -1,0 +1,16 @@
+{
+  "dummy_metrics": [
+    "deployment-manager.health",
+    "hadoop.HBASE.health",
+    "hadoop.HDFS.health",
+    "hadoop.HIVE.health",
+    "hadoop.HUE.health",
+    "hadoop.IMPALA.health",
+    "hadoop.OOZIE.health",
+    "hadoop.SPARK_ON_YARN.health",
+    "hadoop.YARN.health",
+    "hadoop.ZOOKEEPER.health",
+    "kafka.health",
+    "zookeeper.health"
+]
+}
