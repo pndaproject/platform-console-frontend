@@ -226,6 +226,7 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
               scope.healthClass = "health_" + healthStatus(healthMetric.info.value, scope.timestamp);
               scope.healthClass += (enableModalView(scope.severity) ? " clickable" : " ");
               scope.latestHealthStatus = healthMetric.info.value;
+              scope.isUnavailable = (healthMetric.info.value === "UNAVAILABLE");
 
               showMetricUpdateAnimation($("pnda-deployment-manager .health"));
             }

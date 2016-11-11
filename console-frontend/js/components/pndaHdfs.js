@@ -89,6 +89,7 @@ angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService',
               scope.severity = metric.info.value;
               scope.timestamp = metric.info.timestamp;
               var status = healthStatus(metric.info.value, scope.timestamp);
+              scope.isUnavailable = (metric.info.value === "UNAVAILABLE");
 
 //              scope.healthClass += (enableModalView(scope.severity) ? " clickable" : " ");
               scope.healthClass = "health_" + status;

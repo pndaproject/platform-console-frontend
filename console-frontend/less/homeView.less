@@ -530,6 +530,7 @@
     .panel-health-class(WARN, @bgColor-WARN, #333, true, true);
     .panel-health-class(ERROR, @bgColor-ERROR, #333, true, true);
     .panel-health-class(WARN_NO_RECENT_UPDATE, @bgColor-WARN_NO_RECENT_UPDATE, #333, false, true);
+    .panel-health-class(UNAVAILABLE, @bgColor-UNAVAILABLE, #333, false, false);
 
     timer {
         display: block;
@@ -550,6 +551,11 @@
     .health_WARN_NO_RECENT_UPDATE {
         timer {
             color: #CA0000;
+        }
+    }
+    .health_UNAVAILABLE {
+        timer {
+            display: none;
         }
     }
 

@@ -80,6 +80,7 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
               scope.timestamp = metric.info.timestamp;
               var status = healthStatus(metric.info.value, scope.timestamp);
               scope.healthClass = "health_" + status;
+              scope.isUnavailable = (metric.info.value === "UNAVAILABLE");
 
 //              scope.healthClass += (enableModalView(scope.severity) ? " clickable" : " ");
               scope.latestHealthStatus = metric.info.value;
