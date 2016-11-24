@@ -11,7 +11,8 @@ function error {
 }
 
 echo -n "npm: "
-if [[ $(npm --version 2>&1) == "1.3.10" ]]; then
+NPM_VERSION=$(npm --version 2>&1)
+if [[ ${NPM_VERSION} == "1.3"* ]] || [[ ${NPM_VERSION} == "3.5.2" ]]; then
     echo "OK"
 else
     error
