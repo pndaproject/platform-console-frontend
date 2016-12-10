@@ -1,8 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.1.3] 2016-12-12
 ### Changed
+- PNDA-2340: All components appear on the curated view regardless of which components are actually provisioned
 - Externalized build logic from Jenkins to shell script so it can be reused
 
 ## [0.1.2] 2016-10-21
