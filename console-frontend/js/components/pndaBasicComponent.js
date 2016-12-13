@@ -41,6 +41,7 @@ angular.module('appComponents').directive('pndaBasicComponent', ['$filter', 'Hel
         scope.metricName = '';
         scope.metricNameForModalView = '';
         scope.class = 'hidden';
+        scope.isUnavailable = false;
         scope.timestamp = 0;
         scope.metricObj = {};
         scope.fullMetrics = {};
@@ -53,6 +54,10 @@ angular.module('appComponents').directive('pndaBasicComponent', ['$filter', 'Hel
 
         scope.showHelp = function() {
           HelpService.showHelp(scope.metricNameForModalView, scope.metricObj.name);
+        };
+
+        scope.showCog = function() {
+          return scope.metricName !== 'Zookeeper' && !scope.isUnavailable;
         };
 
         scope.clickCog = function() {
@@ -83,6 +88,7 @@ angular.module('appComponents').directive('pndaBasicComponent', ['$filter', 'Hel
               scope.severity = healthMetric.info.value;
               scope.metricObj = healthMetric;
               scope.class = $filter('metricNameClass')(healthMetric.name);
+              scope.isUnavailable = (healthMetric.info.value === "UNAVAILABLE");
 
               scope.latestHealthStatus = healthMetric.info.value;
               scope.healthClass = " health_" + healthStatus(healthMetric.info.value, scope.timestamp);

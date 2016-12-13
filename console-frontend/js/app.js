@@ -153,6 +153,14 @@ function bootstrapApplication() {
 //        console.log("conf/metrics.json loaded successfully", json.data);
       }]);
 
+      return $http.get('conf/dummy-metrics.json');
+    })
+    .then(function(json) {
+
+      consoleFrontendApp.config(['ConfigServiceProvider', function (ConfigServiceProvider) {
+        ConfigServiceProvider.config(json.data);
+      }]);
+
       return $http.get('conf/PNDA.json');
     })
     .then(function(json) {

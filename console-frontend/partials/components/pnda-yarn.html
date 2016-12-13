@@ -4,14 +4,14 @@
     {{metricName}}
     <timer ng-attr-start-time="timestamp">Last update: {{millis | simplifyTime: days:hours:minutes:seconds}}</timer>
     <div class="info">
-      <span ng-click="showDetails()" class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span ng-click="showDetails()" class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" data-ng-show="!isUnavailable"></span>
       <span ng-click="showHelp()" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-      <span ng-click="clickCog()" class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+      <span ng-click="clickCog()" class="glyphicon glyphicon-cog" aria-hidden="true" data-ng-show="!isUnavailable"></span>
     </div>
   </div>
 
   <!-- Yarn specific view -->
-  <div class="yarn-info">
+  <div class="yarn-info" data-ng-show="!isUnavailable">
     <div class="memory">
       <div class="text">
         Used Memory
