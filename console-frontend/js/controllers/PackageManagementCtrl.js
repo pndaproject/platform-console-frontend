@@ -101,7 +101,7 @@ angular.module('appControllers').controller('PackageManagementCtrl', ['$scope', 
     $scope.errorCallback = function(error, packageName) {
       $scope.choosenPackageName = packageName;
       $scope.response = true;
-      $scope.responseText = error.information;
+      $scope.responseText = error.data.information;
       $scope.alertClass = "alert-danger";
     };
 
