@@ -148,9 +148,14 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     };
 
     $scope.errorCallback = function(error) {
+      $scope.response = true;
       var status = error.status;
       $scope.submitAppResponse = true;
-      $scope.responseText = getStatusText(status);
+      var msg = getStatusText(status);
+      if (error.data.information) {
+        msg += ' ' + error.data.information;
+      }
+      $scope.responseText = msg;
       $scope.alertClass = "alert-danger";
     };
 
