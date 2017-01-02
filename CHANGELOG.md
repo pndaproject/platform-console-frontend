@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.1.4] 2017-01-02
+### Changed
+- PNDA-2537: modify version of grunt compress to 1.3.0 in order to work with npm 3.10
+- PNDA-2499: Display the error text returned from the deployment manager
+
 ## [0.1.3] 2016-12-12
 ### Changed
 - PNDA-2340: All components appear on the curated view regardless of which components are actually provisioned
