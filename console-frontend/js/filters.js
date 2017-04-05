@@ -148,6 +148,21 @@ metricFilters.filter('getByName', function() {
   };
 });
 
+
+// return a list of all element matching the regex name in an array of metrics 
+// and also add a more appropriate display name (i.e. stripped from the internal
+// filtering info).
+metricFilters.filter('getByNameForDisplay', function(getByNameFilter) {
+  return function(input, name) {
+    var array = getByNameFilter(input, name);
+    console.log("in: "+array.length);
+    var regexp = new RegExp(name);
+    array.forEach(function(item, index, array) {array[index].displayName = array[index].name.replace(regexp,'');});
+    console.log("out: "+array.length);
+    return array;
+  };
+});
+
 // transform a metric name into a class that can be referenced in a CSS file
 metricFilters.filter('metricNameClass', function() {
   return function(metricName) {
