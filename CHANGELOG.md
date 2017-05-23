@@ -1,9 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.2.0] 2017-05-23
+### Added:
+- PNDA-2691: Refactor for offline installation
 ### Changed
 - PNDA-2827: Changed the display of the application metrics to lose the filter info.
+### Fixed
+- PNDA-2374: Pin down specific dependencies
 
 ## [0.1.4] 2017-01-02
 ### Changed
