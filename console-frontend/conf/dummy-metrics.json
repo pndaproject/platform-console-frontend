@@ -1,16 +1,16 @@
 {
   "dummy_metrics": [
-    "deployment-manager.health",
-    "hadoop.HBASE.health",
-    "hadoop.HDFS.health",
-    "hadoop.HIVE.health",
-    "hadoop.HUE.health",
-    "hadoop.IMPALA.health",
-    "hadoop.OOZIE.health",
-    "hadoop.SPARK_ON_YARN.health",
-    "hadoop.YARN.health",
-    "hadoop.ZOOKEEPER.health",
-    "kafka.health",
-    "zookeeper.health"
+    {"name": "deployment-manager.health", "hadoop_distro": "CDH,HDP"},
+    {"name": "hadoop.HBASE.health", "hadoop_distro": "CDH,HDP"},
+    {"name": "hadoop.HDFS.health", "hadoop_distro": "CDH,HDP"},
+    {"name": "hadoop.HIVE.health", "hadoop_distro": "CDH,HDP"},
+    {"name": "hadoop.IMPALA.health", "hadoop_distro": "CDH"},
+    {"name": "hadoop.HQUERY.health", "hadoop_distro": "HDP"},
+    {"name": "hadoop.OOZIE.health", "hadoop_distro": "CDH,HDP"},
+    {"name": "hadoop.SPARK_ON_YARN.health", "hadoop_distro": "CDH,HDP"},
+    {"name": "hadoop.YARN.health", "hadoop_distro": "CDH,HDP"},
+    {"name": "hadoop.ZOOKEEPER.health", "hadoop_distro": "CDH,HDP"},
+    {"name": "kafka.health", "hadoop_distro": "CDH,HDP"},
+    {"name": "zookeeper.health", "hadoop_distro": "CDH,HDP"}
 ]
 }

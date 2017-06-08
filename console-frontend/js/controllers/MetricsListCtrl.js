@@ -298,7 +298,9 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
       ConfigService.userInterfaceIndex["Kafka Manager"] = $scope.dm_endpoints.kafka_manager;
       ConfigService.userInterfaceIndex["YARN Resource Manager"] = "http://" + data.yarn_resource_manager_host + ":" +
         data.yarn_resource_manager_port;
-      ConfigService.userInterfaceIndex.Hue = "http://" + data.hue_host + ":" + data.hue_port;
+      if ('hue_host' in data) {
+        ConfigService.userInterfaceIndex.Hue = "http://" + data.hue_host + ":" + data.hue_port;
+      }
     });
 
     function findResolutionUrlForSource(source, showDefault) {
@@ -311,11 +313,22 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
         } else if (source === "opentsdb" || source === "grafana") {
           // for opentsdb and grafana, the string is a comma-separated list
           resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
-        } else if (source === "hdfs01" && showDefault !== true) {
-          resolutionUrl = ConfigService.userInterfaceIndex.Hue + "/filebrowser/";
-        } else if (source === "yarn01") {
+        } else if ((source === "hdfs01" || source === "HDFS") && showDefault !== true) {
+          if (ConfigService.hadoop_distro === 'CDH') {
+            resolutionUrl = ConfigService.userInterfaceIndex.Hue + "/filebrowser/";
+          } else {
+            resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
+              "#/main/views/FILES/1.0.0/PNDA_FILES_SU/";
+          }
+        } else if ((source === "yarn01" || source === "YARN")) {
           resolutionUrl = ConfigService.userInterfaceIndex["YARN Resource Manager"];
-        } else if ($scope.dm_endpoints.cm_status_links !== undefined) {
+        } else if (source === "OOZIE") {
+          resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
+            '#/main/views/WORKFLOW_MANAGER/1.0.0/PNDA_WORKFLOW';
+        } else if (source === "AMBARI" || source === "CM") {
+          resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"];
+        }
+         else if ($scope.dm_endpoints.cm_status_links !== undefined) {
           resolutionUrl = $scope.dm_endpoints.cm_status_links[source];
         }
       }
