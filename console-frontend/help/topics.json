@@ -65,7 +65,8 @@
     },
     "hadoop.IMPALA.health": {
       "body": ["Apache Impala is a parallel execution engine for SQL queries. It supports low-latency access and interactive exploration of data in HDFS and HBase.",
-        "Impala allows data to be stored in a raw form in HDFS and HBase, with aggregation performed at query time without requiring upfront aggregation of data."],
+        "Impala allows data to be stored in a raw form in HDFS and HBase, with aggregation performed at query time without requiring upfront aggregation of data.",
+        "Impala is only available with the Cloudera distribution of Hadoop"],
       "link": "http://impala.io"
     },
     "hadoop.HBASE.health": {
