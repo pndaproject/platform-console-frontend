@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - PNDA-2827: Changed the display of the application metrics to lose the filter info.
 
+### Fixed
+- PNDA-3086: Load metrics in a single http get to fix performance issue.
+
 ## [0.1.4] 2017-01-02
 ### Changed
 - PNDA-2537: modify version of grunt compress to 1.3.0 in order to work with npm 3.10
