@@ -318,7 +318,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         $scope.showApplicationDetail = true;
         $scope.newApp = false;
         $scope.metricFilter = 'application\\.kpi\\.' + app.name + '\\.';
-        $scope.appMetrics = $filter('getByName')($scope.allMetrics, $scope.metricFilter);
+        $scope.appMetrics = $filter('getByNameForDisplay')($scope.allMetrics, $scope.metricFilter);
       }
     };
 
@@ -480,7 +480,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         
         // if there's a new metric, re-filter the list
         if ($scope.fullApplicationDetail !== undefined && $scope.fullApplicationDetail.name !== undefined) {
-          $scope.appMetrics = $filter('getByName')($scope.allMetrics, $scope.metricFilter);
+          $scope.appMetrics = $filter('getByNameForDisplay')($scope.allMetrics, $scope.metricFilter);
         }
       }
     }

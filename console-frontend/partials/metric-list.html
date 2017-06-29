@@ -61,7 +61,7 @@
             <th></th>
           </tr>
           </thead>
-          <tr ng-repeat="metric in metrics | filter:query | orderBy:orderProp"
+          <tr ng-repeat="metric in metrics | filter:query | limitTo:50 | orderBy:orderProp"
               ng-class="{ 'list-group-item-danger': metric.info.value==='ERROR', 'list-group-item-warning': metric.info.value==='WARN'}">
             <td class="metric">{{metric.name}}</td>
             <td class="source">{{metric.info.source}}</td>

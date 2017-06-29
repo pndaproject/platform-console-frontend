@@ -1,6 +1,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] 2017-06-29
+### Added:
+- PNDA-2691: Refactor for offline installation
+### Changed
+- PNDA-2827: Changed the display of the application metrics to lose the filter info.
+- PNDA-3086: Limit number of metrics shown on the metrics tab to 50, use the filter feature to show the others.
+
+### Fixed
+- PNDA-3086: Load metrics in a single http get to fix performance issue.
+- PNDA-2374: Pin down specific dependencies
+
 ## [0.1.4] 2017-01-02
 ### Changed
 - PNDA-2537: modify version of grunt compress to 1.3.0 in order to work with npm 3.10
