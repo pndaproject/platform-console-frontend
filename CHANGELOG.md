@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Changed
 - PNDA-2827: Changed the display of the application metrics to lose the filter info.
+- PNDA-3086: Limit number of metrics shown on the metrics tab to 50, use the filter feature to show the others.
 
 ### Fixed
 - PNDA-3086: Load metrics in a single http get to fix performance issue.
