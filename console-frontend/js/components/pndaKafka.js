@@ -139,10 +139,12 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
             } else {
               var match;
               var brokerId, broker;
-
+              var timestampTimeoutMs = 3 * 60 * 1000;
+              var currentTimestamp = Date.now();
+              var isOldTopic = (currentTimestamp - metric.info.timestamp > timestampTimeoutMs);
               // look for topics
               // jscs:disable maximumLineLength
-              if ((match = metric.name.match(/^kafka\.brokers\.(\d+)\.topics\.(.*)\.((?:BytesInPerSec|BytesOutPerSec|MessagesInPerSec))\.(.*)/i)) !== null) {
+              if (!isOldTopic && (match = metric.name.match(/^kafka\.brokers\.(\d+)\.topics\.(.*)\.((?:BytesInPerSec|BytesOutPerSec|MessagesInPerSec))\.(.*)/i)) !== null) {
                 // example: [
                 //   "kafka.brokers.1.topics.avro.internal.testbot.BytesOutPerSec.Count",
                 //   "1", // broker id
