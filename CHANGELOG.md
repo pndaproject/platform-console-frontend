@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - PNDA-3016: When kafka topics have been deleted stop showing them in the PNDA console.
 
+### Changed
+- PNDA-3098: Sort kafka topics by name PNDA console.
+
 ## [0.2.0] 2017-06-29
 ### Added:
 - PNDA-2691: Refactor for offline installation
