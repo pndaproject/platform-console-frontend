@@ -69,7 +69,7 @@
         "Impala is only available with the Cloudera distribution of Hadoop"],
       "link": "http://impala.io"
     },
-    "hadoop.HIVEQUERY.health": {
+    "hadoop.HQUERY.health": {
       "body": ["Apache Hive is a parallel execution engine for SQL queries. It supports low-latency access and interactive exploration of data in HDFS and HBase.",
         "Hive allows data to be stored in a raw form in HDFS and HBase, with aggregation performed at query time without requiring upfront aggregation of data."],
       "link": "https://hive.apache.org/"

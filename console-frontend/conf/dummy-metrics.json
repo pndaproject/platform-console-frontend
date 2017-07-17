@@ -5,7 +5,7 @@
     {"name": "hadoop.HDFS.health", "hadoop_distro": "CDH,HDP"},
     {"name": "hadoop.HIVE.health", "hadoop_distro": "CDH,HDP"},
     {"name": "hadoop.IMPALA.health", "hadoop_distro": "CDH"},
-    {"name": "hadoop.HIVEQUERY.health", "hadoop_distro": "HDP"},
+    {"name": "hadoop.HQUERY.health", "hadoop_distro": "HDP"},
     {"name": "hadoop.OOZIE.health", "hadoop_distro": "CDH,HDP"},
     {"name": "hadoop.SPARK_ON_YARN.health", "hadoop_distro": "CDH,HDP"},
     {"name": "hadoop.YARN.health", "hadoop_distro": "CDH,HDP"},
