@@ -94,6 +94,9 @@
                   <div class="content">
                     <pnda-basic-component on-get-metric-data="getMetricData('hadoop.IMPALA',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)" ></pnda-basic-component>
                   </div>
+                  <div class="content">
+                    <pnda-basic-component on-get-metric-data="getMetricData('hadoop.HIVEQUERY',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)" ></pnda-basic-component>
+                  </div>
                 </div>
                 <div class="col-md-12 group" id="explore" ng-if="findComponentUrl('Jupyter') !== ''">
                   <div class="title">Explore</div>
