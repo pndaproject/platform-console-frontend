@@ -184,6 +184,9 @@ metricFilters.filter('metricNameForDisplay', function() {
       case "hadoop.HUE.health":
         display = "Hue";
         break;
+      case "hadoop.HIVEQUERY.health":
+        display = "Hive Query";
+        break;
       case "hadoop.IMPALA.health":
         display = "Impala";
         break;
@@ -191,7 +194,7 @@ metricFilters.filter('metricNameForDisplay', function() {
         display = "HBase";
         break;
       case "hadoop.HIVE.health":
-        display = "Hive metastore";
+        display = "Hive Metastore";
         break;
       case "hadoop.YARN.health":
         display = "YARN";
