@@ -298,7 +298,9 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
       ConfigService.userInterfaceIndex["Kafka Manager"] = $scope.dm_endpoints.kafka_manager;
       ConfigService.userInterfaceIndex["YARN Resource Manager"] = "http://" + data.yarn_resource_manager_host + ":" +
         data.yarn_resource_manager_port;
-      ConfigService.userInterfaceIndex.Hue = "http://" + data.hue_host + ":" + data.hue_port;
+      if ('hue_host' in data) {
+        ConfigService.userInterfaceIndex.Hue = "http://" + data.hue_host + ":" + data.hue_port;
+      }
     });
 
     function findResolutionUrlForSource(source, showDefault) {
