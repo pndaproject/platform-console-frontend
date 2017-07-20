@@ -26,6 +26,7 @@
 *-------------------------------------------------------------------------------*/
 
 var hideInternalTopics = true;
+var timestampTimeoutMs = 3 * 60 * 1000;
 
 angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'HelpService', 'ConfigService',
   function($filter, $window, HelpService, ConfigService) {
@@ -54,6 +55,21 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
         { value:"OneMinuteRate", label:"1 minute rate" },
         { value:"MeanRate", label:"Mean rate" }
       ];
+
+      setInterval(function() {
+        var currentTimestamp = Date.now();
+        for (var topic in scope.topics) {
+            if (scope.topics.hasOwnProperty(topic)) {
+              var lastUpdateTime = scope.topics[topic].lastUpdateTime;
+              var isOldTopic = (currentTimestamp - lastUpdateTime > timestampTimeoutMs);
+              if (isOldTopic){
+                delete scope.topics[topic];
+              }
+            }
+        }
+      }, 5000);
+
+
       /*
       scope.showDetails = function() {
         if (enableModalView(scope.severity)) {
@@ -100,7 +116,6 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
 
       // the callback function expects an array of matching metrics
       var callbackFn = function(metricData) {
-
         if (metricData.length > 0) {
           // for kafka we're looking for:
           // .health,
@@ -126,7 +141,7 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
           // kafka.brokers.2.topics.avro.internal.testbot.MessagesInPerSec.OneMinuteRate
           // kafka.brokers.2.topics.avro.internal.testbot.MessagesInPerSec.RateUnit
           angular.forEach(metricData, function(metric) {
-            if (metric.name.endsWith(".health")) {
+            if (metric.name.endsWith(".health") && !metric.name.includes(".topics.")) {
               scope.metricName = $filter('metricNameForDisplay')(metric.name);
 
               scope.class = $filter('metricNameClass')(metric.name);
@@ -139,7 +154,6 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
             } else {
               var match;
               var brokerId, broker;
-              var timestampTimeoutMs = 3 * 60 * 1000;
               var currentTimestamp = Date.now();
               var isOldTopic = (currentTimestamp - metric.info.timestamp > timestampTimeoutMs);
               // look for topics
@@ -185,6 +199,16 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
                   var value = metric.info.value === undefined ? "" : interpreteValue(metric.info.value);
                   addTopic(broker.topics, topic, inOutMetric, subMetric, value, brokerId);
                   addTopic(scope.topics, topic, inOutMetric, subMetric, value, brokerId);
+                }
+              } else if ((match = metric.name.match(/^kafka\.brokers\.(\d+)\.topics\.(.*)\.health/i)) !== null) {
+                // parse the kafka brokers health metric
+                var topicExists = match[2];
+                if ((!hideInternalTopics || (ConfigService.topics.hidden).indexOf(topicExists) === -1) &&
+                    Date.now() - metric.info.timestamp <= timestampTimeoutMs) {
+                  if (scope.topics[topicExists] === undefined) {
+                    scope.topics[topicExists] = {};
+                  }
+                  scope.topics[topicExists].lastUpdateTime = metric.info.timestamp;
                 }
               } else if ((match = metric.name.match(/^kafka\.brokers\.(\d+)\.(.*)/i)) !== null) {
                 // parse the other kafka brokers metrics
