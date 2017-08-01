@@ -26,6 +26,77 @@
 
 var metricFilters = angular.module('appFilters', []);
 
+metricFilters.filter('toArray', function () {
+  return function (obj, addKey) {
+    if (!(obj instanceof Object)) {
+      return obj;
+    }
+
+    if ( addKey === false ) {
+      return Object.values(obj);
+    } else {
+      return Object.keys(obj).map(function (key) {
+        return Object.defineProperty(obj[key], '$key', { enumerable: false, value: key});
+      });
+    }
+  };
+});
+
+metricFilters.filter('naturalSort',function(){
+    function naturalSort (a, b) {
+      var aparts = a.split(/(\d+)/).filter(Boolean);
+      var bparts = b.split(/(\d+)/).filter(Boolean);
+      var i;
+      for (i = 0; i < aparts.length; i++) {
+        // no more parts in b, b < a
+        if (i >= bparts.length) {
+          return 1;
+        }
+
+        var apartstr = aparts[i];
+        var bpartstr = bparts[i];
+        var apartnum = parseInt(apartstr, 10);
+        var bpartnum = parseInt(bpartstr, 10);
+
+        // if both parts string, compare as strings
+        if (isNaN(apartnum) && isNaN(bpartnum)) {
+          if (apartstr < bpartstr) {
+            return -1;
+          }
+          else if (apartstr > bpartstr){
+            return 1;
+          }
+        }
+        // if string vs number, number < string
+        else if (isNaN(apartnum)) {
+          return 1;
+        }
+        else if (isNaN(bpartnum)) {
+          return -1;
+        }
+        // if both parts numbers compare as numbers
+        else {
+          if (apartnum < bpartnum) {
+            return -1;
+          }
+          else if (apartnum > bpartnum){
+            return 1;
+          }
+        }
+        // if same move to next part
+      }
+      // no more parts in a, a < b
+      return -1;
+    }
+    return function(arrInput) {
+        var arr = arrInput.sort(function(a, b) {
+            var sortResult = naturalSort(a.$key,b.$key);
+            return sortResult;
+        });
+        return arr;
+    };
+});
+
 metricFilters.filter('formatNumbers', ['ConfigService', '$filter', function(ConfigService, $filter) {
   function formatNumbersFilter(input, metricName, displaySpace, displayUnit) {
     if (input === undefined || metricName === undefined || ConfigService.metrics === undefined) {

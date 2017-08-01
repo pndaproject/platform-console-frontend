@@ -20,9 +20,9 @@
           Action <span class="caret"></span>
         </button>
       </div>
-      <div ng-repeat="(topic, data) in topics" class="row topic group" id="topic_{{topic | metricNameClass}}">
+      <div ng-repeat="data in topics | toArray | naturalSort" class="row topic group" id="topic_{{data.$key | metricNameClass}}">
         <div class="col-md-12">
-          {{topic}}
+          {{data.$key}}
         </div>
         <div class="col-md-6 rate in">
           <span class="glyphicon glyphicon-arrow-right"></span>
