@@ -45,7 +45,21 @@ angular.module('appServices').factory('DatasetService', ['$resource', 'ConfigSer
         }, function() {
           console.log('Failed to update dataset ' + id);
         });
-      }
+      },
+	  archiveDataset: function() {
+		var dataManager = ConfigService.backend["data-manager"];
+        var datasetsApi = "http://" + dataManager.host + ":" + dataManager.port + "/datasets/arch";
+		return $q.all([$http.get(datasetsApi)]).then(function(data) {
+          return data[0].data.data;
+        });
+		},
+	  retrieveFiles: function(data) {
+		var dataManager = ConfigService.backend["data-manager"];
+        var datasetsApi = "http://" + dataManager.host + ":" + dataManager.port + "/datasets/retrieve"; 
+		return $q.all([$http.put(datasetsApi,data)]).then(function(data) {
+          return data[0].data.data;
+        });
+	  }
     };
   }]
 );
