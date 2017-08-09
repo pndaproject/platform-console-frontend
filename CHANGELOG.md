@@ -6,11 +6,11 @@ All notable changes to this project will be documented in this file.
 - PNDA-2691: Refactor for offline installation
 ### Changed
 - PNDA-2827: Changed the display of the application metrics to lose the filter info.
-- PNDA-3086: Limit number of metrics shown on the metrics tab to 50, use the filter feature to show the others.
-
+- PNDA-3098: Sort kafka topics by name PNDA console.
 ### Fixed
-- PNDA-3086: Load metrics in a single http get to fix performance issue.
 - PNDA-2374: Pin down specific dependencies
+- PNDA-3016: When kafka topics have been deleted stop showing them in the PNDA console.
+- PNDA-3086: Limit number of metrics shown on the metrics tab to 50, use the filter feature to show the others.
 
 ## [0.1.4] 2017-01-02
 ### Changed
