@@ -26,6 +26,7 @@
 
           <!-- first column: Data Distribution -->
           <div class="col-md-4">
+            <pnda-basic-component on-get-metric-data="getMetricData('hadoop.CLUSTER_MANAGER',cbFn,healthStatusCbFn)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
             <div class="col-md-12 group" id="pubSubBus">
               <div class="title">Data Distribution</div>
               <div class="content">
@@ -93,6 +94,9 @@
                   <div class="title">Query</div>
                   <div class="content">
                     <pnda-basic-component on-get-metric-data="getMetricData('hadoop.IMPALA',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)" ></pnda-basic-component>
+                  </div>
+                  <div class="content">
+                    <pnda-basic-component on-get-metric-data="getMetricData('hadoop.HQUERY',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)" ></pnda-basic-component>
                   </div>
                 </div>
                 <div class="col-md-12 group" id="explore" ng-if="findComponentUrl('Jupyter') !== ''">
