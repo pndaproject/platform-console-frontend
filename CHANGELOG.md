@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+###Added:
+- PNDA-3100:Console home page topic view isn't very usable when there are a lot of topics
+- PNDA-3099:Long topic names overlap text box on topic view on console home page
+- PNDA-3098: Topic view on home page should be sorted
+
 ### Added:
 - PNDA-2445: Support for Hortonworks HDP
 

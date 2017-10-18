@@ -1,4 +1,4 @@
-<div class="{{class}}">
+<div class="{{class}}" style="border:1px solid black;">
   <!-- title and health status -->
   <div class="health {{healthClass}}" ng-click="showDetails()">
     {{metricName}}
@@ -14,16 +14,31 @@
       No active topics
     </div>
     <div ng-if="numberOfTopicsShown() > 0">
+    <div class="dropdown">
+      <input ng-model="finding"/>
+      <span class="glyphicon glyphicon glyphicon-search search-icon"></span>
+      <button class="btn btn-secondary dropdown-toggle page-number-button" type="button" id="pageNumberMenu" data-toggle="dropdown">
+		<span class="glyphicon glyphicon-align-justify enlarged-icon"></span>
+	  </button>
+	  <ul class="dropdown-menu border-enabled page-number-menu" aria-labelledby="pageNumberMenu">
+			<li><a href="" ng-click="getPageCount(5)">Show 5 per page</a></li>
+			<li><a href="" ng-click="getPageCount(10)">Show 10 per page</a></li>
+			<li><a href="" ng-click="getPageCount(15)">Show 15 per page</a></li>
+		  </ul>
+   	 </div>
       <div class="rateChoice">
         <label>Select rate:&nbsp;</label>
         <button type="button" class="btn btn-default btn-sm" ng-model="chosenRate" data-html="1" bs-options="rate.value as rate.label for rate in rates" bs-select>
           Action <span class="caret"></span>
         </button>
       </div>
-      <div ng-repeat="data in topics | toArray | naturalSort" class="row topic group" id="topic_{{data.$key | metricNameClass}}">
-        <div class="col-md-12">
+      <div id="topiclist" class="scroll-bar">
+      
+      <div dir-paginate="data in topics | toArray | naturalSort | filter:{'$key':finding} | itemsPerPage: pagecount" class="row topic group border-enabled margin-right-10" id="topic_{{data.$key | metricNameClass}}" pagination-id="topics">
+        <div class="col-md-12 word-wrap-enabled">
           {{data.$key}}
         </div>
+        
         <div class="col-md-6 rate in">
           <span class="glyphicon glyphicon-arrow-right"></span>
           {{data.BytesInPerSec[chosenRate] | sumValues | number:1}} Bytes/s
@@ -33,6 +48,11 @@
           <span class="glyphicon glyphicon-arrow-right"></span>
         </div>
       </div>
+      </div>
+      <dir-pagination-controls pagination-id="topics" max-size="3"
+        direction-links="true"
+        boundary-links="true" >
+        </dir-pagination-controls>
     </div>
   </div>
 </div>
