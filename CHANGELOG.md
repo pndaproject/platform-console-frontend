@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added:
+- PNDA-3039: Console application name text entry is too small
+
+### Added:
 - PNDA-2445: Support for Hortonworks HDP
 
 ## [0.2.0] 2017-06-29

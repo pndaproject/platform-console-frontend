@@ -1,4 +1,4 @@
-<div class="{{class}}">
+<div class="{{class}}" style="border:1px solid black;">
   <!-- title and health status -->
   <div class="health {{healthClass}}">
     <div class="componentName">Deployment Manager
@@ -13,11 +13,25 @@
 
   <div class="content">
 
-    <div ng-if="applications.length === 0">
+    <div ng-show="applications.length === 0">
       No application created
     </div>
-    <div ng-repeat="app in applications | orderBy:orderProp" ng-class="{'started': app.status === 'STARTED'}" class="row application" id="{{app.name | applicationNameId}}" my-post-repeat-directive>
-      <div class="col-md-9 app-name">
+    
+    <div class="dropdown" ng-show="applications.length > 0" >
+      	<input ng-model="searchApp"/>
+      	<span class="glyphicon glyphicon glyphicon-search search-icon"></span>
+      	<button class="btn btn-secondary dropdown-toggle page-number-button" type="button" id="pageNumberMenuApp" data-toggle="dropdown">
+		<span class="glyphicon glyphicon-align-justify enlarged-icon"></span>
+	  </button>
+	  <ul class="dropdown-menu border-enabled page-number-menu" aria-labelledby="pageNumberMenuApp">
+			<li><a href="" ng-click="getPageCountApp(5)">Show 5 per page</a></li>
+			<li><a href="" ng-click="getPageCountApp(10)">Show 10 per page</a></li>
+			<li><a href="" ng-click="getPageCountApp(15)">Show 15 per page</a></li>
+		  </ul>
+    </div>
+    <div id="applicationList" class="scroll-bar" ng-show="applications.length > 0">
+    <div dir-paginate="app in applications | orderBy:orderProp | filter:searchApp | itemsPerPage: pagecountApp" ng-class="{'started': app.status === 'STARTED'}" class="row application border-enabled margin-right-10" id="{{app.name | applicationNameId}}" my-post-repeat-directive>
+      <div class="col-md-9 app-name" ng-attr-title="{{app.name}}">
         {{app.name}}
       </div>
       <div class="col-md-3 status-icon">
@@ -45,6 +59,12 @@
         </div>
       </div>
     </div>
+    </div>
+      <dir-pagination-controls
+         max-size="3"
+        direction-links="true"
+        boundary-links="true" >
+	</dir-pagination-controls>
+    </div>
 
   </div>
-</div>
