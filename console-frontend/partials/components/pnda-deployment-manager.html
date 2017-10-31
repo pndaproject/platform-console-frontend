@@ -17,7 +17,7 @@
       No application created
     </div>
     <div ng-repeat="app in applications | orderBy:orderProp" ng-class="{'started': app.status === 'STARTED'}" class="row application" id="{{app.name | applicationNameId}}" my-post-repeat-directive>
-      <div class="col-md-9 app-name">
+      <div class="col-md-9 app-name word-wrap-enabled" ng-attr-title="{{app.name}}">
         {{app.name}}
       </div>
       <div class="col-md-3 status-icon">
