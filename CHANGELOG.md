@@ -5,7 +5,6 @@ All notable changes to this project will be documented in this file.
 ### Added:
 - PNDA-3099: Long topic names overlap text box on topic view on console home page
 
-## [Unreleased]
 ### Added:
 - PNDA-2445: Support for Hortonworks HDP
 
