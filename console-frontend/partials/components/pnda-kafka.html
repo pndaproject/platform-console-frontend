@@ -21,7 +21,7 @@
         </button>
       </div>
       <div ng-repeat="data in topics | toArray | naturalSort" class="row topic group" id="topic_{{data.$key | metricNameClass}}">
-        <div class="col-md-12">
+        <div class="col-md-12 word-wrap-enabled" ng-attr-title="{{data.$key}}">
           {{data.$key}}
         </div>
         <div class="col-md-6 rate in">
