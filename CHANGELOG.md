@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added:
+- PNDA-3100: Console home page topic view isn't very usable when there are a lot of topics
+### Added:
 - PNDA-2445: Support for Hortonworks HDP
 
 ## [0.2.0] 2017-06-29
