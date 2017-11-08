@@ -305,15 +305,19 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
 
     function findResolutionUrlForSource(source, showDefault) {
       var resolutionUrl = "/";
+      var opentsdbIndex = "OpenTSDB";
       if ($scope.dm_endpoints !== undefined) {
         if (source === "kafka") {
           resolutionUrl = $scope.dm_endpoints.kafka_manager;
         } else if (source === "deployment-manager") {
           resolutionUrl = ConfigService.userInterfaceIndex["PNDA logserver"];
-        } else if (source === "opentsdb" || source === "grafana") {
-          // for opentsdb and grafana, the string is a comma-separated list
-          resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
-        } else if ((source === "hdfs01" || source === "HDFS") && showDefault !== true) {
+        } else if (source === "opentsdb") {
+          resolutionUrl =ConfigService.userInterfaceIndex[opentsdbIndex].split(",")[0];
+        }else if(source === "grafana"){
+        //for grafana, the string is a comma-separated list
+        resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
+        } 
+        else if ((source === "hdfs01" || source === "HDFS") && showDefault !== true) {
           if (ConfigService.hadoop_distro === 'CDH') {
             resolutionUrl = ConfigService.userInterfaceIndex.Hue + "/filebrowser/";
           } else {
