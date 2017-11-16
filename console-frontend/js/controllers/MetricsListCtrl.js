@@ -312,7 +312,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
         } else if (source === "deployment-manager") {
           resolutionUrl = ConfigService.userInterfaceIndex["PNDA logserver"];
         } else if (source === "opentsdb") {
-          resolutionUrl =ConfigService.userInterfaceIndex[opentsdbIndex].split(",")[0];
+          resolutionUrl = ConfigService.userInterfaceIndex[opentsdbIndex].split(",")[0];
         }else if(source === "grafana"){
         //for grafana, the string is a comma-separated list
         resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
