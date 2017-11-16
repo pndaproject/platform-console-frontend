@@ -112,17 +112,10 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-12 group" id="metrics-UIs" ng-if="findComponentUrl('OpenTSDB') !== '' && findComponentUrl('Grafana') !== ''">
+                <div class="col-md-12 group" id="metrics-UIs" ng-if="findComponentUrl('Grafana') !== ''">
                   <div class="title">Metrics</div>
                   <div class="content">
-                    <div pnda-basic-component class="fake-component" ng-if="findComponentUrl('OpenTSDB') !== ''">
-                      <a target="_blank" href="{{findFirstComponentUrl('OpenTSDB')}}">
-                        <div class="ui-link">OpenTSDB</div>
-                        <div class="overlay">
-                          <span class="glyphicon glyphicon-new-window"></span>
-                        </div>
-                      </a>
-                    </div>
+                  <pnda-basic-component on-get-metric-data="getMetricData('opentsdb',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)" ></pnda-basic-component>
                     <div pnda-basic-component class="fake-component" ng-if="findComponentUrl('Grafana') !== ''">
                       <a target="_blank" href="{{findComponentUrl('Grafana')}}">
                         <div class="ui-link">Grafana</div>

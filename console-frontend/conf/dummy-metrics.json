@@ -11,6 +11,7 @@
     {"name": "hadoop.YARN.health", "hadoop_distro": "CDH,HDP"},
     {"name": "hadoop.ZOOKEEPER.health", "hadoop_distro": "CDH,HDP"},
     {"name": "kafka.health", "hadoop_distro": "CDH,HDP"},
-    {"name": "zookeeper.health", "hadoop_distro": "CDH,HDP"}
+    {"name": "zookeeper.health", "hadoop_distro": "CDH,HDP"},
+    {"name": "opentsdb.health", "hadoop_distro": "CDH,HDP"}
 ]
 }
