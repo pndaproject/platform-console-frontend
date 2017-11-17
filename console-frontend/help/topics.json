@@ -69,6 +69,11 @@
         "Impala is only available with the Cloudera distribution of Hadoop"],
       "link": "http://impala.io"
     },
+     "opentsdb.health": {
+      "body": ["OpenTSDB is a scalable time series database that lets you store and serve massive amounts of time series data, without losing granularity.",
+        "In PNDA, a custom application (reading data from Kafka or HDFS for example) could write time series and store them in OpenTSDB."],
+      "link": "http://opentsdb.net/"
+    },
     "hadoop.HQUERY.health": {
       "body": ["Apache Hive is a parallel execution engine for SQL queries. It supports low-latency access and interactive exploration of data in HDFS and HBase.",
         "Hive allows data to be stored in a raw form in HDFS and HBase, with aggregation performed at query time without requiring upfront aggregation of data."],

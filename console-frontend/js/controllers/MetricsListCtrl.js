@@ -305,6 +305,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
 
     function findResolutionUrlForSource(source, showDefault) {
       var resolutionUrl = "/";
+      var opentsdbIndex = "OpenTSDB";
       if ($scope.dm_endpoints !== undefined) {
         if (source === "kafka") {
           resolutionUrl = $scope.dm_endpoints.kafka_manager;
@@ -313,10 +314,10 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
           // setting the search/query string to "deployment manager"
           resolutionUrl += "/#/dashboard/Default?_g=()&_a=(filters:!()," +
           "query:(query_string:(analyze_wildcard:!t,query:%27deployment-manager%27)),title:Default)";
-        } else if (source === "opentsdb" || source === "grafana") {
-          // for opentsdb and grafana, the string is a comma-separated list
-          resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
-        } else if ((source === "hdfs01" || source === "HDFS") && showDefault !== true) {
+        //for grafana, the string is a comma-separated list
+        resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
+        } 
+        else if ((source === "hdfs01" || source === "HDFS") && showDefault !== true) {
           if (ConfigService.hadoop_distro === 'CDH') {
             resolutionUrl = ConfigService.userInterfaceIndex.Hue + "/filebrowser/";
           } else {

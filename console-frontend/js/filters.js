@@ -214,7 +214,6 @@ metricFilters.filter('getByName', function() {
         matches.push(input[i]);
       }
     }
-
     return matches;
   };
 });
@@ -264,6 +263,9 @@ metricFilters.filter('metricNameForDisplay', function() {
       case "hadoop.IMPALA.health":
         display = "Impala";
         break;
+      case "opentsdb.health":
+          display = "OpenTSDB";
+          break;
       case "hadoop.HBASE.health":
         display = "HBase";
         break;
