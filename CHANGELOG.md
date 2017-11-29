@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 - ISSUE-45: Added UI for opentsdb component with info, help, settings icons and color code for health status in console homepage.
 ### Added:
 - PNDA-2445: Support for Hortonworks HDP
+- PNDA-439: When creating an application the user to run the application as is now a required field in the form.
 
 ## [0.2.0] 2017-06-29
 ### Added:
