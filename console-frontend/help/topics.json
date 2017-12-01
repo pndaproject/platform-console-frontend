@@ -65,8 +65,19 @@
     },
     "hadoop.IMPALA.health": {
       "body": ["Apache Impala is a parallel execution engine for SQL queries. It supports low-latency access and interactive exploration of data in HDFS and HBase.",
-        "Impala allows data to be stored in a raw form in HDFS and HBase, with aggregation performed at query time without requiring upfront aggregation of data."],
+        "Impala allows data to be stored in a raw form in HDFS and HBase, with aggregation performed at query time without requiring upfront aggregation of data.",
+        "Impala is only available with the Cloudera distribution of Hadoop"],
       "link": "http://impala.io"
+    },
+     "opentsdb.health": {
+      "body": ["OpenTSDB is a scalable time series database that lets you store and serve massive amounts of time series data, without losing granularity.",
+        "In PNDA, a custom application (reading data from Kafka or HDFS for example) could write time series and store them in OpenTSDB."],
+      "link": "http://opentsdb.net/"
+    },
+    "hadoop.HQUERY.health": {
+      "body": ["Apache Hive is a parallel execution engine for SQL queries. It supports low-latency access and interactive exploration of data in HDFS and HBase.",
+        "Hive allows data to be stored in a raw form in HDFS and HBase, with aggregation performed at query time without requiring upfront aggregation of data."],
+      "link": "https://hive.apache.org/"
     },
     "hadoop.HBASE.health": {
       "body": ["HBase is a distributed, scalable key-value data store, designed for fast, random access to very large data sets, i.e. millions of columns and billions of rows.",
@@ -88,6 +99,10 @@
         "Packages are archives containing the program binaries and configuration files for a specific task.",
         "Applications instances are created from packages."],
       "link": "http://pnda.io/pnda-guide/repos/platform-deployment-manager/"
+    },
+    "hadoop.CLUSTER_MANAGER.health": {
+      "body": ["The cluster manager is provided as part of the Hadoop distribution. It monitors all the hosts and services that make up the cluster."],
+      "link": "http://pnda.io/pnda-guide/cluster-manager/"
     }
   }
 }

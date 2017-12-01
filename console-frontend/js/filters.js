@@ -214,7 +214,6 @@ metricFilters.filter('getByName', function() {
         matches.push(input[i]);
       }
     }
-
     return matches;
   };
 });
@@ -252,17 +251,26 @@ metricFilters.filter('metricNameForDisplay', function() {
   return function(metricName) {
     var display = metricName;
     switch (metricName) {
+      case "hadoop.CLUSTER_MANAGER.health":
+        display = "Cluster Manager";
+        break;
       case "hadoop.HUE.health":
         display = "Hue";
+        break;
+      case "hadoop.HQUERY.health":
+        display = "Hive Query";
         break;
       case "hadoop.IMPALA.health":
         display = "Impala";
         break;
+      case "opentsdb.health":
+          display = "OpenTSDB";
+          break;
       case "hadoop.HBASE.health":
         display = "HBase";
         break;
       case "hadoop.HIVE.health":
-        display = "Hive metastore";
+        display = "Hive Metastore";
         break;
       case "hadoop.YARN.health":
         display = "YARN";

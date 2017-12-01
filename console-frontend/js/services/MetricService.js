@@ -49,11 +49,13 @@ angular.module('appServices').factory('MetricService', ['$resource', 'ConfigServ
 
           // add dummy metrics to make sure all components appear
           angular.forEach(ConfigService.dummy_metrics, function(m) {
-            var foundMetric = $filter('getByName')(metrics, m);
+            var foundMetric = $filter('getByName')(metrics, m.name);
             if (foundMetric.length === 0) {
               var deferred = $q.defer();
               deferred.resolve(dummyValue);
-              metrics.push({ name: m, info: $q.all([deferred.promise]) });
+              if (m.hadoop_distro.includes(ConfigService.hadoop_distro)) {
+                metrics.push({ name: m.name, info: $q.all([deferred.promise]) });
+              }
             }
           });
           return metrics;
