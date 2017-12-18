@@ -45,7 +45,7 @@ angular.module('appServices').factory('MetricService', ['$resource', 'ConfigServ
             metrics.push(promisedMetric);
           });
 
-          var dummyValue = { source: "default", value: "UNAVAILABLE",timestamp: 1451606400000 };
+          var dummyValue = { source: "default", value: "UNAVAILABLE", timestamp: 1451606400000 };
 
           // add dummy metrics to make sure all components appear
           angular.forEach(ConfigService.dummy_metrics, function(m) {

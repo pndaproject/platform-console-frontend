@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added:
+- PNDA-3562: Add PAM authentication
 
 ## [0.2.1] 2017-11-24
 ### Fixed:
