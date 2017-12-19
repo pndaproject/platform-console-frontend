@@ -28,6 +28,12 @@ angular.module('login').controller('LoginCtrl', ['$scope', '$http', '$location',
   'ConfigService', function($scope, $http, $location, $rootScope, $cookies, $window, ConfigService) {
 
     $scope.login = function() {
+
+      var path;
+      if (ConfigService.login_mode === 'PAM') {
+        path = '/pam/validate';
+      }
+
       var dataMan = ConfigService.backend["data-manager"];
       var host = dataMan.host;
       var port = dataMan.port;
@@ -38,7 +44,7 @@ angular.module('login').controller('LoginCtrl', ['$scope', '$http', '$location',
       });
 
       $http({
-        url: 'http://' + host + ':' + port + '/login/validate',
+        url: 'http://' + host + ':' + port + path,
         method: 'POST',
         data: data,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -52,7 +58,7 @@ angular.module('login').controller('LoginCtrl', ['$scope', '$http', '$location',
               authdata: authdata
             }
           };
-
+          
           // $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
 
           // add to cookies

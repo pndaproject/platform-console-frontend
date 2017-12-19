@@ -49,7 +49,6 @@ var consoleFrontendApp = angular.module('consoleFrontendApp', [
       return options;
     }];
   })
-
   .config(['$routeProvider',
     function($routeProvider) {
       $routeProvider.
@@ -104,18 +103,19 @@ consoleFrontendApp.run(function($rootScope, $location, $cookies, $http, ConfigSe
       $("#navWelcomeText").text('Welcome, ' + $cookies.get('user') + '  ');
       $("#navWelcomeText").append('<span class="caret"></span>');
       $(".role").remove();
-      $(".dropdown-menu").prepend('<li class="role"><a href="#">' + $cookies.get('userRole') + '</a></li>');
+
+      //$(".dropdown-menu").prepend('<li class="role"><a href="#">' + $cookies.get('userRole') + '</a></li>');
     }
 
     // redirect to login page if not logged in and trying to access a restricted page
     var restrictedPage = $.inArray($location.path(), ['/login']) === -1;
 
-    // check if LDAP login is enabled
-    var ldapLoginDisabled = (ConfigService.disable_ldap_login !== undefined
-      && ConfigService.disable_ldap_login === true);
+    // check if login is enabled
+    var loginMode = (ConfigService.login_mode !== undefined
+      && ConfigService.login_mode === "");
 
-    // if ldap login is disabled or if the user is already authenticated, let them in
-    var loggedIn = userName || ldapLoginDisabled;
+    // if login is disabled or if the user is already authenticated, let them in
+    var loggedIn = userName || loginMode;
     if (!loggedIn) {
       $location.path('/login');
     }

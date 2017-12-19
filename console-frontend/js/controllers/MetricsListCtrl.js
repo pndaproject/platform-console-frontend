@@ -316,11 +316,10 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
           "query:(query_string:(analyze_wildcard:!t,query:%27deployment-manager%27)),title:Default)";
         } else if (source === "opentsdb") {
           resolutionUrl = ConfigService.userInterfaceIndex[opentsdbIndex].split(",")[0];
-        }else if(source === "grafana"){
+        } else if (source === "grafana") {
         //for grafana, the string is a comma-separated list
-        resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
-        } 
-        else if ((source === "hdfs01" || source === "HDFS") && showDefault !== true) {
+          resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
+        } else if ((source === "hdfs01" || source === "HDFS") && showDefault !== true) {
           if (ConfigService.hadoop_distro === 'CDH') {
             resolutionUrl = ConfigService.userInterfaceIndex.Hue + "/filebrowser/";
           } else {
@@ -334,8 +333,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
             '#/main/views/WORKFLOW_MANAGER/1.0.0/PNDA_WORKFLOW';
         } else if (source === "AMBARI" || source === "CM") {
           resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"];
-        }
-         else if ($scope.dm_endpoints.cm_status_links !== undefined) {
+        } else if ($scope.dm_endpoints.cm_status_links !== undefined) {
           resolutionUrl = $scope.dm_endpoints.cm_status_links[source];
         }
       }
