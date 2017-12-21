@@ -1,0 +1,19 @@
+<div class="modal" tabindex="-1" role="dialog">
+  <div id="applicationStatusError" class="modal-dialog">
+    <div class="modal-content">
+     <div class="modal-header border-none" ng-show="title">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4>{{name}} summary</h4>
+      </div>
+      <hr style="margin:0px 15px 15px 15px; border:1px;border-style:ridge;"/>
+        <div class="modal-body">
+            <div ng-show="error">
+             <p class="text-center">{{ error }}</p>
+             </div> 
+         </div>   
+        <div class="modal-footer border-none">
+        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+      </div>
+  </div>
+</div>
+</div>

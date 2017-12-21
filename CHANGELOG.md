@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added:
+- PNDA-2834: Added a new modal "More Info" on applications page which will tell the status of each component and sub-component of application.
+- PNDA-3039: Console application name text entry is too small
+- PNDA-3100: Console home page topic view isn't very usable when there are a lot of topics
 - PNDA-3562: Add PAM authentication
 
 ## [0.2.1] 2017-11-24
