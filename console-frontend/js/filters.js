@@ -389,3 +389,17 @@ metricFilters.filter('addJsonSpaces', function() {
     return output;
   };
 });
+
+//Replaces underscore with space
+metricFilters.filter('underscoreRemoved', function () {
+  return function (input) {
+      return input.replace(/_/g, ' ');
+  };
+});
+
+//Makes the first letter capital and rest of them are small
+metricFilters.filter('capitalize', function() {
+  return function(input) {
+   return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
+  };
+});
