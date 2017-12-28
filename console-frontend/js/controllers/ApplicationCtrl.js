@@ -155,6 +155,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       if (error.data.information) {
         msg += ' ' + error.data.information;
       }
+
       $scope.responseText = msg;
       $scope.alertClass = "alert-danger";
     };
