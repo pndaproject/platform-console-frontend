@@ -201,6 +201,7 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
                   if (scope.topics[topicExists] === undefined) {
                     scope.topics[topicExists] = {};
                   }
+
                   scope.topics[topicExists].lastUpdateTime = metric.info.timestamp;
                 }
               } else if ((match = metric.name.match(/^kafka\.brokers\.(\d+)\.(.*)/i)) !== null) {

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed:
 - PNDA-3601: disable emailtext in Jenkins file and replace it with notifier stage and job
+- PNDA-3596: review authentication since passportjs used in console backend
 
 ## [0.2.1] 2017-11-24
 ### Fixed:

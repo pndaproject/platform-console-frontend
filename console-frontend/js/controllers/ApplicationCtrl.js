@@ -26,9 +26,9 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filter', 'DeploymentManagerService',
-  '$timeout', 'socket', '$compile', '$window', 'ModalService', 'MetricService', 'UtilService',
-  function($scope, $filter, DeploymentManagerService,
+angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filter', '$cookies',
+  'DeploymentManagerService', '$timeout', 'socket', '$compile', '$window', 'ModalService',
+  'MetricService', 'UtilService', function($scope, $filter, $cookies, DeploymentManagerService,
     $timeout, socket, $compile, $window, ModalService, MetricService, UtilService) {
 
     var defaultTimeout = 500;
@@ -155,6 +155,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       if (error.data.information) {
         msg += ' ' + error.data.information;
       }
+
       $scope.responseText = msg;
       $scope.alertClass = "alert-danger";
     };
@@ -375,7 +376,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     $scope.submitApplication = function(package) {
       $scope.appNameisEmpty = false;
       var applicationName = $('#applicationName').val();
-      var userName = $('#userName').val();
+      var userName = $cookies.get('user');
       var appProperties = $scope.json;
       var finalAppJson = {};
       finalAppJson = appProperties;
@@ -383,13 +384,9 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       finalAppJson.user = userName;
       $scope.response = false;
       $scope.appNameError = false;
-      $scope.userNameError = false;
       if (applicationName === "") {
         $scope.appNameError = true;
         $scope.appNameErrorText = 'Sorry. Please specify an application name';
-      } else if (userName === "") {
-        $scope.userNameError = true;
-        $scope.userNameErrorText = 'Sorry. Please specify a user name';
       } else if (/^[a-zA-Z0-9-_]*$/.test(applicationName) === false) {
         $scope.appNameError = true;
         $scope.appNameErrorText = "Your app name string contains illegal characters. ";
@@ -408,7 +405,6 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
     $scope.dismissAppSubmitErrorAlert = function() {
       $scope.appNameError = false;
-      $scope.userNameError = false;
       $scope.submitAppResponse = false;
     };
 
