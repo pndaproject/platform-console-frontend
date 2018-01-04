@@ -32,18 +32,18 @@ metricFilters.filter('toArray', function () {
       return obj;
     }
 
-    if ( addKey === false ) {
+    if (addKey === false) {
       return Object.values(obj);
     } else {
       return Object.keys(obj).map(function (key) {
-        return Object.defineProperty(obj[key], '$key', { enumerable: false, value: key});
+        return Object.defineProperty(obj[key], '$key', { enumerable: false, value: key });
       });
     }
   };
 });
 
-metricFilters.filter('naturalSort',function(){
-    function naturalSort (a, b) {
+metricFilters.filter('naturalSort', function() {
+  function naturalSort(a, b) {
       var aparts = a.split(/(\d+)/).filter(Boolean);
       var bparts = b.split(/(\d+)/).filter(Boolean);
       var i;
@@ -62,39 +62,41 @@ metricFilters.filter('naturalSort',function(){
         if (isNaN(apartnum) && isNaN(bpartnum)) {
           if (apartstr < bpartstr) {
             return -1;
-          }
-          else if (apartstr > bpartstr){
+          } else if (apartstr > bpartstr) {
             return 1;
           }
         }
+
         // if string vs number, number < string
         else if (isNaN(apartnum)) {
           return 1;
-        }
-        else if (isNaN(bpartnum)) {
+        } else if (isNaN(bpartnum)) {
           return -1;
         }
+
         // if both parts numbers compare as numbers
         else {
           if (apartnum < bpartnum) {
             return -1;
-          }
-          else if (apartnum > bpartnum){
+          } else if (apartnum > bpartnum) {
             return 1;
           }
         }
+
         // if same move to next part
       }
+
       // no more parts in a, a < b
       return -1;
     }
-    return function(arrInput) {
-        var arr = arrInput.sort(function(a, b) {
-            var sortResult = naturalSort(a.$key,b.$key);
-            return sortResult;
-        });
-        return arr;
-    };
+
+  return function(arrInput) {
+    var arr = arrInput.sort(function(a, b) {
+      var sortResult = naturalSort(a.$key, b.$key);
+      return sortResult;
+    });
+    return arr;
+  };
 });
 
 metricFilters.filter('formatNumbers', ['ConfigService', '$filter', function(ConfigService, $filter) {
@@ -219,17 +221,16 @@ metricFilters.filter('getByName', function() {
   };
 });
 
-
-// return a list of all element matching the regex name in an array of metrics 
+// return a list of all element matching the regex name in an array of metrics
 // and also add a more appropriate display name (i.e. stripped from the internal
 // filtering info).
 metricFilters.filter('getByNameForDisplay', function(getByNameFilter) {
   return function(input, name) {
     var array = getByNameFilter(input, name);
-    console.log("in: "+array.length);
+    console.log("in: " + array.length);
     var regexp = new RegExp(name);
-    array.forEach(function(item, index, array) {array[index].displayName = array[index].name.replace(regexp,'');});
-    console.log("out: "+array.length);
+    array.forEach(function(item, index, array) {array[index].displayName = array[index].name.replace(regexp, '');});
+    console.log("out: " + array.length);
     return array;
   };
 });
@@ -265,6 +266,9 @@ metricFilters.filter('metricNameForDisplay', function() {
         break;
       case "hadoop.IMPALA.health":
         display = "Impala";
+        break;
+      case "opentsdb.health":
+        display = "OpenTSDB";
         break;
       case "hadoop.HBASE.health":
         display = "HBase";

@@ -305,13 +305,20 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
 
     function findResolutionUrlForSource(source, showDefault) {
       var resolutionUrl = "/";
+      var opentsdbIndex = "OpenTSDB";
       if ($scope.dm_endpoints !== undefined) {
         if (source === "kafka") {
           resolutionUrl = $scope.dm_endpoints.kafka_manager;
         } else if (source === "deployment-manager") {
           resolutionUrl = ConfigService.userInterfaceIndex["PNDA logserver"];
-        } else if (source === "opentsdb" || source === "grafana") {
-          // for opentsdb and grafana, the string is a comma-separated list
+
+          // setting the search/query string to "deployment manager"
+          resolutionUrl += "/#/dashboard/Default?_g=()&_a=(filters:!()," +
+          "query:(query_string:(analyze_wildcard:!t,query:%27deployment-manager%27)),title:Default)";
+        } else if (source === "opentsdb") {
+          resolutionUrl = ConfigService.userInterfaceIndex[opentsdbIndex].split(",")[0];
+        } else if (source === "grafana") {
+        //for grafana, the string is a comma-separated list
           resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
         } else if ((source === "hdfs01" || source === "HDFS") && showDefault !== true) {
           if (ConfigService.hadoop_distro === 'CDH') {
@@ -327,8 +334,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
             '#/main/views/WORKFLOW_MANAGER/1.0.0/PNDA_WORKFLOW';
         } else if (source === "AMBARI" || source === "CM") {
           resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"];
-        }
-         else if ($scope.dm_endpoints.cm_status_links !== undefined) {
+        } else if ($scope.dm_endpoints.cm_status_links !== undefined) {
           resolutionUrl = $scope.dm_endpoints.cm_status_links[source];
         }
       }

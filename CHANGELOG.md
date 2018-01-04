@@ -4,8 +4,19 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added:
 - PNDA-3039: Console application name text entry is too small
+- PNDA-3562: Add PAM authentication
+
+### Changed:
+- PNDA-3601: disable emailtext in Jenkins file and replace it with notifier stage and job
+- PNDA-3596: review authentication since passportjs used in console backend
+
+## [0.2.1] 2017-11-24
+### Fixed:
+- ISSUE-45: Added UI for opentsdb component with info, help, settings icons and color code for health status in console homepage.
+>>>>>>> upstream/develop
 ### Added:
 - PNDA-2445: Support for Hortonworks HDP
+- PNDA-439: When creating an application the user to run the application as is now a required field in the form.
 
 ## [0.2.0] 2017-06-29
 ### Added:

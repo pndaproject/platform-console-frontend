@@ -26,9 +26,9 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filter', 'DeploymentManagerService',
-  '$timeout', 'socket', '$compile', '$window', 'ModalService', 'MetricService', 'UtilService',
-  function($scope, $filter, DeploymentManagerService,
+angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filter', '$cookies',
+  'DeploymentManagerService', '$timeout', 'socket', '$compile', '$window', 'ModalService',
+  'MetricService', 'UtilService', function($scope, $filter, $cookies, DeploymentManagerService,
     $timeout, socket, $compile, $window, ModalService, MetricService, UtilService) {
 
     var defaultTimeout = 500;
@@ -116,7 +116,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
       $scope.response = true;
       $scope.responseText = getStatusText(status);
-      
+
       // NOTCREATED status when app gets deleted and DM doesn't know about it.
       if ((status === "NOTCREATED" && information === null) || status === "DESTROYING") {
         $scope.alertClass = "alert-success";
@@ -155,6 +155,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       if (error.data.information) {
         msg += ' ' + error.data.information;
       }
+
       $scope.responseText = msg;
       $scope.alertClass = "alert-danger";
     };
@@ -375,10 +376,12 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     $scope.submitApplication = function(package) {
       $scope.appNameisEmpty = false;
       var applicationName = $('#applicationName').val();
+      var userName = $cookies.get('user');
       var appProperties = $scope.json;
       var finalAppJson = {};
       finalAppJson = appProperties;
       finalAppJson.package = package;
+      finalAppJson.user = userName;
       $scope.response = false;
       $scope.appNameError = false;
       if (applicationName === "") {
@@ -428,7 +431,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     }
 
     socket.on('platform-console-frontend-application-update', socketApplicationsUpdate);
-    
+
     $scope.appMetrics = [];
 
     $scope.allMetrics = MetricService.query(function(response) {
@@ -442,7 +445,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         });
       });
     });
-    
+
     // update metrics when socket.io updates are received.
     function socketMetricsUpdate(obj) {
       var causes = (obj.causes === undefined || obj.causes === "" ? [] : obj.causes
@@ -477,13 +480,13 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
         // console.log("Found new app metric: " + found.name);
         $scope.allMetrics.push(found);
-        
+
         // if there's a new metric, re-filter the list
         if ($scope.fullApplicationDetail !== undefined && $scope.fullApplicationDetail.name !== undefined) {
           $scope.appMetrics = $filter('getByNameForDisplay')($scope.allMetrics, $scope.metricFilter);
         }
       }
     }
- 
+
     socket.on('platform-console-frontend-metric-update', socketMetricsUpdate);
   }]);
