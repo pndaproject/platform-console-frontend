@@ -67,21 +67,16 @@ angular.module('appComponents').directive('pndaKafka',
       setInterval(function() {
         var currentTimestamp = Date.now();
         for (var topic in scope.topics) {
-            if (scope.topics.hasOwnProperty(topic)) {
-              var lastUpdateTime = scope.topics[topic].lastUpdateTime;
-              var isOldTopic = (currentTimestamp - lastUpdateTime > timestampTimeoutMs);
-              if (isOldTopic){
-                delete scope.topics[topic];
-              }
+          if (scope.topics.hasOwnProperty(topic)) {
+            var lastUpdateTime = scope.topics[topic].lastUpdateTime;
+            var isOldTopic = (currentTimestamp - lastUpdateTime > timestampTimeoutMs);
+            if (isOldTopic) {
+              delete scope.topics[topic];
             }
+          }
         }
       }, 5000);
 
-
-      /*
-		 * scope.showDetails = function() { if (enableModalView(scope.severity)) {
-		 * scope.showOverview({metricObj: scope.metricObj}); } };
-		 */
       scope.showComponentInfo = function() {
         scope.showInfo({ brokers: scope.brokers, metricObj: scope.metricObj });
       };
@@ -161,6 +156,7 @@ angular.module('appComponents').directive('pndaKafka',
               var brokerId, broker;
               var currentTimestamp = Date.now();
               var isOldTopic = (currentTimestamp - metric.info.timestamp > timestampTimeoutMs);
+
               // look for topics
               // jscs:disable maximumLineLength
               if (!isOldTopic && (match = metric.name.match(/^kafka\.brokers\.(\d+)\.topics\.(.*)\.((?:BytesInPerSec|BytesOutPerSec|MessagesInPerSec))\.(.*)/i)) !== null) {
@@ -214,6 +210,7 @@ angular.module('appComponents').directive('pndaKafka',
                   if (scope.topics[topicExists] === undefined) {
                     scope.topics[topicExists] = {};
                   }
+
                   scope.topics[topicExists].lastUpdateTime = metric.info.timestamp;
                 }
               } else if ((match = metric.name.match(/^kafka\.brokers\.(\d+)\.(.*)/i)) !== null) {
