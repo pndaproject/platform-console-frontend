@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added:
+- PNDA-2834: Added pop-up for displaying status of each sub-component of each application on applications page.
+
+### Added:
 - PNDA-3562: Add PAM authentication
 
 ### Changed:

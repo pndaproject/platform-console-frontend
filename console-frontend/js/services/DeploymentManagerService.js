@@ -31,6 +31,7 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
     var packagesTimestamp, deployedPackagesTimestamp;
     var dataManager = ConfigService.backend["data-manager"];
     var packagesAPI = "http://" + dataManager.host + ":" + dataManager.port + "/packages";
+    var applicationSummaryAPI = "http://" + dataManager.host + ":" + dataManager.port + "/applications";
 
     return {
       getPackages: function(force) {
@@ -165,6 +166,15 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
             return packages;
           });
       },
+      getApplicationSummary: function(appName) {
+          return $q.all([
+              $http.get(applicationSummaryAPI + "/" + appName + "/summary")
+            ])
+            .then(function(results) {
+              var summary = results[0].data;
+              return summary;
+            });
+       },
       createApplication: function(name, body) {
         var dataManager = ConfigService.backend["data-manager"];
         var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port + "/applications/" + name;

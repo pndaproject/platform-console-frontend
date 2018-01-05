@@ -266,8 +266,10 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
           });
           if (action === 'start') {
             found.status = 'STARTING';
+			$scope.getApplicationSummary(name);
           } else if (action === 'stop') {
             found.status = 'STOPPING';
+			$scope.getApplicationSummary(name);
           }
 
           // $scope.animateApplication(name, false);
@@ -316,11 +318,18 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
           $scope.appDetailJson = data;
           $scope.viewAppProps = true;
         });
+		$scope.getApplicationSummary(app.name);
         $scope.showApplicationDetail = true;
         $scope.newApp = false;
         $scope.metricFilter = 'application\\.kpi\\.' + app.name + '\\.';
         $scope.appMetrics = $filter('getByNameForDisplay')($scope.allMetrics, $scope.metricFilter);
       }
+    };
+	
+	$scope.getApplicationSummary = function(appName){
+       DeploymentManagerService.getApplicationSummary(appName).then(function(data) {
+         $scope.appSummaryJson = data;
+       });
     };
 
     $scope.createNewApp = function() {
@@ -334,6 +343,93 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       $scope.reloadAppProperties = false;
       $scope.confirmProperties = false;
     };
+	
+    $scope.showInfoModal = function(){
+    var fields = {};
+    var appName;
+    if($scope.appSummaryJson === undefined){
+       fields = {
+       error: "ERROR: Request is not successful."
+       };
+       ModalService.createModalView('partials/modals/application-status-error.html', fields);
+    
+    }else if($scope.appSummaryJson !== undefined 
+            && $scope.appSummaryJson[Object.keys($scope.appSummaryJson)[0]].status !== undefined){
+        appName = Object.keys($scope.appSummaryJson)[0];
+        fields = {
+            error: "No Data found. Please refresh the page and try again later.",
+            title: 'application',
+            name: appName
+        };
+        ModalService.createModalView('partials/modals/application-status-error.html', fields);
+
+    }else{
+     appName = Object.keys($scope.appSummaryJson)[0];
+     var oozieComponents = [];
+     var sparkComponents = [];
+     fields = {
+         title: 'warning',
+         name: appName,
+         showTable: false,
+     };
+    fields.showSubComponent = function(){
+         $('#showOozie').addClass("hidden");
+         if($('#hideOozie').hasClass("hidden"))
+            $('#hideOozie').removeClass("hidden");
+    };
+    fields.hideSubComponent = function(){
+         $('#hideOozie').addClass("hidden");
+         if($('#showOozie').hasClass("hidden"))
+           $('#showOozie').removeClass("hidden");
+    };
+    fields.showWorkflow = function(index){
+         $('#showWorkflow-'+index).addClass("hidden");
+         if($('#hideWorkflow-'+index).hasClass("hidden"))
+            $('#hideWorkflow-'+index).removeClass("hidden");
+    };
+    fields.hideWorkflow = function(index){
+         $('#hideWorkflow-'+index).addClass("hidden");
+         if($('#showWorkflow-'+index).hasClass("hidden"))
+            $('#showWorkflow-'+index).removeClass("hidden");
+     };
+     fields.showSummary = function(id){
+        if($('#stageJobSummary-'+id).hasClass("hidden"))
+           $('#stageJobSummary-'+id).removeClass("hidden");
+    };
+    fields.hideSummary = function(id){
+        if(!$('#stageJobSummary-'+id).hasClass("hidden"))
+            $('#stageJobSummary-'+id).addClass("hidden");
+    };
+   
+    for (var keys in $scope.appSummaryJson[appName]){
+        if(keys.startsWith("oozie")){
+          if($scope.appSummaryJson[appName].hasOwnProperty(keys)){
+                var oozieObject = {};
+                for(var property in $scope.appSummaryJson[appName][keys]){
+                oozieObject[property] = $scope.appSummaryJson[appName][keys][property];
+                }
+                oozieComponents.push(oozieObject);
+           }
+        }
+        if(keys.startsWith("spark")){
+            if($scope.appSummaryJson[appName].hasOwnProperty(keys)){
+                var sparkObject = {};
+                for(var prop in $scope.appSummaryJson[appName][keys]){
+                    sparkObject[prop] = $scope.appSummaryJson[appName][keys][prop];
+                }
+                sparkComponents.push(sparkObject);
+            }
+        }
+     }
+     if(sparkComponents.length > 0){
+         fields.sparkComponents = sparkComponents;
+     }
+    if(oozieComponents.length > 0){
+         fields.oozieComponents = oozieComponents;
+    }
+    ModalService.createModalView('partials/modals/application-status.html', fields);
+    }
+   };
 
     $scope.appInfo = null;
     $scope.json = {};
