@@ -25,7 +25,7 @@
 *-------------------------------------------------------------------------------*/
 
 angular.module('appServices').factory('MetricService', ['$resource', 'ConfigService', '$http', '$q', '$filter',
-  function($resource, ConfigService, $http, $q, $filter) {
+  '$cookies', '$window', function($resource, ConfigService, $http, $q, $filter, $cookies, $window) {
     var dataManager = ConfigService.backend["data-manager"];
     var host = dataManager.host;
     var port = dataManager.port;
@@ -61,6 +61,14 @@ angular.module('appServices').factory('MetricService', ['$resource', 'ConfigServ
           return metrics;
         } else {
           console.log("not an array", json);
+          if (json === "not authenticated") {
+            $cookies.remove('globals');
+            $cookies.remove('userLoggedIn');
+            $cookies.remove('user');
+            $cookies.remove('userRole');
+            $window.location.reload();
+          }
+
           return [json];
         }
 
