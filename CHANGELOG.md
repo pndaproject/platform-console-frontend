@@ -4,11 +4,17 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added:
 - PNDA-3039: Console application name text entry is too small
+- PNDA-2834: Added pop-up for displaying status of each sub-component of each application on applications page.
+
+### Added:
 - PNDA-3562: Add PAM authentication
 
 ### Changed:
 - PNDA-3601: disable emailtext in Jenkins file and replace it with notifier stage and job
 - PNDA-3596: review authentication since passportjs used in console backend
+
+### Fixed
+- PNDA-3609: back to login if authentication failed / browser restart
 
 ## [0.2.1] 2017-11-24
 ### Fixed:

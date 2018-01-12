@@ -35,8 +35,8 @@
 
 /**
  */
-angular.module('appServices').service('ModalService', ['$modal',
-  function ($modal) {
+angular.module('appServices').service('ModalService', ['$modal','$filter',
+  function ($modal, $filter) {
     this.showModal = function (customModalOptions) {
       return this.show(customModalOptions);
     };
@@ -76,7 +76,7 @@ angular.module('appServices').service('ModalService', ['$modal',
         });
       }
 
-      MyModalController.$inject = ['$scope'];
+      MyModalController.$inject = ['$scope','$filter'];
 
       // use a partial view template to create the modal view,
       // and it will then use the data we bound to it above.
