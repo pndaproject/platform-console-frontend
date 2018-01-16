@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - PNDA-3609: back to login if authentication failed / browser restart
+- PNDA-3622: stop the build if a command failed
 
 ## [0.2.1] 2017-11-24
 ### Fixed:
