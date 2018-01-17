@@ -238,6 +238,7 @@ metricFilters.filter('getByNameForDisplay', function(getByNameFilter) {
 // transform a metric name into a class that can be referenced in a CSS file
 metricFilters.filter('metricNameClass', function() {
   return function(metricName) {
+	if(metricName !== undefined)
     return metricName.toString().replace(/\./g, '-');
   };
 });
@@ -245,6 +246,7 @@ metricFilters.filter('metricNameClass', function() {
 // transform an application name into an ID that can be referenced in a CSS file
 metricFilters.filter('applicationNameId', function() {
   return function(appName) {
+	if(appName !== undefined)
     return "app_" + appName.toString().replace(/\./g, '-');
   };
 });

@@ -13,10 +13,24 @@
 
   <div class="content">
 
-    <div ng-if="applications.length === 0">
+    <div ng-show="applications.length === 0">
       No application created
     </div>
-    <div ng-repeat="app in applications | orderBy:orderProp" ng-class="{'started': app.status === 'STARTED'}" class="row application" id="{{app.name | applicationNameId}}" my-post-repeat-directive>
+    
+    <div class="dropdown" ng-show="applications.length > 0" >
+    <div class="margin-bottom-only">
+      	<input ng-model="searchApp" class="wide100 border-enabled"/>
+      	<span class="glyphicon glyphicon glyphicon-search search-icon"></span>
+     </div>
+     <div class="margin-bottom-only">
+	 <label>Show Apps:</label>
+	<button type="button" class="btn btn-default btn-sm" ng-model="pagecountApp" data-html="1" bs-options="page.value as page.label for page in pages" bs-select>
+          Action <span class="caret"></span>
+        </button>
+     </div>
+    </div>
+    <div id="applicationList" class="scroll-bar" ng-show="applications.length > 0">
+    <div dir-paginate="app in applications | orderBy:orderProp | filter:searchApp | itemsPerPage: pagecountApp" ng-class="{'started': app.status === 'STARTED'}" class="row application margin-right-10" id="{{app.name | applicationNameId}}" my-post-repeat-directive>
       <div class="col-md-9 app-name">
         {{app.name}}
       </div>
@@ -45,6 +59,12 @@
         </div>
       </div>
     </div>
+    </div>
+      <dir-pagination-controls
+         max-size="3"
+        direction-links="true"
+        boundary-links="true" >
+	</dir-pagination-controls>
+    </div>
 
   </div>
-</div>
