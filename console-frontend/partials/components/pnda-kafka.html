@@ -14,16 +14,31 @@
       No active topics
     </div>
     <div ng-if="numberOfTopicsShown() > 0">
+    <div class="position-relative">
+    <div class="margin-bottom-only">
+     <input ng-model="finding" class="wide100 border-enabled"/>
+     <span class="glyphicon glyphicon glyphicon-search search-icon"></span>
+     </div>
+	<div class="margin-bottom-only">
+	 <label>Show Topic:</label>
+	<button type="button" class="btn btn-default btn-sm" ng-model="selectedPageCount" data-html="1" bs-options="page.value as page.label for page in pagesmenu" bs-select>
+          Action <span class="caret"></span>
+        </button>
+     </div>
+   	 </div>
       <div class="rateChoice">
         <label>Select rate:&nbsp;</label>
         <button type="button" class="btn btn-default btn-sm" ng-model="chosenRate" data-html="1" bs-options="rate.value as rate.label for rate in rates" bs-select>
           Action <span class="caret"></span>
         </button>
       </div>
-      <div ng-repeat="data in topics | toArray | naturalSort" class="row topic group" id="topic_{{data.$key | metricNameClass}}">
+      <div id="topiclist" class="scroll-bar">
+      
+      <div dir-paginate="data in topics | toArray | naturalSort | filter:{'$key':finding} | itemsPerPage: selectedPageCount" class="row topic group margin-right-10" id="topic_{{data.$key | metricNameClass}}" pagination-id="topics">
         <div class="col-md-12">
           {{data.$key}}
         </div>
+        
         <div class="col-md-6 rate in">
           <span class="glyphicon glyphicon-arrow-right"></span>
           {{data.BytesInPerSec[chosenRate] | sumValues | number:1}} Bytes/s
@@ -33,6 +48,12 @@
           <span class="glyphicon glyphicon-arrow-right"></span>
         </div>
       </div>
+      </div>
+      <dir-pagination-controls pagination-id="topics" max-size="3"
+        direction-links="true"
+        boundary-links="true" >
+        </dir-pagination-controls>
     </div>
   </div>
 </div>
+      
