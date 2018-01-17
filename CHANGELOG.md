@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added:
+- PNDA-3039: Console application name text entry is too small
 - PNDA-2834: Added pop-up for displaying status of each sub-component of each application on applications page.
 
 ### Added:

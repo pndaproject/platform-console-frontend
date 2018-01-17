@@ -44,6 +44,12 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
         scope.fullMetrics = {};
         scope.orderProp = "name";
         scope.severity = '';
+        scope.pagecountApp = "5";
+        scope.pages = [
+            { value:"5", label:"5 Per Page" },
+            { value:"10", label:"10 Per Page" },
+            { value:"15", label:"15 Per Page" }
+          ];
         scope.showDetails = function() {
           if (scope.severity) {
             scope.showOverview({ metricObj: scope.metricObj, metrics: scope.fullMetrics });
@@ -57,7 +63,7 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
         scope.clickCog = function() {
           scope.showConfig({ metricObj: scope.metricObj });
         };
-
+        
         scope.applications = [];
         scope.getAppsList = function() {
           DeploymentManagerService.getApplications().then(function(data) {
