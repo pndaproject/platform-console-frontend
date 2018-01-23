@@ -32,6 +32,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     $timeout, socket, $compile, $window, ModalService, MetricService, UtilService) {
 
     var defaultTimeout = 500;
+    var yarnUrl;
 
     function displayConfirmation(message, actionIfConfirmed) {
       var modalOptions = {
@@ -229,6 +230,12 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
           $scope.getApplicationDetails($scope.applications[0]);
         }
       });
+      
+      DeploymentManagerService.getEndpoints().then(function(data) {
+          var yarnHost = data.yarn_resource_manager_host;
+          var yarnPort = data.yarn_resource_manager_port;
+          yarnUrl = "http://" + yarnHost + ":" + yarnPort + "/cluster/app";
+        });
     };
 
     /* get package list */
@@ -370,7 +377,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
      fields = {
          title: 'warning',
          name: appName,
-         showTable: false,
+         yarnUrl: yarnUrl
      };
     fields.showSubComponent = function(){
          $('#showOozie').addClass("hidden");
