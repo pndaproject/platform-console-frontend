@@ -89,10 +89,11 @@
                         </tr>
                         <tr>
                           <th>Status</th>
-                          <td>{{ fullApplicationDetail.status | changeAppStatusForDisplay }}</td>
+                          <td>{{ fullApplicationDetail.status | changeAppStatusForDisplay }}
+                           <span> <button type="button" class="btn btn-link" ng-click="showInfoModal()">More info</button></span>
+                          </td>
                         </tr>
                       </table>
-					  <button type="button" class="btn btn-link" ng-click="showInfoModal()" style="margin-left: -10px;">More info</button>
                     </div>
                     <div id="tab-deployment-properties" class="tab-pane fade" ng-if="viewAppProps">
                       <pnda-tree-view json="{{ appDetailJson }}" editable="false" on-confirm-overrides="getOverrides(overrides)"></pnda-tree-view>
