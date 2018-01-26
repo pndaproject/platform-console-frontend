@@ -19,7 +19,7 @@
             <div class="row pad-top-10">
             <div class="col-md-4 margin-left-5">{{ sparkComponent.name }}</div>
             <div class="col-md-2 width-16">-</div>
-            <div class="col-md-2 word-break">{{ sparkComponent.yarnId }}</div>
+            <div class="col-md-2 word-break"><a href="{{yarnUrl +'/' + sparkComponent.yarnId}}" target="_blank">{{ sparkComponent.yarnId }}</a></div>
             <div class="col-md-4">{{ sparkComponent.aggregate_status | underscoreRemoved | capitalize }} </div>
             </div>
         </div>
@@ -67,7 +67,8 @@
                                     <div class="col-md-2 margin-left-neg-58" ng-if="subworkflow.applicationType">{{subworkflow.applicationType}}</div>
                                     <div class="col-md-2 margin-left-5">
                                     <span class="word-break" ng-if="subworkflow.oozieId">{{ subworkflow.oozieId }}</span>
-                                    <span class="word-break" ng-if="subworkflow.yarnId">{{ subworkflow.yarnId }}</span>
+                                    <span class="word-break" ng-if="subworkflow.yarnId">
+                                    <a href="{{yarnUrl +'/' + subworkflow.yarnId}}" target="_blank">{{ subworkflow.yarnId }}</a></span>
                                     </div>
                                     <div class="col-md-4 margin-left-18">
                                     {{ subworkflow.status | underscoreRemoved | capitalize }}
@@ -119,7 +120,7 @@
                                             <div class="col-md-4">{{ job.name }}</div>
                                             <div class="col-md-2 margin-left-neg-90">{{ job.applicationType }}</div>
                                             <div class="col-md-2 margin-left-10">
-                                            <span class="word-break">{{job.yarnId}}</span>
+                                            <span class="word-break"><a href="{{yarnUrl +'/' + job.yarnId}}" target="_blank">{{job.yarnId}}</a></span>
                                             </div>
                                             <div class="col-md-3 margin-left-26">{{ job.status | underscoreRemoved | capitalize }}
                                             <span ng-if ="job.information && job.information.stageSummary" class="glyphicon glyphicon-info-sign pad-left-10" ng-mouseover="showSummary(job.yarnId)"
