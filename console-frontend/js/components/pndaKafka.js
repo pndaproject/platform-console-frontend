@@ -28,7 +28,8 @@
 var hideInternalTopics = true;
 var timestampTimeoutMs = 3 * 60 * 1000;
 
-angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'HelpService', 'ConfigService',
+angular.module('appComponents').directive('pndaKafka',
+['$filter', '$window', 'HelpService', 'ConfigService',
   function($filter, $window, HelpService, ConfigService) {
   return {
     restrict: 'E',
@@ -39,7 +40,8 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
     },
     templateUrl: 'partials/components/pnda-kafka.html',
     link: function(scope) {
-      // initialise the scope, which will be updated when the callback function gets called by the controller
+      // initialise the scope, which will be updated when the callback
+		// function gets called by the controller
       scope.metricName = '';
       scope.class = 'hidden';
       scope.healthClass = '';
@@ -49,12 +51,18 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
       scope.metricObj = {};
       scope.severity = '';
       scope.chosenRate = 'MeanRate';
+      scope.selectedPageCount = "5";
       scope.rates = [
         { value:"FifteenMinuteRate", label:"15 minutes rate" },
         { value:"FiveMinuteRate", label:"5 minutes rate" },
         { value:"OneMinuteRate", label:"1 minute rate" },
         { value:"MeanRate", label:"Mean rate" }
       ];
+      scope.pagesmenu = [
+          { value:"5", label:"5 Per Page" },
+          { value:"10", label:"10 Per Page" },
+          { value:"15", label:"15 Per Page" }
+        ];
 
       setInterval(function() {
         var currentTimestamp = Date.now();
@@ -93,7 +101,7 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
       function interpreteValue(value) {
         return (isNaN(value) ? value.replace(/\"/g, '') : Number(value));
       }
-
+      
       scope.numberOfTopicsShown = function() {
         var nb = 0;
         angular.forEach(scope.topics, function(topic) {
@@ -153,13 +161,14 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
               // jscs:disable maximumLineLength
               if (!isOldTopic && (match = metric.name.match(/^kafka\.brokers\.(\d+)\.topics\.(.*)\.((?:BytesInPerSec|BytesOutPerSec|MessagesInPerSec))\.(.*)/i)) !== null) {
                 // example: [
-                //   "kafka.brokers.1.topics.avro.internal.testbot.BytesOutPerSec.Count",
-                //   "1", // broker id
-                //   "avro.internal.testbot", // topic
-                //   "BytesOutPerSec", // in or out metric
-                //   "Count", // sub-metric
-                //   index: 0,
-                //   input: "kafka.brokers.1.topics.avro.internal.testbot.BytesOutPerSec.Count"
+                // "kafka.brokers.1.topics.avro.internal.testbot.BytesOutPerSec.Count",
+                // "1", // broker id
+                // "avro.internal.testbot", // topic
+                // "BytesOutPerSec", // in or out metric
+                // "Count", // sub-metric
+                // index: 0,
+                // input:
+				// "kafka.brokers.1.topics.avro.internal.testbot.BytesOutPerSec.Count"
                 // ]
                 brokerId = match[1];
                 var topic = match[2];
@@ -187,7 +196,7 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
                 };
 
                 if (hideInternalTopics && (ConfigService.topics.hidden).indexOf(topic) !== -1) {
-//                  console.log("hiding topic", topic);
+// console.log("hiding topic", topic);
                 } else {
                   var value = metric.info.value === undefined ? "" : interpreteValue(metric.info.value);
                   addTopic(broker.topics, topic, inOutMetric, subMetric, value, brokerId);
