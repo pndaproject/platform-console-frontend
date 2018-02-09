@@ -13,10 +13,17 @@
 
   <div class="content">
 
-    <div ng-if="applications.length === 0">
+    <div ng-show="applications.length === 0">
       No application created
     </div>
-    <div ng-repeat="app in applications | orderBy:orderProp" ng-class="{'started': app.status === 'STARTED'}" class="row application" id="{{app.name | applicationNameId}}" my-post-repeat-directive>
+    
+    <div ng-show="applications.length > 0" >
+    <div class="margin-bottom-only">
+        <input ng-model="searchApp" class="wide100 border-enabled"/>
+        <span class="glyphicon glyphicon glyphicon-search search-icon"></span>
+     </div>
+    <div id="applicationList" style="max-height: {{maxHeight}}px" ng-show="applications.length > 0">
+    <div ng-repeat="app in applications | orderBy:orderProp | filter:searchApp" ng-class="{'started': app.status === 'STARTED'}" class="row application margin-right-10" id="{{app.name | applicationNameId}}" my-post-repeat-directive>
       <div class="col-md-9 app-name">
         {{app.name}}
       </div>
@@ -44,6 +51,8 @@
           </div>
         </div>
       </div>
+    </div>
+    </div>
     </div>
 
   </div>
