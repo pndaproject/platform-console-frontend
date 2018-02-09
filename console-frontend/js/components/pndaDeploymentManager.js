@@ -27,7 +27,7 @@
 
 angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', 'DeploymentManagerService',
   '$timeout', 'socket', 'ModalService', 'HelpService','$cookies','customTimer','$window',
-  function($filter, DeploymentManagerService, $timeout, socket, ModalService, HelpService, $cookies, 
+  function($filter, DeploymentManagerService, $timeout, socket, ModalService, HelpService, $cookies,
            customTimer,$window) {
     return {
       restrict: 'E',
@@ -60,6 +60,7 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
           scope.showConfig({ metricObj: scope.metricObj });
         };
 
+        scope.maxHeight = $window.localStorage.getItem('hdfsOffset');
         scope.applications = [];
         scope.getAppsList = function() {
           DeploymentManagerService.getApplications().then(function(data) {

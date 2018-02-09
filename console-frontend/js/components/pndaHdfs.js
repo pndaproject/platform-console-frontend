@@ -87,6 +87,11 @@ angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService',
               scope.metricName = $filter('metricNameForDisplay')(metric.name);
 
               scope.class = $filter('metricNameClass')(metric.name);
+              var hdfsElement = document.getElementsByTagName("pnda-hdfs");
+              if(hdfsElement && hdfsElement.length > 0){
+                var offset = hdfsElement[0].offsetHeight;
+                $window.localStorage.setItem('hdfsOffset', offset);
+              }
               scope.severity = metric.info.value;
               scope.timestamp = metric.info.timestamp;
               scope.isUnavailable = (metric.info.value === "UNAVAILABLE");
