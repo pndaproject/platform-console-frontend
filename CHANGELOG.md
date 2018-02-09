@@ -3,17 +3,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added:
+- PNDA-439: Support deploying/running app as specific user
 - PNDA-2834: Added pop-up for displaying status of each sub-component of each application on applications page.
 - PNDA-3562: Add PAM authentication
 - PNDA-3100: Organize Kafka topics especially when there are a lot of topics
 
 ### Changed:
-- PNDA-3601: disable emailtext in Jenkins file and replace it with notifier stage and job
-- PNDA-3596: review authentication since passportjs used in console backend
+- PNDA-3601: Disable emailtext in Jenkins file and replace it with notifier stage and job
+- PNDA-3596: Review authentication since passportjs used in console backend
 
 ### Fixed
-- PNDA-3609: back to login if authentication failed / browser restart
-- PNDA-3622: stop the build if a command failed
+- PNDA-3609: Back to login if authentication failed / browser restart
+- PNDA-3622: Stop the build if a command failed
 
 ## [0.2.1] 2017-11-24
 ### Fixed:
