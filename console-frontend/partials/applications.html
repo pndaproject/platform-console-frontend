@@ -90,7 +90,7 @@
                         <tr>
                           <th>Status</th>
                           <td>{{ fullApplicationDetail.status | changeAppStatusForDisplay }}
-                           <span> <button type="button" class="btn btn-link" ng-click="showInfoModal()">More info</button></span>
+                           <span> <button type="button" class="btn btn-link" ng-click="showInfoModal(fullApplicationDetail.name)">More info</button></span>
                           </td>
                         </tr>
                       </table>
