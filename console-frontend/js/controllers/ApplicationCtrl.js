@@ -325,7 +325,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
           $scope.appDetailJson = data;
           $scope.viewAppProps = true;
         });
-		$scope.getApplicationSummary(app.name);
+        $scope.getApplicationSummary(app.name);
         $scope.showApplicationDetail = true;
         $scope.newApp = false;
         $scope.metricFilter = 'application\\.kpi\\.' + app.name + '\\.';
@@ -351,9 +351,9 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       $scope.confirmProperties = false;
     };
 	
-    $scope.showInfoModal = function(){
+    $scope.showInfoModal = function(appName){
+    $scope.getApplicationSummary(appName);
     var fields = {};
-    var appName;
     if($scope.appSummaryJson === undefined){
        fields = {
        error: "ERROR: Request is not successful."
@@ -362,7 +362,6 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     
     }else if($scope.appSummaryJson !== undefined 
             && $scope.appSummaryJson[Object.keys($scope.appSummaryJson)[0]].status !== undefined){
-        appName = Object.keys($scope.appSummaryJson)[0];
         fields = {
             error: "No Data found. Please refresh the page and try again later.",
             title: 'application',
@@ -371,7 +370,6 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         ModalService.createModalView('partials/modals/application-status-error.html', fields);
 
     }else{
-     appName = Object.keys($scope.appSummaryJson)[0];
      var oozieComponents = [];
      var sparkComponents = [];
      fields = {
