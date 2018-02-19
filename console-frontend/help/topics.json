@@ -102,7 +102,10 @@
     },
     "hadoop.CLUSTER_MANAGER.health": {
       "body": ["The cluster manager is provided as part of the Hadoop distribution. It monitors all the hosts and services that make up the cluster."],
-      "link": "http://pnda.io/pnda-guide/cluster-manager/"
+      "link": {
+        "CDH": "https://www.cloudera.com/products/product-components/cloudera-manager.html",
+        "HDP": "https://ambari.apache.org/"
+      }
     }
   }
 }

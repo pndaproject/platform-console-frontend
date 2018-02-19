@@ -24,14 +24,14 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appServices').service('HelpService', ['ModalService', '$http', '$window',
-  function (ModalService, $http, $window) {
+angular.module('appServices').service('HelpService', ['ConfigService', 'ModalService', '$http', '$window',
+  function (ConfigService, ModalService, $http, $window) {
     var helpTopics = {};
-    
+
     $http.get('help/topics.json').then(function(json) {
       helpTopics = json.data.helpTopics;
     });
-    
+
     this.showHelp = function (name, key) {
       return this.show(name, key);
     };
@@ -39,12 +39,12 @@ angular.module('appServices').service('HelpService', ['ModalService', '$http', '
     this.show = function (name, key) {
       var topic = helpTopics[key];
       var modalInfo = { title: name + " Help", body: "Help with " + key, actionButtonText: "OK" };
-      
+
       if (topic !== undefined) {
         if (topic.title !== undefined) {
           modalInfo.title = topic.title + " Help";
         }
-        
+
         if (topic.body !== undefined) {
           if (typeof topic.body === 'object') {
             modalInfo.bodyArray = topic.body;
@@ -57,11 +57,15 @@ angular.module('appServices').service('HelpService', ['ModalService', '$http', '
         if (topic.link !== undefined) {
           modalInfo.closeButtonText = "More info…";
           modalInfo.whenClose = function() {
-            $window.open(topic.link, 'HelpWindow');
+            var link = topic.link;
+            if (typeof link === 'object') {
+              link = link[ConfigService.hadoop_distro];
+            }
+            $window.open(link, 'HelpWindow');
           };
         }
       }
-      
+
       ModalService.showModal(modalInfo);
     };
   }
