@@ -2,15 +2,17 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Fixed
+- PNDA-4190: Set help link for cluster manager based on the hadoop distro in use
 
 ## [1.0.0] 2018-02-10
-### Added:
+### Added
 - PNDA-439: Support deploying/running app as specific user
 - PNDA-2834: Added pop-up for displaying status of each sub-component of each application on applications page.
 - PNDA-3562: Add PAM authentication
 - PNDA-3100: Organize Kafka topics especially when there are a lot of topics
 
-### Changed:
+### Changed
 - PNDA-3601: Disable emailtext in Jenkins file and replace it with notifier stage and job
 - PNDA-3596: Review authentication since passportjs used in console backend
 
@@ -19,14 +21,14 @@ All notable changes to this project will be documented in this file.
 - PNDA-3622: Stop the build if a command failed
 
 ## [0.2.1] 2017-11-24
-### Fixed:
+### Fixed
 - ISSUE-45: Added UI for opentsdb component with info, help, settings icons and color code for health status in console homepage.
-### Added:
+### Added
 - PNDA-2445: Support for Hortonworks HDP
 - PNDA-439: When creating an application the user to run the application as is now a required field in the form.
 
 ## [0.2.0] 2017-06-29
-### Added:
+### Added
 - PNDA-2691: Refactor for offline installation
 ### Changed
 - PNDA-2827: Changed the display of the application metrics to lose the filter info.
