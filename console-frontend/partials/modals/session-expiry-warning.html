@@ -1,0 +1,16 @@
+<div class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" ng-show="title">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4>{{title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>Your session will expire in {{timeoutWarningInSec}} seconds. Press any key or click anywhere to remain logged in.</p>
+      </div>
+      <div class="modal-footer">
+        <button id="sessionModalHideBtn" type="button" class="btn btn-default" ng-click="$hide()">OK</button>
+      </div>
+    </div>
+  </div>
+</div>

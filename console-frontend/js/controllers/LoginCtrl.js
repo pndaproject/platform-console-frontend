@@ -25,7 +25,8 @@
 *-------------------------------------------------------------------------------*/
 
 angular.module('login').controller('LoginCtrl', ['$scope', '$http', '$location', '$rootScope', '$cookies', '$window',
-  'ConfigService', function($scope, $http, $location, $rootScope, $cookies, $window, ConfigService) {
+  'ConfigService','Idle','ModalService','Title', 
+  function($scope, $http, $location, $rootScope, $cookies, $window, ConfigService,Idle,ModalService,Title) {
 
     var loginPath;
     if (ConfigService.login_mode === 'PAM') {
@@ -35,14 +36,18 @@ angular.module('login').controller('LoginCtrl', ['$scope', '$http', '$location',
     var dataMan = ConfigService.backend["data-manager"];
     var host = dataMan.host;
     var port = dataMan.port;
+	//Setting Default valus for session Expiry (in seconds)
+    var defaultSessionExpiryTime = 21600;
+    var defaultWarningMessageDuration = 30;
+    var defaultIdleStayTime = defaultSessionExpiryTime - defaultWarningMessageDuration;
+    var minimumSessionAge = 300;
 
     $scope.login = function() {
 
       var data = $.param({
         username: $scope.username,
         password: Base64.encode($scope.password)
-      });
-
+      });     
       $http({
         url: 'http://' + host + ':' + port + loginPath,
         method: 'POST',
@@ -58,7 +63,10 @@ angular.module('login').controller('LoginCtrl', ['$scope', '$http', '$location',
               authdata: authdata
             }
           };
-
+          //Getting session_max_age and time duration for warning message from backend in milliseconds
+          var timeoutForLogout = response.data.session_max_age / 1000;
+          var sessionExpiryWarningDuration = response.data.session_expiry_warning_duration / 1000;
+          
           // add to cookies
           var expireDate = new Date();
           expireDate.setDate(expireDate.getDate() + 1);
@@ -67,6 +75,44 @@ angular.module('login').controller('LoginCtrl', ['$scope', '$http', '$location',
           $cookies.put('userRole', response.data.role, { expires: expireDate });
           $cookies.put('globals', $rootScope.globals, { expires: expireDate });
           $location.url("/");
+          
+          var timeoutForIdle = timeoutForLogout - sessionExpiryWarningDuration;
+          
+          //Setting the session timeout and warning message duration (in seconds)
+          if((timeoutForIdle !== undefined && sessionExpiryWarningDuration !== undefined &&
+              timeoutForIdle > 0 && sessionExpiryWarningDuration > 0 && timeoutForLogout > minimumSessionAge)){
+              Idle.setIdle(timeoutForIdle);
+              Idle.setTimeout(sessionExpiryWarningDuration);
+              Idle.watch();
+          }else{
+              Idle.setIdle(defaultIdleStayTime);
+              Idle.setTimeout(defaultWarningMessageDuration);
+              Idle.watch();
+          }
+          
+          //Events for session activity
+          $rootScope.$on('IdleTimeout', function() {
+               var original = Title.original();
+               Title.timedOutMessage(original);
+               $location.path('/logout');
+               $('#sessionModalHideBtn').click();
+          });
+          
+          $rootScope.$on('IdleWarn', function(e,countdown) {
+             var original = Title.original();
+             Title.idleMessage(original);
+             var fields = {
+                title: 'Warning',
+                countdown:countdown,
+                timeoutWarningInSec:sessionExpiryWarningDuration
+             };
+             if(countdown === sessionExpiryWarningDuration)
+             ModalService.createModalView('partials/modals/session-expiry-warning.html', fields);
+          });
+          $rootScope.$on('IdleEnd', function() {
+             $('#sessionModalHideBtn').click();
+          });
+          
         } else {
           // user not present or invalid credentials
           $scope.loginError = "Invalid username/password combination";
