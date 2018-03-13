@@ -58,6 +58,9 @@
                             <div class="content">
                               <pnda-basic-component overwrite-display-name="Spark Streaming" force-wrap-display-name="true" on-get-metric-data="getMetricData('hadoop.SPARK_ON_YARN',cbFn,healthStatusCbFn)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
                             </div>
+                            <div class="content">
+                              <pnda-basic-component force-wrap-display-name="true" on-get-metric-data="getMetricData('flink',cbFn,healthStatusCbFn)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
+                            </div>
                           </div>
                         </div>
                         <div class="col-md-6">
@@ -66,6 +69,11 @@
                             <div class="content row">
                               <div class="col-md-12">
                                 <pnda-basic-component on-get-metric-data="getMetricData('hadoop.SPARK_ON_YARN',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
+                              </div>
+                            </div>
+                            <div class="content row">
+                              <div class="col-md-12">
+                                <pnda-basic-component on-get-metric-data="getMetricData('flink',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
                               </div>
                             </div>
                             <div class="content row">
