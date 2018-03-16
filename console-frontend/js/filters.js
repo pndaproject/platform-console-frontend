@@ -294,6 +294,9 @@ metricFilters.filter('metricNameForDisplay', function() {
       case "hadoop.SPARK_ON_YARN.health":
         display = "Spark";
         break;
+      case "flink.health":
+          display = "Flink";
+          break;
     }
     return display;
   };
