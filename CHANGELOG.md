@@ -2,8 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+
 ### Fixed
 - PNDA-4190: Set help link for cluster manager based on the hadoop distro in use
+- PNDA-4431: Add basic console elements to represent Flink in PNDA
 
 ## [1.0.0] 2018-02-10
 ### Added
