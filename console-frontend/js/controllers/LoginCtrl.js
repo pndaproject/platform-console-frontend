@@ -31,7 +31,8 @@ angular.module('login').controller('LoginCtrl', ['$scope', '$http', '$location',
     if (ConfigService.login_mode === 'PAM') {
       loginPath = '/pam/login';
     }
-
+	document.getElementById("username").focus();
+	
     var dataMan = ConfigService.backend["data-manager"];
     var host = dataMan.host;
     var port = dataMan.port;
