@@ -335,6 +335,9 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
             '#/main/views/WORKFLOW_MANAGER/1.0.0/PNDA_WORKFLOW';
         } else if (source === "flink") {
             resolutionUrl = ConfigService.userInterfaceIndex[flinkIndex];
+        } else if (source === "HQUERY") {
+          resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
+          "#/main/view/HIVE/auto_hive_instance";
         } else if (source === "AMBARI" || source === "CM") {
           resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"];
         } else if ($scope.dm_endpoints.cm_status_links !== undefined) {
