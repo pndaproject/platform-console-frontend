@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - PNDA-4431: Add basic console elements to represent Flink in PNDA
 - PNDA-4012: Add application type in application summary view
 - PNDA-4009: Better status naming in application detailed summary view
+- PNDA-4234: Fix hive query cog link for HDP clusters
 
 ## [1.0.0] 2018-02-10
 ### Added
