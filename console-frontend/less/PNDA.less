@@ -603,7 +603,7 @@ div#applicationOverviewModal{
       position: absolute;
       background-color: black;
       width: 1000%;
-	  left: 0;
+	  left: -20px;
 	  margin-top:10px;
 	  top: 100%;
 	  z-index: 20;
@@ -622,10 +622,33 @@ div#applicationOverviewModal{
 	  background-image: -o-linear-gradient(top, #000000, #000000);
 }
 
+.flink-summary-table{
+    position: absolute;
+    width: 193px;
+    background: #fff;
+    top: 25px;
+    left: 0px;
+    box-shadow: 1px 3px 4px #ccc;
+    border: 1px solid black;
+}
+table.flink-summary-table:before {
+    border: solid;
+    bottom: 100%;
+    content: "";
+    border-color: rgba(245, 225, 245, 0);
+    border-bottom-color: black;
+    left: 80px;
+    top: -15px;
+    border-width: 8px;
+    position: absolute;
+}
+table.flink-summary-table > thead > tr > th, table.flink-summary-table > tbody > tr > td{
+        border:1px solid black;
+        padding: 4px;
+}
 .glyphicon-warning-sign{
    color: orange;
 }
-
 .custom-timer{
     display: block;
     font-size: 10px;

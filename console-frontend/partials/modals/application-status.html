@@ -13,6 +13,41 @@
              <div class="col-md-2">Id</div>
              <div class="col-md-4">Status</div>
         </div>
+		<div ng-repeat="flinkComponent in flinkComponents">
+            <div class="row pad-top-10">
+            <div class="col-md-4 margin-left-5">{{ flinkComponent.name }}
+            <a ng-if="flinkComponent.tracking_url.length > 0" href="{{flinkComponent.tracking_url}}" target="_blank">
+                <span class="glyphicon glyphicon glyphicon-new-window pad-left-10"></span>
+            </a>
+            </div>
+            <div class="col-md-2 width-16">{{flinkComponent.componentType}}</div>
+            <div class="col-md-2 word-break"><a href="{{yarnUrl +'/' + flinkComponent.yarnId}}" target="_blank">{{ flinkComponent.yarnId }}</a></div>
+            <div class="col-md-4" style="width:33% !important;">{{ flinkComponent.aggregate_status | underscoreRemoved | capitalize }}
+            <!-- If flink's information field has vertices then we will display a table on hover -->
+            <span ng-if ="flinkComponent.information && flinkComponent.information.vertices" class="glyphicon glyphicon-info-sign pad-left-10" 
+                  ng-mouseover="showSummary(flinkComponent.yarnId)" ng-mouseleave="hideSummary(flinkComponent.yarnId)">
+            </span>
+             <table id="stageJobSummary-{{ flinkComponent.yarnId }}" class="flink-summary-table border-enabled hidden">
+                <thead>
+                <tr>
+                    <th>Vertices</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="vertice in flinkComponent.information.vertices">
+                <td>{{vertice.name}}</td>
+                <td>{{vertice.status}}</td>
+                </tr>
+                </tbody>
+             </table>
+             <!-- If flink's information field has yarn_diagnostics then we will display message on hover -->
+             <span ng-if ="flinkComponent.information && !flinkComponent.information.vertices && flinkComponent.information.length > 0"
+                  class="glyphicon glyphicon-info-sign tooltip-text pad-left-10" tooltip="{{ flinkComponent.information }}">
+             </span>
+             </div>
+            </div>
+        </div>
         <div ng-repeat="sparkComponent in sparkComponents">
             <div class="row pad-top-10">
             <div class="col-md-4 margin-left-5">{{ sparkComponent.name }}</div>
