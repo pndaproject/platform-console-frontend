@@ -27,9 +27,9 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appControllers').controller('PackageManagementCtrl', ['$scope', '$routeParams',
+angular.module('appControllers').controller('PackageManagementCtrl', ['$scope', '$routeParams', '$cookies',
   'DeploymentManagerService', 'socket', '$filter', '$modal', '$location', 'ModalService', '$timeout',
-  function($scope, $routeParams, DeploymentManagerService, socket, $filter, $modal, $location, ModalService, $timeout) {
+  function($scope, $routeParams, $cookies, DeploymentManagerService, socket, $filter, $modal, $location, ModalService, $timeout) {
     $scope.packages = [];
     $scope.deployedPackages = [];
     $scope.gettingPackages = false;
@@ -161,8 +161,9 @@ angular.module('appControllers').controller('PackageManagementCtrl', ['$scope', 
 
     $scope.undeploy = function(packageName, version) {
       var package = packageName + "-" + version;
+      var userName = $cookies.get('user');
       displayConfirmation("Are you sure you want to undeploy " + package + "?", function() {
-        DeploymentManagerService.undeploy(package).then(function(result) {
+        DeploymentManagerService.undeploy(package, userName).then(function(result) {
           $scope.successCallback(result, package, Constants.PACKAGE.INTENT_UNDEPLOY);
         }, function(error) {
           $scope.errorCallback(error, package);
