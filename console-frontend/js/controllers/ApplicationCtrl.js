@@ -264,6 +264,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     $scope.startOrStopApplication = function(name, status) {
       var action = status === Constants.APPLICATION.CREATED ? "start" : status === Constants.APPLICATION.STARTED
       ? "stop" : undefined;
+      var userName = $cookies.get('user');
       if (action !== undefined) {
         displayConfirmation("Are you sure you want to " + action + " " + name + "?", function() {
           var found = $scope.applications.find(function(element) {
@@ -280,7 +281,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
           }
 
           // $scope.animateApplication(name, false);
-          var res = DeploymentManagerService.performApplicationAction(name, action);
+          var res = DeploymentManagerService.performApplicationAction(name, action, userName);
           res.then(function(result) {
           $scope.successCallback(result, name);
         }, function(error) {
@@ -291,6 +292,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     };
 
     $scope.destroyApplication = function(name) {
+      var userName = $cookies.get('user');
       if (name !== undefined) {
         // $scope.animateApplication(name, false);
         displayConfirmation("Are you sure you want to delete " + name + "?", function() {
@@ -300,7 +302,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
             }
           });
           found.status = 'DESTROYING';
-          var res = DeploymentManagerService.destroyApplication(name);
+          var res = DeploymentManagerService.destroyApplication(name, userName);
           res.then(function(result) {
             $scope.successCallback(result, name);
           }, function(error) {
@@ -482,7 +484,6 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       var finalAppJson = {};
       finalAppJson = appProperties;
       finalAppJson.package = package;
-      finalAppJson.user = userName;
       $scope.response = false;
       $scope.appNameError = false;
       if (applicationName === "") {
@@ -494,7 +495,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         $scope.appNameErrorText += "Characters allowed: a-z, A-Z, 0-9, -, _.";
       } else {
         $scope.creatingApp = true;
-        var submitApp = DeploymentManagerService.createApplication(applicationName, finalAppJson);
+        var submitApp = DeploymentManagerService.createApplication(applicationName, finalAppJson, userName);
         submitApp.then(function(result) {
           $scope.successCallback(result, applicationName, true);
         }, function(error) {
