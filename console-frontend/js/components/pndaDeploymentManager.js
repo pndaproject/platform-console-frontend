@@ -26,8 +26,8 @@
 *-------------------------------------------------------------------------------*/
 
 angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', 'DeploymentManagerService',
-  '$timeout', 'socket', 'ModalService', 'HelpService',
-  function($filter, DeploymentManagerService, $timeout, socket, ModalService, HelpService) {
+  '$timeout', 'socket', 'ModalService', 'HelpService','$cookies',
+  function($filter, DeploymentManagerService, $timeout, socket, ModalService, HelpService, $cookies) {
     return {
       restrict: 'E',
       scope: {
@@ -44,6 +44,7 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
         scope.fullMetrics = {};
         scope.orderProp = "name";
         scope.severity = '';
+        scope.userName = $cookies.get('user');
         scope.showDetails = function() {
           if (scope.severity) {
             scope.showOverview({ metricObj: scope.metricObj, metrics: scope.fullMetrics });
@@ -96,7 +97,7 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
           if (action !== undefined) {
             displayConfirmation("Are you sure you want to " + action + " " + name + "?", function() {
               scope.animateApplication(name, false);
-              var res = DeploymentManagerService.performApplicationAction(name, action);
+              var res = DeploymentManagerService.performApplicationAction(name, action, scope.userName);
               res.then(function() {
                 // success callback. update the app icon.
                 scope.animateApplication(name, false);

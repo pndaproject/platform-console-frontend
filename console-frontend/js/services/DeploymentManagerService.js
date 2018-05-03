@@ -115,8 +115,8 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
       deploy: function(package) {
         return $http.put(packagesAPI + "/" + package);
       },
-      undeploy: function(package) {
-        return $http.delete(packagesAPI + "/" + package);
+      undeploy: function(package, userName) {
+        return $http.delete(packagesAPI + "/" + package + '?user=' + userName);
       },
       getPackageStatus: function(name) {
         var result = {};
@@ -175,9 +175,10 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
               return summary;
             });
        },
-      createApplication: function(name, body) {
+      createApplication: function(name, body, userName) {
         var dataManager = ConfigService.backend["data-manager"];
-        var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port + "/applications/" + name;
+        var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port + "/applications/" + name +
+        '?user=' + userName;
         var res = $http.put(applicationsApi, body);
         return res;
       },
@@ -195,15 +196,16 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
             return result;
           });
       },
-      destroyApplication: function(name) {
+      destroyApplication: function(name, userName) {
         var dataManager = ConfigService.backend["data-manager"];
-        var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port + "/applications/" + name;
+        var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port + "/applications/" + name +
+        '?user=' + userName;
         var res = $http.delete(applicationsApi);
         return res;
       },
-      performApplicationAction: function(name, action) {
+      performApplicationAction: function(name, action, userName) {
         var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port
-        + "/applications/" + name + "/" + action;
+        + "/applications/" + name + "/" + action + '?user=' + userName;
         var res = $http.post(applicationsApi);
         return res;
       },
