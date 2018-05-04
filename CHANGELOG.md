@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 ### Changed
  - PNDA-4042: Sort application properties alphabetically
+ - PNDA-4546: Pass user to Deployment Manager APIs as a URL parameter instead of in the body
 
 ### Fixed
 - PNDA-4190: Set help link for cluster manager based on the hadoop distro in use
