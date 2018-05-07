@@ -82,8 +82,18 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
     };
 
     $scope.showConfigPage = function(healthInfo) {
-      var link = findResolutionUrlForSource(healthInfo.info.source);
-      $window.open(link, '_blank');
+     var opentsdbIndex = "OpenTSDB";
+     if(healthInfo.info.source === "opentsdb" &&
+        ConfigService.userInterfaceIndex[opentsdbIndex].indexOf(",") !== -1){
+           var fields = {
+           title: "OpenTSDB",
+           links : ConfigService.userInterfaceIndex[opentsdbIndex].split(",")
+           };
+           ModalService.createModalView('partials/modals/opentsdb.html', fields);
+     }else{
+           var link = findResolutionUrlForSource(healthInfo.info.source);
+           $window.open(link, '_blank');
+     }
     };
 
     function resetTrafficLightStatus() {
@@ -317,7 +327,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
           resolutionUrl += "/#/dashboard/Default?_g=()&_a=(filters:!()," +
           "query:(query_string:(analyze_wildcard:!t,query:%27deployment-manager%27)),title:Default)";
         } else if (source === "opentsdb") {
-          resolutionUrl = ConfigService.userInterfaceIndex[opentsdbIndex].split(",")[0];
+          resolutionUrl = ConfigService.userInterfaceIndex[opentsdbIndex];
         } else if (source === "grafana") {
         //for grafana, the string is a comma-separated list
           resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
