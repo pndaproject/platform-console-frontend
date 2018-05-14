@@ -116,7 +116,7 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
         return $http.put(packagesAPI + "/" + package);
       },
       undeploy: function(package, userName) {
-        return $http.delete(packagesAPI + "/" + package + '?user=' + userName);
+        return $http.delete(packagesAPI + "/" + package + '?user.name=' + userName);
       },
       getPackageStatus: function(name) {
         var result = {};
@@ -178,7 +178,7 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
       createApplication: function(name, body, userName) {
         var dataManager = ConfigService.backend["data-manager"];
         var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port + "/applications/" + name +
-        '?user=' + userName;
+        '?user.name=' + userName;
         var res = $http.put(applicationsApi, body);
         return res;
       },
@@ -199,13 +199,13 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
       destroyApplication: function(name, userName) {
         var dataManager = ConfigService.backend["data-manager"];
         var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port + "/applications/" + name +
-        '?user=' + userName;
+        '?user.name=' + userName;
         var res = $http.delete(applicationsApi);
         return res;
       },
       performApplicationAction: function(name, action, userName) {
         var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port
-        + "/applications/" + name + "/" + action + '?user=' + userName;
+        + "/applications/" + name + "/" + action + '?user.name=' + userName;
         var res = $http.post(applicationsApi);
         return res;
       },
