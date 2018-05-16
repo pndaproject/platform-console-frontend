@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 ### Changed
- - PNDA-4042: Sort application properties alphabetically
- - PNDA-4546: Pass user to Deployment Manager APIs as a URL parameter instead of in the body
+- PNDA-4042: Sort application properties alphabetically
+- PNDA-4546: Pass user to Deployment Manager APIs as a URL parameter instead of in the body
+- PNDA-4613: Rename user parameter for deployment manager API from user to user.name to match the default knox behaviour
 
 ### Fixed
 - PNDA-4190: Set help link for cluster manager based on the hadoop distro in use
