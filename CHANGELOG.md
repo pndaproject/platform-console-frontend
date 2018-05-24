@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- PNDA-4560: Provide identity to all deployment manager API calls
+- PNDA-4560: Provide identity to all deployment manager operations
 
 ### Changed
 - PNDA-4042: Sort application properties alphabetically
