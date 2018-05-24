@@ -112,8 +112,8 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
           });
       },
       
-      deploy: function(package) {
-        return $http.put(packagesAPI + "/" + package);
+      deploy: function(package, userName) {
+        return $http.put(packagesAPI + "/" + package + '?user.name=' + userName);
       },
       undeploy: function(package, userName) {
         return $http.delete(packagesAPI + "/" + package + '?user.name=' + userName);

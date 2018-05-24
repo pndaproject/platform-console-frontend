@@ -67,6 +67,9 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
           case 400:
             text = "Request body validation failed. Please try again.";
             break;
+          case 403:
+            text = "Not authorized.";
+            break;
           case 404:
             text = "Not found.";
             break;

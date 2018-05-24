@@ -27,9 +27,10 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appControllers').controller('PackageManagementCtrl', ['$scope', '$routeParams',
+angular.module('appControllers').controller('PackageManagementCtrl', ['$scope', '$cookies', '$routeParams',
   'DeploymentManagerService', 'socket', '$filter', '$modal', '$location', 'ModalService', '$timeout',
-  function($scope, $routeParams, DeploymentManagerService, socket, $filter, $modal, $location, ModalService, $timeout) {
+  function($scope, $cookies, $routeParams, DeploymentManagerService, socket, $filter, $modal, $location,
+    ModalService, $timeout) {
     $scope.packages = [];
     $scope.deployedPackages = [];
     $scope.gettingPackages = false;
@@ -40,6 +41,7 @@ angular.module('appControllers').controller('PackageManagementCtrl', ['$scope', 
     $scope.packageName = $routeParams.packageName;
 
     var defaultTimeout = 500;
+    var userName = $cookies.get('user');
 
     $scope.successCallback = function(result, packageName, intent) {
       var status;
@@ -162,7 +164,7 @@ angular.module('appControllers').controller('PackageManagementCtrl', ['$scope', 
     $scope.undeploy = function(packageName, version) {
       var package = packageName + "-" + version;
       displayConfirmation("Are you sure you want to undeploy " + package + "?", function() {
-        DeploymentManagerService.undeploy(package).then(function(result) {
+        DeploymentManagerService.undeploy(package, userName).then(function(result) {
           $scope.successCallback(result, package, Constants.PACKAGE.INTENT_UNDEPLOY);
         }, function(error) {
           $scope.errorCallback(error, package);
@@ -173,7 +175,7 @@ angular.module('appControllers').controller('PackageManagementCtrl', ['$scope', 
     $scope.deploy = function(packageName, version) {
       var package = packageName + "-" + version;
       displayConfirmation("Are you sure you want to deploy " + package + "?", function() {
-        var submitPackage = DeploymentManagerService.deploy(package);
+        var submitPackage = DeploymentManagerService.deploy(package, userName);
         submitPackage.then(function(result) {
           $scope.successCallback(result, package, Constants.PACKAGE.INTENT_DEPLOY);
         }, function(error) {
