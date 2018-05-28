@@ -24,7 +24,8 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService', function($filter, HelpService) {
+angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService','customTimer',
+        function($filter, HelpService, customTimer) {
   return {
     restrict: 'E',
     scope: {
@@ -42,6 +43,8 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
       scope.metricObj = {};
       scope.fullMetrics = {};
       scope.severity = '';
+      scope.timeDiff = 0;
+      var defaultTimeInterval = 1000;
 
       // total = allocated + available
       scope.memory = { total: 0, available: 0, allocated: 0, allocatedPercentage: 0, allocatedPercentageStyle: '' };
@@ -78,7 +81,8 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
               scope.severity = metric.info.value;
               scope.metricObj = metric;
               scope.timestamp = metric.info.timestamp;
-              var status = healthStatus(metric.info.value, scope.timestamp);
+              scope.timeDiff = 0;
+              var status = healthStatus(metric.info.value, scope.timestamp, scope.timeDiff);
               scope.healthClass = "health_" + status;
               scope.isUnavailable = (metric.info.value === "UNAVAILABLE");
 
@@ -111,9 +115,18 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
           showMetricUpdateAnimation($("pnda-yarn .health"));
         }
       };
+      
+      scope.callback = function() {
+          scope.timeDiff += defaultTimeInterval;
+      };
+      var timerCallbackId = customTimer.on(scope.callback);
+      
+      scope.$on('$destroy',function(){
+          customTimer.off(timerCallbackId);
+      });
 
-      var healthStatusCallbackFn = function(now) {
-        var status = healthStatus(scope.latestHealthStatus, scope.timestamp, now);
+      var healthStatusCallbackFn = function() {
+        var status = healthStatus(scope.latestHealthStatus, scope.timestamp, scope.timeDiff);
         scope.healthClass = "health_" + status;
       };
 
