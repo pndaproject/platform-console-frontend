@@ -26,8 +26,8 @@
 *-------------------------------------------------------------------------------*/
 
 angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', 'DeploymentManagerService',
-  '$timeout', 'socket', 'ModalService', 'HelpService','$cookies',
-  function($filter, DeploymentManagerService, $timeout, socket, ModalService, HelpService, $cookies) {
+  '$timeout', 'socket', 'ModalService', 'HelpService','$cookies','customTimer',
+  function($filter, DeploymentManagerService, $timeout, socket, ModalService, HelpService, $cookies, customTimer) {
     return {
       restrict: 'E',
       scope: {
@@ -45,6 +45,8 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
         scope.orderProp = "name";
         scope.severity = '';
         scope.userName = $cookies.get('user');
+        scope.timeDiff = 0;
+        var defaultTimeInterval = 1000;
         scope.showDetails = function() {
           if (scope.severity) {
             scope.showOverview({ metricObj: scope.metricObj, metrics: scope.fullMetrics });
@@ -195,7 +197,6 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
         });
 
         // the callback function expects an array of matching metrics
-        var oldestTimestamp;
         var callbackFn = function(metricData) {
           if (metricData.length > 0) {
             // for deployment manager we're looking for:
@@ -205,12 +206,10 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
             // deployment-manager.packages_deployed_count
             // deployment-manager.packages_deployed_succeeded
             // deployment-manager.packages_deployed_time_ms
-            oldestTimestamp = Date.now() + 60000; // one minute in the future
             angular.forEach(metricData, function(metric) {
               scope.fullMetrics[metric.name] = metric;
 
               scope.metrics[metric.name.substring(metric.name.lastIndexOf(".") + 1)] = metric.info.value;
-              oldestTimestamp = Math.min(oldestTimestamp, metric.info.timestamp);
             });
 
             var healthMetric = metricData.find(function(element) {
@@ -222,9 +221,10 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
             if (healthMetric !== undefined) {
               scope.class = '';
               scope.timestamp = healthMetric.info.timestamp;
+              scope.timeDiff = 0;
               scope.severity = healthMetric.info.value;
               scope.metricObj = healthMetric;
-              scope.healthClass = "health_" + healthStatus(healthMetric.info.value, scope.timestamp);
+              scope.healthClass = "health_" + healthStatus(healthMetric.info.value, scope.timestamp, scope.timeDiff);
               scope.healthClass += (enableModalView(scope.severity) ? " clickable" : " ");
               scope.latestHealthStatus = healthMetric.info.value;
               scope.isUnavailable = (healthMetric.info.value === "UNAVAILABLE");
@@ -233,9 +233,19 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
             }
           }
         };
+        
+        scope.callback = function() {
+            scope.timeDiff += defaultTimeInterval;
+        };
+        
+        var timerCallbackId = customTimer.on(scope.callback);
+         
+         scope.$on('$destroy',function(){
+            customTimer.off(timerCallbackId);
+         });
 
         var healthStatusCallbackFn = function(now) {
-          scope.healthClass = " health_" + healthStatus(scope.latestHealthStatus, scope.timestamp, now);
+          scope.healthClass = " health_" + healthStatus(scope.latestHealthStatus, scope.timestamp, scope.timeDiff);
         };
 
         scope.onGetMetricData({ cbFn: callbackFn, healthStatusCbFn: healthStatusCallbackFn });
