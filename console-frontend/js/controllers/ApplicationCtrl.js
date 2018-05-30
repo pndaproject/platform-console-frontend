@@ -125,7 +125,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       // NOTCREATED status when app gets deleted and DM doesn't know about it.
       if ((status === "NOTCREATED" && information === null) || status === "DESTROYING") {
         $scope.alertClass = "alert-success";
-        $timeout($scope.getAppsList, 2000);
+        $timeout($scope.getAppsList(status), 2000);
       } else if (status === 200 || status === "CREATED" || status === "STARTED") {
         $scope.alertClass = "alert-success";
         $timeout($scope.refreshAppsList(applicationName, status, isNewApp), 3000);
@@ -193,6 +193,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
             // the app has been created successfully, so we can now reset the creatingApp flag
             $scope.creatingApp = false;
+            $scope.newApp = false;
           }, defaultTimeout);
         }
       } else {
@@ -210,7 +211,8 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     };
 
     /* get applications list */
-    $scope.getAppsList = function() {
+    $scope.getAppsList = function(status) {
+      status = status || false;
       DeploymentManagerService.getApplications().then(function(data) {
         $scope.dmError = false;
 
@@ -225,8 +227,10 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         $scope.applications = data;
         $scope.viewAppProps = false;
         $scope.response = false;
-        $scope.newApp = false;
         $scope.showApplicationDetail = false;
+        if(status !== "DESTROYING"){
+            $scope.newApp = false;
+        }
 
         // by default, select the first application
         // makes the functionality of the page more obvious
@@ -332,7 +336,6 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         });
         $scope.getApplicationSummary(app.name);
         $scope.showApplicationDetail = true;
-        $scope.newApp = false;
         $scope.metricFilter = 'application\\.kpi\\.' + app.name + '\\.';
         $scope.appMetrics = $filter('getByNameForDisplay')($scope.allMetrics, $scope.metricFilter);
       }
