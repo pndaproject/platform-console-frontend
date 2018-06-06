@@ -28,17 +28,13 @@ angular.module('appServices').factory('DatasetService', ['$resource', 'ConfigSer
   function($resource, ConfigService, $http, $q) {
     return {
       getDatasets: function() {
-        var dataManager = ConfigService.backend["data-manager"];
-        var datasetsApi = "http://" + dataManager.host + ":" + dataManager.port + "/datasets";
-        return $q.all([$http.get(datasetsApi)]).then(function(data) {
+        var uri ='/api/dm/datasets';
+        return $q.all([$http.get(uri)]).then(function(data) {
           return data[0].data.data;
         });
       },
       updateDataset: function(id, message) {
-        var dataManager = ConfigService.backend["data-manager"];
-        var datasetsApi = "http://" + dataManager.host + ":" + dataManager.port + "/datasets";
-        var uri = datasetsApi + '/' + id;
-
+        var uri = '/api/dm/datasets/' + id;
         // console.log('PUT ' + uri + ' ' + JSON.stringify(message));
         $http.put(uri, message).then(function() {
           // console.log('Updated dataset ' + id);
