@@ -45,7 +45,7 @@ angular.module('login').controller('LoginCtrl', ['$scope', '$http', '$location',
       });
 
       $http({
-        url: 'http://' + host + ':' + port + loginPath,
+        url: loginPath,
         method: 'POST',
         data: data,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -104,10 +104,6 @@ angular.module('logout')
       logoutPath = '/pam/logout';
     }
 
-    var dataMan = ConfigService.backend["data-manager"];
-    var host = dataMan.host;
-    var port = dataMan.port;
-
     // remove cookie data and logout user
     $rootScope.globals = {};
 
@@ -116,7 +112,7 @@ angular.module('logout')
     $cookies.remove('user');
     $cookies.remove('userRole');
     $http({
-    url: 'http://' + host + ':' + port + logoutPath,
+    url: logoutPath,
     method: 'GET'
   });
 
