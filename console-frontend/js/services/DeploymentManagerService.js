@@ -29,9 +29,8 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
     var packages = [];
     var deployedPackages = [];
     var packagesTimestamp, deployedPackagesTimestamp;
-    var dataManager = ConfigService.backend["data-manager"];
-    var packagesAPI = "http://" + dataManager.host + ":" + dataManager.port + "/packages";
-    var applicationSummaryAPI = "http://" + dataManager.host + ":" + dataManager.port + "/applications";
+    var packagesAPI = "/api/dm/packages";
+    var applicationSummaryAPI = "/api/dm/applications";
 
     return {
       getPackages: function(force) {
@@ -131,8 +130,7 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
           });
       },
       getApplications: function() {
-        var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port + "/applications";
-
+        var applicationsApi = "/api/dm/applications";
         // $q.all will wait for an array of promises to resolve,
         // then will resolve its own promise (which it returns)
         // with an array of results in the same order.
@@ -156,8 +154,7 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
           });
       },
       getApplicationInfo: function(name) {
-        var dataManager = ConfigService.backend["data-manager"];
-        var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port + "/applications/";
+        var applicationsApi = "/api/dm/applications";
         return $q.all([
             $http.get(applicationsApi + "/" + name)
           ])
@@ -176,17 +173,13 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
             });
        },
       createApplication: function(name, body, userName) {
-        var dataManager = ConfigService.backend["data-manager"];
-        var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port + "/applications/" + name +
-        '?user.name=' + userName;
+        var applicationsApi = "/api/dm/applications/" + name +'?user.name=' + userName;
         var res = $http.put(applicationsApi, body);
         return res;
       },
       getApplicationStatus: function(name) {
         var result = {};
-        var dataManager = ConfigService.backend["data-manager"];
-        var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port + "/applications/"
-        + name + "/status";
+        var applicationsApi = "/api/dm/applications/"+ name + "/status";
         return $q.all([
             $http.get(applicationsApi)
           ])
@@ -197,20 +190,17 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
           });
       },
       destroyApplication: function(name, userName) {
-        var dataManager = ConfigService.backend["data-manager"];
-        var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port + "/applications/" + name +
-        '?user.name=' + userName;
+        var applicationsApi = "/api/dm/applications/" + name +'?user.name=' + userName;
         var res = $http.delete(applicationsApi);
         return res;
       },
       performApplicationAction: function(name, action, userName) {
-        var applicationsApi = "http://" + dataManager.host + ":" + dataManager.port
-        + "/applications/" + name + "/" + action + '?user.name=' + userName;
+        var applicationsApi = "/api/dm/applications/" + name + "/" + action + '?user.name=' + userName;
         var res = $http.post(applicationsApi);
         return res;
       },
       getEndpoints: function() {
-        var endpointsAPI = "http://" + dataManager.host + ":" + dataManager.port + "/endpoints";
+        var endpointsAPI = "/api/dm/endpoints";
 
         // $q.all will wait for an array of promises to resolve,
         // then will resolve its own promise (which it returns)

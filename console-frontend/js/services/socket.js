@@ -11,8 +11,6 @@
 
 angular.module('appServices').factory('socket', ['$rootScope', 'ConfigService',
   function ($rootScope, ConfigService) {
-    var dataManager = ConfigService.backend["data-manager"];
-    var host = dataManager.host;
     var socket = io.connect();
     return {
       on: function (eventName, callback) {
