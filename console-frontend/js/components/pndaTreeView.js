@@ -49,10 +49,10 @@ angular.module('appComponents').directive('pndaTreeView', ['$filter', function()
         }
 
         if (type === "object") {
-          for (var key in o) {
-            array.push({ level: level, key: key, collapsed: false, visible: true });
-            jsonTraverse(o[key], array, level + 1);
-          }
+           Object.keys(o).sort().forEach( function(key) {
+           array.push({ level: level, key: key, collapsed: false, visible: true });
+           jsonTraverse(o[key], array, level + 1);
+           });
         } else {
           var previousElement = array[array.length - 1];
           previousElement.value = String(o);
@@ -60,7 +60,6 @@ angular.module('appComponents').directive('pndaTreeView', ['$filter', function()
           delete previousElement.collapsed;
         }
       }
-
       /**
        * Transforms an array used for display back to a JSON object.
 
@@ -89,7 +88,6 @@ angular.module('appComponents').directive('pndaTreeView', ['$filter', function()
                 subarray.push(array[j]);
                 j++;
               }
-
               res[key] = arrayToJSON(subarray, currentLevel);
             } else {
               res[key] = val;
@@ -198,7 +196,6 @@ angular.module('appComponents').directive('pndaTreeView', ['$filter', function()
           jsonTraverse(scope.json, scope.jsonObject);
         }
       });
-
       // scope.editable is also a string and we need to convert it to a boolean
       scope.editable = scope.editable === "true";
 

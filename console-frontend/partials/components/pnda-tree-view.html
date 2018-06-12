@@ -1,5 +1,5 @@
 <table class="table table-hover table-condensed">
-  <tr ng-repeat="row in jsonObject | orderBy:['level','key']" ng-class="{'value-changed': row.value !== row.newValue}" ng-if="row.visible">
+  <tr ng-repeat="row in jsonObject" ng-class="{'value-changed': row.value !== row.newValue}" ng-if="row.visible">
     <td style="padding-left: {{calculatePadding(row)}}px" class="key col-md-4">
       <div ng-click="toggleCollapse(row, $index)" class="toggle-collapse">
         <span ng-if="isNode(row) && row.collapsed" class="glyphicon glyphicon-plus-sign"></span>
