@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - PNDA-4234: Fix hive query cog link for HDP clusters
 - PNDA-4133: Detect lack of health metric updates based on a timer rather than the absolute time to avoid the client clock having to match the server side
 - PNDA-4019: Prevent loss of progress in the create application workflow when another application finishes deleting
+- PNDA-4650: Fix expand and collapse for app property
 
 ## [1.0.0] 2018-02-10
 ### Added
