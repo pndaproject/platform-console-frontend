@@ -306,8 +306,6 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
 
       // update the list of links in the Config Service using endpoints from the deployment manager endpoints API
       ConfigService.userInterfaceIndex["Kafka Manager"] = $scope.dm_endpoints.kafka_manager;
-      ConfigService.userInterfaceIndex["YARN Resource Manager"] = "http://" + data.yarn_resource_manager_host + ":" +
-        data.yarn_resource_manager_port;
       if ('hue_host' in data) {
         ConfigService.userInterfaceIndex.Hue = "http://" + data.hue_host + ":" + data.hue_port;
       }
