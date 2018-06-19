@@ -36,6 +36,16 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
     $scope.theme = (locationParameters.theme === undefined ? '' : 'css/generated/themes/'
     + locationParameters.theme + '.css');
 
+    
+    $scope.metricpages = [
+        { value:"10", label:"10 metric per page" },
+        { value:"20", label:"20 metric per page" },
+        { value:"50", label:"50 metric per page" },
+        { value:"100", label:"100 metric per page" }
+    ];
+    
+    $scope.selectedMetricCount = 50;
+    
     $scope.showModal = function(healthInfo, metricsInfo) {
       var fields = {
         title: healthInfo.info.source + " Overview",

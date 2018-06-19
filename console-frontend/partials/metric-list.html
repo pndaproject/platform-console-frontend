@@ -1,4 +1,3 @@
-
 <div class="row first-row row-eq-height">
   <div class="col-sm-6">
     <div class="panel panel-default">
@@ -48,8 +47,18 @@
   <div class="col-sm-12">
     <div class="panel panel-default">
       <div class="panel-heading">
-        Metrics
-        <div id="search">Search: <input ng-model="query"></div>
+      <div class="row">
+      <div class="col-md-6 col-sm-3 col-xs-12">Metrics</div>
+      <div id="search" class="pull-left col-md-2 col-sm-2 col-xs-12" style="padding-top: 4px">Search: <input ng-model="query"></div>
+      <div class="col-md-4 col-sm-7 col-xs-12 text-right">
+          <p>
+            <span>Show Metric:</span>
+            <button type="button" class="btn btn-default btn-sm" ng-model="selectedMetricCount" data-html="1" bs-options="page.value as page.label for page in metricpages" bs-select>
+             Select<span class="caret"></span>
+            </button>
+          </p>
+      </div>
+      </div>
       </div>
       <div class="panel-body">
         <table id="metrics" class="table table-hover table-condensed">
@@ -61,8 +70,8 @@
             <th></th>
           </tr>
           </thead>
-          <tr ng-repeat="metric in metrics | filter:query | limitTo:50 | orderBy:orderProp"
-              ng-class="{ 'list-group-item-danger': metric.info.value==='ERROR', 'list-group-item-warning': metric.info.value==='WARN'}">
+          <tr dir-paginate="metric in metrics | filter:query | orderBy:orderProp | itemsPerPage: selectedMetricCount"
+              ng-class="{ 'list-group-item-danger': metric.info.value==='ERROR', 'list-group-item-warning': metric.info.value==='WARN'}" pagination-id="metricPages">
             <td class="metric">{{metric.name}}</td>
             <td class="source">{{metric.info.source}}</td>
             <td class="value">{{metric.info.value | formatNumbers: metric.name}}</td>
@@ -73,7 +82,16 @@
             </td>
           </tr>
         </table>
-      </div>
+        <hr/>
+        <div class="pull-left" style="margin-top: 15px;"><label>Total number of metrics:</label> {{metrics.length}}</div>
+        <div class="pull-right">
+        <dir-pagination-controls
+        pagination-id="metricPages" max-size="6"
+        direction-links="true"
+        boundary-links="true">
+        </dir-pagination-controls>
+        </div>
+    </div>
     </div>
   </div>
 </div>
