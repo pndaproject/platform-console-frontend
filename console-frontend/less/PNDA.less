@@ -503,7 +503,7 @@ div#oozieComponents{
     position: absolute;
     width: 300px;
     background: #fff;
-    margin-top: -164px;
+    margin-top: -134px;
     box-shadow: 1px 3px 4px #ccc;
     margin-left: -14px;
     border: 1px solid black;
@@ -515,7 +515,7 @@ table.stage-job-summary:before{
     content: "";
     border-color: rgba(194, 225, 245, 0);
     border-top-color: black;
-    left: 58px;
+    left: 45px;
     border-width: 8px;
     position: absolute;
 }
@@ -535,8 +535,44 @@ table.stage-job-summary tbody tr td:nth-child(1),table.stage-job-summary tbody t
 	border-left: 1px solid black;
 }
 
+.spark-stage-job-summary{
+    position: absolute;
+    width: 300px;
+    background: #fff;
+    margin-top: 1px;
+    box-shadow: 1px 3px 4px #ccc;
+    margin-left: -25px;
+    border: 1px solid black;
+}
+
+table.spark-stage-job-summary:before{
+    border: solid;
+    content: "";
+    border-color: rgba(194, 225, 245, 0);
+    border-bottom-color: black;
+    left: 31%;
+    bottom: 100%;
+    border-width: 8px;
+    position: absolute;
+}
+
+table.spark-stage-job-summary th{
+	background: #f9f9f9;
+	border: 1px solid black;
+}
+
+table.stage-job-summary th, table.stage-job-summary td{
+	padding-left: 10px;
+}
+
+table.spark-stage-job-summary tbody tr td:nth-child(1),table.spark-stage-job-summary tbody tr td:nth-child(3){
+	font-weight: bold;
+	width: 38%; 
+	border-left: 1px solid black;
+}
+
 div#applicationOverview {
-    min-height: 50px;
+    min-height: 180px;
     max-height: 370px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -559,4 +595,42 @@ div#applicationOverviewModal{
 
 #applicationOverview table{
 	font-size:12px;
+}
+.tooltip-text:hover:after{
+      content: attr(tooltip);
+      padding: 4px 8px;
+      color: white;
+      position: absolute;
+      background-color: black;
+      width: 1000%;
+	  left: 0;
+	  margin-top:10px;
+	  top: 100%;
+	  z-index: 20;
+	  white-space: prewrap;
+	  -moz-border-radius: 5px;
+	  -webkit-border-radius: 5px;
+	  border-radius: 5px;
+	  -moz-box-shadow: 0px 0px 4px #222;
+	  -webkit-box-shadow: 0px 0px 4px #222;
+	  box-shadow: 0px 0px 4px #222;
+	  background-image: -moz-linear-gradient(top, #000000, #000000);
+	  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #000000),color-stop(1, #000000));
+	  background-image: -webkit-linear-gradient(top, #000000, #000000);
+	  background-image: -moz-linear-gradient(top, #000000, #000000);
+	  background-image: -ms-linear-gradient(top, #000000, #000000);
+	  background-image: -o-linear-gradient(top, #000000, #000000);
+}
+
+.glyphicon-warning-sign{
+   color: orange;
+}
+
+.custom-timer{
+    display: block;
+    font-size: 10px;
+    color: #444;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }

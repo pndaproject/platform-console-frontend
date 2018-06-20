@@ -27,9 +27,7 @@
 angular.module('appServices').factory('MetricService', ['$resource', 'ConfigService', '$http', '$q', '$filter',
   '$cookies', '$window', function($resource, ConfigService, $http, $q, $filter, $cookies, $window) {
     var dataManager = ConfigService.backend["data-manager"];
-    var host = dataManager.host;
-    var port = dataManager.port;
-    var MetricService = $resource('http://' + host + ':' + port + '/metrics/:metricId?values=y', {}, {
+    var MetricService = $resource('/api/dm/metrics/:metricId?values=y', {}, {
       query: { method:'GET', params:{ metricId:'' }, isArray:true, transformResponse: function(data) {
         var json = JSON.parse(data);
 

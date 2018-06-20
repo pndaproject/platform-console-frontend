@@ -33,7 +33,8 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
     var defaultTimeout = 500;
     var yarnUrl;
-
+    var userName = $cookies.get('user');
+    
     function displayConfirmation(message, actionIfConfirmed) {
       var modalOptions = {
         closeButtonText: 'Cancel',
@@ -65,6 +66,9 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
             break;
           case 400:
             text = "Request body validation failed. Please try again.";
+            break;
+          case 403:
+            text = "Not authorized.";
             break;
           case 404:
             text = "Not found.";
@@ -121,7 +125,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       // NOTCREATED status when app gets deleted and DM doesn't know about it.
       if ((status === "NOTCREATED" && information === null) || status === "DESTROYING") {
         $scope.alertClass = "alert-success";
-        $timeout($scope.getAppsList, 2000);
+        $timeout($scope.getAppsList(status), 2000);
       } else if (status === 200 || status === "CREATED" || status === "STARTED") {
         $scope.alertClass = "alert-success";
         $timeout($scope.refreshAppsList(applicationName, status, isNewApp), 3000);
@@ -189,6 +193,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
             // the app has been created successfully, so we can now reset the creatingApp flag
             $scope.creatingApp = false;
+            $scope.newApp = false;
           }, defaultTimeout);
         }
       } else {
@@ -206,7 +211,8 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     };
 
     /* get applications list */
-    $scope.getAppsList = function() {
+    $scope.getAppsList = function(status) {
+      status = status || false;
       DeploymentManagerService.getApplications().then(function(data) {
         $scope.dmError = false;
 
@@ -221,8 +227,10 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         $scope.applications = data;
         $scope.viewAppProps = false;
         $scope.response = false;
-        $scope.newApp = false;
         $scope.showApplicationDetail = false;
+        if(status !== "DESTROYING"){
+            $scope.newApp = false;
+        }
 
         // by default, select the first application
         // makes the functionality of the page more obvious
@@ -264,6 +272,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     $scope.startOrStopApplication = function(name, status) {
       var action = status === Constants.APPLICATION.CREATED ? "start" : status === Constants.APPLICATION.STARTED
       ? "stop" : undefined;
+      
       if (action !== undefined) {
         displayConfirmation("Are you sure you want to " + action + " " + name + "?", function() {
           var found = $scope.applications.find(function(element) {
@@ -271,18 +280,18 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
               return element;
             }
           });
-          if (action === 'start') {
-            found.status = 'STARTING';
-			$scope.getApplicationSummary(name);
-          } else if (action === 'stop') {
-            found.status = 'STOPPING';
-			$scope.getApplicationSummary(name);
-          }
 
           // $scope.animateApplication(name, false);
-          var res = DeploymentManagerService.performApplicationAction(name, action);
+          var res = DeploymentManagerService.performApplicationAction(name, action, userName);
           res.then(function(result) {
           $scope.successCallback(result, name);
+          if (action === 'start') {
+              found.status = 'STARTING';
+              $scope.getApplicationSummary(name);
+          } else if (action === 'stop') {
+              found.status = 'STOPPING';
+              $scope.getApplicationSummary(name);
+          }
         }, function(error) {
           $scope.errorCallback(error);
         });
@@ -299,10 +308,10 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
               return element;
             }
           });
-          found.status = 'DESTROYING';
-          var res = DeploymentManagerService.destroyApplication(name);
+          var res = DeploymentManagerService.destroyApplication(name, userName);
           res.then(function(result) {
             $scope.successCallback(result, name);
+            found.status = 'DESTROYING';
           }, function(error) {
             $scope.errorCallback(error);
           });
@@ -327,7 +336,6 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         });
         $scope.getApplicationSummary(app.name);
         $scope.showApplicationDetail = true;
-        $scope.newApp = false;
         $scope.metricFilter = 'application\\.kpi\\.' + app.name + '\\.';
         $scope.appMetrics = $filter('getByNameForDisplay')($scope.allMetrics, $scope.metricFilter);
       }
@@ -477,12 +485,10 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     $scope.submitApplication = function(package) {
       $scope.appNameisEmpty = false;
       var applicationName = $('#applicationName').val();
-      var userName = $cookies.get('user');
       var appProperties = $scope.json;
       var finalAppJson = {};
       finalAppJson = appProperties;
       finalAppJson.package = package;
-      finalAppJson.user = userName;
       $scope.response = false;
       $scope.appNameError = false;
       if (applicationName === "") {
@@ -494,7 +500,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         $scope.appNameErrorText += "Characters allowed: a-z, A-Z, 0-9, -, _.";
       } else {
         $scope.creatingApp = true;
-        var submitApp = DeploymentManagerService.createApplication(applicationName, finalAppJson);
+        var submitApp = DeploymentManagerService.createApplication(applicationName, finalAppJson, userName);
         submitApp.then(function(result) {
           $scope.successCallback(result, applicationName, true);
         }, function(error) {

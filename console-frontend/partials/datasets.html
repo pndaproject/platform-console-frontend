@@ -23,14 +23,19 @@
             </thead>
             <tbody>
               <tr ng-repeat="dataset in datasets | filter:filterDatasets | orderBy:orderProp">
-                <td>{{dataset.id}}</td>
+                <td>{{dataset.id}}
+                <span class="glyphicon glyphicon-warning-sign pad-left-10 tooltip-test"
+                      data-title="No dataset on HDFS for associated policy" 
+                      ng-show="dataset.policy === 'integrity_error'" bs-tooltip>
+                </span>
+                </td>
                 <td class="padding-select">
-                  <select ng-model="dataset.mode" ng-change="datasetChanged()">
+                  <select ng-model="dataset.mode" ng-change="datasetChanged()" ng-show="dataset.policy !== 'integrity_error'">
                     <option ng-repeat="m in modes">{{m}}</option>
                   </select>
                 </td>
                 <td class="padding-select">
-                  <div ng-show="dataset.mode !== 'keep'">
+                  <div ng-show="dataset.mode !== 'keep' && dataset.policy !== 'integrity_error'">
                     <select ng-model="dataset.policy" ng-change="datasetChanged()">
                       <option ng-repeat="p in policies">{{p}}</option>
                     </select>

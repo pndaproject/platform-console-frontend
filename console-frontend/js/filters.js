@@ -294,6 +294,9 @@ metricFilters.filter('metricNameForDisplay', function() {
       case "hadoop.SPARK_ON_YARN.health":
         display = "Spark";
         break;
+      case "flink.health":
+          display = "Flink";
+          break;
     }
     return display;
   };
@@ -341,6 +344,34 @@ metricFilters.filter('simplifyTime', function() {
 
     return res;
   };
+});
+
+metricFilters.filter('millSecondsToTimeString', function() {
+     return function(millseconds) {
+      var oneSecond = 1000;
+      var oneMinute = oneSecond * 60;
+      var oneHour = oneMinute * 60;
+      var oneDay = oneHour * 24;
+      var seconds = Math.floor((millseconds % oneMinute) / oneSecond);
+      var minutes = Math.floor((millseconds % oneHour) / oneMinute);
+      var hours = Math.floor((millseconds % oneDay) / oneHour);
+      var days = Math.floor(millseconds / oneDay);
+      var timeString = '';
+      if (days !== 0) {
+          timeString += (days !== 1) ? (days + ' days ') : (days + ' day ');
+      }
+      if (hours !== 0) {
+          timeString += (hours !== 1) ? (hours + ' hours ') : (hours + ' hour ');
+      }
+      if (minutes !== 0) {
+          timeString += (minutes !== 1) ? (minutes + ' minutes ') : (minutes + ' minute ');
+      }
+      if (seconds !== 0 && minutes === 0 && hours === 0 && days === 0) {
+         timeString = "just now";
+      }
+
+      return timeString;
+     };
 });
 
 metricFilters.filter('range', function() {

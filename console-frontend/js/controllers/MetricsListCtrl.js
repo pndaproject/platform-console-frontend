@@ -36,6 +36,16 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
     $scope.theme = (locationParameters.theme === undefined ? '' : 'css/generated/themes/'
     + locationParameters.theme + '.css');
 
+    
+    $scope.metricpages = [
+        { value:"10", label:"10 metric per page" },
+        { value:"20", label:"20 metric per page" },
+        { value:"50", label:"50 metric per page" },
+        { value:"100", label:"100 metric per page" }
+    ];
+    
+    $scope.selectedMetricCount = 50;
+    
     $scope.showModal = function(healthInfo, metricsInfo) {
       var fields = {
         title: healthInfo.info.source + " Overview",
@@ -306,6 +316,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
     function findResolutionUrlForSource(source, showDefault) {
       var resolutionUrl = "/";
       var opentsdbIndex = "OpenTSDB";
+      var flinkIndex = "Flink";
       if ($scope.dm_endpoints !== undefined) {
         if (source === "kafka") {
           resolutionUrl = $scope.dm_endpoints.kafka_manager;
@@ -332,6 +343,11 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
         } else if (source === "OOZIE") {
           resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
             '#/main/views/WORKFLOW_MANAGER/1.0.0/PNDA_WORKFLOW';
+        } else if (source === "flink") {
+            resolutionUrl = ConfigService.userInterfaceIndex[flinkIndex];
+        } else if (source === "HQUERY") {
+          resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
+          "#/main/view/HIVE/auto_hive_instance";
         } else if (source === "AMBARI" || source === "CM") {
           resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"];
         } else if ($scope.dm_endpoints.cm_status_links !== undefined) {
