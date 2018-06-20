@@ -34,7 +34,8 @@ var consoleFrontendApp = angular.module('consoleFrontendApp', [
     'appFilters',
     'appComponents',
     'ngSanitize',
-	'angularUtils.directives.dirPagination'
+    'angularUtils.directives.dirPagination',
+    'ngIdle'
   ])
   .provider('ConfigService', function () {
     var options = {};
