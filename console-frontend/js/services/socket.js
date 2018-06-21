@@ -11,7 +11,7 @@
 
 angular.module('appServices').factory('socket', ['$rootScope', 'ConfigService',
   function ($rootScope, ConfigService) {
-    var socket = io.connect();
+    var socket = io.connect({path: "/updates/socket.io" });
     return {
       on: function (eventName, callback) {
         socket.on(eventName, function () {

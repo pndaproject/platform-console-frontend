@@ -43,6 +43,10 @@ angular.module('appControllers').controller('PackageManagementCtrl', ['$scope', 
     var defaultTimeout = 500;
     var userName = $cookies.get('user');
 
+    $scope.getPartial = function () {
+      return 'partials/package-management-header.html';
+    };
+
     $scope.successCallback = function(result, packageName, intent) {
       var status;
       var information = null;
