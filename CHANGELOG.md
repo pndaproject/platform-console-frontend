@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - PNDA-4019: Prevent loss of progress in the create application workflow when another application finishes deleting
 - PNDA-4650: Fix expand and collapse for app property
 - PNDA-4226: Expire sessions after inactivity rather than a fixed time period
+- PNDA-4724: Code in console doesn't handle null causes properly
 
 ## [1.0.0] 2018-02-10
 ### Added
