@@ -120,7 +120,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
           metric.info.causes = (metric.info.causes === undefined || metric.info.causes === ""
             || metric.info.causes === "[\"\"]" ? [] :
             UtilService.isJson(metric.info.causes) ? JSON.parse(metric.info.causes) : [metric.info.causes]);
-          metric.info.displayCauses = metric.info.causes.length > 0;
+          metric.info.displayCauses = (metric.info.causes != null) ? (metric.info.causes.length > 0) : false;
           if (metric.name.endsWith(".health")) {
             if (metric.info.value === "ERROR") {
               $scope.trafficLightStatus.errors.push(metric);
