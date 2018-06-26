@@ -10,6 +10,7 @@
             <span ng-class="{ 'active': trafficLightStatus.status==='ERROR'}" id="red"></span>
             <span ng-class="{ 'active': trafficLightStatus.status==='WARN'}" id="orange"></span>
             <span ng-class="{ 'active': trafficLightStatus.status==='OK'}" id="green"></span>
+            <span ng-class="{ 'active': trafficLightStatus.status==='OUTDATED'}" id="gray"></span>
           </div>
         </div>
         <div class="col-sm-10">
@@ -25,6 +26,18 @@
             <div class="list-group" ng-switch="trafficLightStatus.status">
               <div ng-switch-when="OK" class="list-group-item list-group-item-success">All components are online</div>
               <div ng-switch-default></div>
+            </div>
+            <div class="list-group" ng-switch="trafficLightStatus.unavailable.length">
+              <div ng-switch-when="0"></div>
+              <div ng-click="showModalTable(trafficLightStatus.unavailable, 'Unavailable Metrics')" ng-switch-default class="list-group-item list-group-item-danger">
+                  <span class="badge">{{trafficLightStatus.unavailable.length}}</span>
+                  Error - Some components are not reporting health status and may be offline</div>
+            </div>
+            <div ng-switch="trafficLightStatus.outdated.length">
+              <div ng-switch-when="0"></div>
+              <div ng-click="showModalTable(trafficLightStatus.outdated, 'Outdated Metrics')" ng-switch-default class="list-group-item" style="background:lightgray;">
+                   <span class="badge">{{trafficLightStatus.outdated.length}}</span>
+                   Warning - Some components are outdated</div>
             </div>
           </div>
         </div>

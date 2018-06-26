@@ -15,13 +15,14 @@
           </tr>
           </thead>
           <tr ng-repeat="metric in metrics | filter:query | orderBy:orderProp"
-              ng-class="{ 'list-group-item-danger': metric.info.value==='ERROR', 'list-group-item-warning': metric.info.value==='WARN'}">
+              ng-class="{ 'list-group-item-danger': metric.info.value==='ERROR', 'list-group-item-warning': metric.info.value==='WARN' ||  metric.info.value==='UNAVAILABLE'}">
             <td class="metric">{{metric.name}}</td>
             <td class="source">{{metric.info.source}}</td>
             <td class="value">
-              <a target="_blank" href="{{metric.info.resolutionURL}}" class="btn btn-link causes">
+              <a target="_blank" href="{{metric.info.resolutionURL}}" class="btn btn-link causes" ng-if="metric.info.resolutionURL">
                 More Info
               </a>
+              <span ng-if="!metric.info.resolutionURL">-</span>
             </td>
           </tr>
         </table>
