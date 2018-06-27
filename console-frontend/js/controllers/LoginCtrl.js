@@ -67,6 +67,7 @@ angular.module('login').controller('LoginCtrl', ['$scope', '$http', '$location',
           //Getting session_max_age and time duration for warning message from backend in milliseconds
           var timeoutForLogout = response.data.session_max_age / 1000;
           var sessionExpiryWarningDuration = response.data.session_expiry_warning_duration / 1000;
+          $window.sessionStorage.setItem("metricTimeElapsedInfo",JSON.stringify({}));
           
           // add to cookies
           var expireDate = new Date();
@@ -152,7 +153,7 @@ angular.module('logout')
 
     // remove cookie data and logout user
     $rootScope.globals = {};
-
+    $window.sessionStorage.removeItem("metricTimeElapsedInfo");
     $cookies.remove('globals');
     $cookies.remove('userLoggedIn');
     $cookies.remove('user');
