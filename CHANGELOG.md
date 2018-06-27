@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - PNDA-4560: Provide identity to all deployment manager operations
 - PNDA-4221: Pagination selection for metrics page
+- PNDA-4140: Display warning for outdated metrics
 
 ### Changed
 - PNDA-4042: Sort application properties alphabetically
