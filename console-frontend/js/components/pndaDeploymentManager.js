@@ -26,8 +26,9 @@
 *-------------------------------------------------------------------------------*/
 
 angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', 'DeploymentManagerService',
-  '$timeout', 'socket', 'ModalService', 'HelpService','$cookies','customTimer',
-  function($filter, DeploymentManagerService, $timeout, socket, ModalService, HelpService, $cookies, customTimer) {
+  '$timeout', 'socket', 'ModalService', 'HelpService','$cookies','customTimer','$window',
+  function($filter, DeploymentManagerService, $timeout, socket, ModalService, HelpService, $cookies, 
+           customTimer,$window) {
     return {
       restrict: 'E',
       scope: {
@@ -45,8 +46,7 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
         scope.orderProp = "name";
         scope.severity = '';
         scope.userName = $cookies.get('user');
-        scope.timeDiff = 0;
-        var defaultTimeInterval = 1000;
+        scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
         scope.showDetails = function() {
           if (scope.severity) {
             scope.showOverview({ metricObj: scope.metricObj, metrics: scope.fullMetrics });
@@ -224,27 +224,31 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
               scope.timeDiff = 0;
               scope.severity = healthMetric.info.value;
               scope.metricObj = healthMetric;
+              scope.isUnavailable = (healthMetric.info.value === "UNAVAILABLE");
+              if(scope.metricInfo && scope.metricInfo[healthMetric.name]){
+                  scope.timeDiff = scope.metricInfo[healthMetric.name].timeDiff;
+              }
+              if(!scope.isUnavailable && scope.timeDiff === undefined){
+                  scope.timeDiff = 0;
+              }
               scope.healthClass = "health_" + healthStatus(healthMetric.info.value, scope.timestamp, scope.timeDiff);
               scope.healthClass += (enableModalView(scope.severity) ? " clickable" : " ");
               scope.latestHealthStatus = healthMetric.info.value;
-              scope.isUnavailable = (healthMetric.info.value === "UNAVAILABLE");
 
               showMetricUpdateAnimation($("pnda-deployment-manager .health"));
             }
           }
         };
         
-        scope.callback = function() {
-            scope.timeDiff += defaultTimeInterval;
-        };
-        
-        var timerCallbackId = customTimer.on(scope.callback);
-         
-         scope.$on('$destroy',function(){
-            customTimer.off(timerCallbackId);
-         });
-
         var healthStatusCallbackFn = function(now) {
+          scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
+          if(scope.metricInfo && scope.metricObj && scope.metricInfo[scope.metricObj.name]){
+             scope.timeDiff = scope.metricInfo[scope.metricObj.name].timeDiff;
+          }
+          //Initially
+          if(!scope.isUnavailable && scope.timeDiff === undefined){
+             scope.timeDiff = 0;
+          }
           scope.healthClass = " health_" + healthStatus(scope.latestHealthStatus, scope.timestamp, scope.timeDiff);
         };
 
