@@ -24,8 +24,8 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService','customTimer',
-        function($filter, HelpService, customTimer) {
+angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService','customTimer','$window',
+        function($filter, HelpService, customTimer,$window) {
   return {
     restrict: 'E',
     scope: {
@@ -45,8 +45,7 @@ angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService',
       scope.metrics = { live_datanodes: 0, total_files:0, non_dfs_used:0,
         dfs_used:0, total_size: 0, total_used: 0, jvm_heap_used:0, dead_datanodes:0 };
       scope.metricObj = {};
-      scope.timeDiff = 0;
-      var defaultTimeInterval = 1000;
+      scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
 
       // the callback function expects an array of matching metrics
       scope.showDetails = function() {
@@ -91,9 +90,15 @@ angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService',
               scope.class = $filter('metricNameClass')(metric.name);
               scope.severity = metric.info.value;
               scope.timestamp = metric.info.timestamp;
-              scope.timeDiff = 0;
-              var status = healthStatus(metric.info.value, scope.timestamp, scope.timeDiff);
               scope.isUnavailable = (metric.info.value === "UNAVAILABLE");
+              scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
+              if(scope.metricInfo && scope.metricInfo[metric.name]){
+                scope.timeDiff = scope.metricInfo[metric.name].timeDiff;
+              }
+              if(!scope.isUnavailable && scope.timeDiff === undefined){
+                  scope.timeDiff = 0;
+              }
+              var status = healthStatus(metric.info.value, scope.timestamp, scope.timeDiff);
 
 //              scope.healthClass += (enableModalView(scope.severity) ? " clickable" : " ");
               scope.healthClass = "health_" + status;
@@ -148,17 +153,16 @@ angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService',
           calculatePercentage(scope.capacity);
         }
       };
-      scope.callback = function() {
-        scope.timeDiff += defaultTimeInterval;
-      };
-      
-      var timerCallbackId = customTimer.on(scope.callback);
-       
-      scope.$on('$destroy',function(){
-        customTimer.off(timerCallbackId);
-      });
 
       var healthStatusCallbackFn = function() {
+        scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
+        if(scope.metricInfo && scope.metricObj && scope.metricInfo[scope.metricObj.name]){
+           scope.timeDiff = scope.metricInfo[scope.metricObj.name].timeDiff;
+        }
+        //Initially
+        if(!scope.isUnavailable && scope.timeDiff === undefined){
+            scope.timeDiff = 0;
+        }
         var status = healthStatus(scope.latestHealthStatus, scope.timestamp, scope.timeDiff);
         scope.healthClass = " health_" + status;
         scope.showInfoIcon = status === 'WARN' || status === 'ERROR';

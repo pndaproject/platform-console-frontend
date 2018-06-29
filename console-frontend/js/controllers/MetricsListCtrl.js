@@ -228,6 +228,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
          Object.keys($scope.metricInfo).forEach(function(metric) {
             $scope.metricInfo[metric].timeDiff = $scope.metricInfo[metric].timeDiff + defaultTimeInterval;
             $window.sessionStorage.setItem('metricTimeElapsedInfo',JSON.stringify($scope.metricInfo));
+            updateHealthIndicator();
         });
       }
     }, 1000);
@@ -321,8 +322,6 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
           cb.callbackFn([found]);
         });
       }
-
-      updateHealthIndicator();
     }
 
     socket.on('platform-console-frontend-metric-update', socketMetricsUpdate);
