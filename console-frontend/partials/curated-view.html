@@ -13,12 +13,12 @@
               </button>
               <div class="value">{{ operationalEndpoints.edgeNode }}</div>
             </div>
-            <div class="endpoint" ng-if="operationalEndpoints.httpFS !== ''">
-              <button class="btn name copy-to-clipboard" data-clipboard-text="{{ operationalEndpoints.httpFS }}" data-title="Copied" data-trigger="focus" data-delay="0,1000" bs-tooltip>
+            <div class="endpoint" ng-if="findComponentUrl('HTTPFS') !== ''">
+              <button class="btn name copy-to-clipboard" data-clipboard-text="{{ findComponentUrl('HTTPFS') }}" data-title="Copied" data-trigger="focus" data-delay="0,1000" bs-tooltip>
                 <div>HttpFS</div>
                 <div class="glyphicon glyphicon-copy"></div>
               </button>
-              <div class="value">{{ operationalEndpoints.httpFS }}</div>
+              <div class="value">{{ findComponentUrl('HTTPFS') }}</div>
             </div>
           </div>
         </div>
