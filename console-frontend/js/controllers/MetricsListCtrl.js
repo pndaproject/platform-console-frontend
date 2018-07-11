@@ -328,12 +328,10 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
 
     $scope.dm_endpoints;
     $scope.operationalEndpoints = {
-      edgeNode: ConfigService.edge_node,
-      httpFS: ""
+      edgeNode: ConfigService.edge_node
     };
     DeploymentManagerService.getEndpoints().then(function(data) {
       $scope.dm_endpoints = data;
-      $scope.operationalEndpoints.httpFS = data.webhdfs_host + ":" + data.webhdfs_port;
 
       // update the list of links in the Config Service using endpoints from the deployment manager endpoints API
       ConfigService.userInterfaceIndex["Kafka Manager"] = $scope.dm_endpoints.kafka_manager;
