@@ -370,9 +370,15 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
         } else if (source === "OOZIE") {
           resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
             '#/main/views/WORKFLOW_MANAGER/1.0.0/PNDA_WORKFLOW';
+        } else if (source === "SPARK") {
+          resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
+            '#/main/services/SPARK/summary';
+        } else if (source === "HBASE") {
+          resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
+            '#/main/services/HBASE/summary';
         } else if (source === "flink") {
-            resolutionUrl = ConfigService.userInterfaceIndex[flinkIndex];
-        } else if (source === "HQUERY") {
+          resolutionUrl = ConfigService.userInterfaceIndex[flinkIndex];
+        } else if (source === "HQUERY" || source === "HIVE") {
           resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
           "#/main/view/HIVE/auto_hive_instance";
         } else if (source === "AMBARI" || source === "CM") {
