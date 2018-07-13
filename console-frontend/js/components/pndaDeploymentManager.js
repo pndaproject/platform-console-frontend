@@ -46,7 +46,6 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
         scope.orderProp = "name";
         scope.severity = '';
         scope.userName = $cookies.get('user');
-        scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
         scope.showDetails = function() {
           if (scope.severity) {
             scope.showOverview({ metricObj: scope.metricObj, metrics: scope.fullMetrics });
@@ -225,12 +224,8 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
               scope.severity = healthMetric.info.value;
               scope.metricObj = healthMetric;
               scope.isUnavailable = (healthMetric.info.value === "UNAVAILABLE");
-              if(scope.metricInfo && scope.metricInfo[healthMetric.name]){
-                  scope.timeDiff = scope.metricInfo[healthMetric.name].timeDiff;
-              }
-              if(!scope.isUnavailable && scope.timeDiff === undefined){
-                  scope.timeDiff = 0;
-              }
+              scope.serverTime = $window.localStorage.getItem('serverTime');
+              scope.timeDiff = scope.serverTime - scope.timestamp;
               scope.healthClass = "health_" + healthStatus(healthMetric.info.value, scope.timestamp, scope.timeDiff);
               scope.healthClass += (enableModalView(scope.severity) ? " clickable" : " ");
               scope.latestHealthStatus = healthMetric.info.value;
@@ -241,14 +236,8 @@ angular.module('appComponents').directive('pndaDeploymentManager', ['$filter', '
         };
         
         var healthStatusCallbackFn = function(now) {
-          scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
-          if(scope.metricInfo && scope.metricObj && scope.metricInfo[scope.metricObj.name]){
-             scope.timeDiff = scope.metricInfo[scope.metricObj.name].timeDiff;
-          }
-          //Initially
-          if(!scope.isUnavailable && scope.timeDiff === undefined){
-             scope.timeDiff = 0;
-          }
+          scope.serverTime = $window.localStorage.getItem('serverTime');
+          scope.timeDiff = scope.serverTime - scope.timestamp;
           scope.healthClass = " health_" + healthStatus(scope.latestHealthStatus, scope.timestamp, scope.timeDiff);
         };
 

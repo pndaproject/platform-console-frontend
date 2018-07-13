@@ -34,7 +34,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
 
     var locationParameters = $location.search();
     var defaultTimeInterval = 1000;
-    $scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
+    $scope.thresholdTime = 180000;
     $scope.theme = (locationParameters.theme === undefined ? '' : 'css/generated/themes/'
     + locationParameters.theme + '.css');
 
@@ -115,17 +115,19 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
     }
 
     resetTrafficLightStatus();
+    $scope.metrics = [];
+    $scope.metricLoaded = false;
 
-    $scope.metrics = MetricService.query(function(response) {
+    MetricService.query(function(response) {
+      $scope.metrics = response.metrics;
+      $scope.metricLoaded = true;
+      $window.localStorage.setItem('serverTime',response.serverTime);
+      $scope.serverTime = JSON.parse($window.localStorage.getItem('serverTime'));
       resetTrafficLightStatus();
-      angular.forEach(response, function(metric) {
+      angular.forEach(response.metrics, function(metric) {
         // turn the 'value' promise into its value when it's available
         metric.info.then(function(response) {
           metric.info = response[0];
-          if( !$scope.metricInfo[metric.name] && metric.name.endsWith(".health")){
-            $scope.metricInfo[metric.name] = { "timeDiff" : 0 };
-          }
-          $window.sessionStorage.setItem('metricTimeElapsedInfo',JSON.stringify($scope.metricInfo));
           metric.info.causes = (metric.info.causes === undefined || metric.info.causes === ""
             || metric.info.causes === "[\"\"]" ? [] :
             UtilService.isJson(metric.info.causes) ? JSON.parse(metric.info.causes) : [metric.info.causes]);
@@ -137,7 +139,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
               $scope.trafficLightStatus.warnings.push(metric);
             }else if (metric.info.value === "UNAVAILABLE") {
               $scope.trafficLightStatus.unavailable.push(metric);
-            }else if ($scope.metricInfo[metric.name] && $scope.metricInfo[metric.name].timeDiff > 180000) {
+            }else if ($scope.serverTime - metric.info.timestamp > $scope.thresholdTime) {
               $scope.trafficLightStatus.outdated.push(metric);
             }
           }
@@ -218,19 +220,16 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
     $scope.now = Date.now();
     $scope.updateNowTimerCallbacks = [];
     var stop = $interval(function() {
+      if($scope.serverTime){
+         $scope.serverTime = $scope.serverTime + 1000;
+         $window.localStorage.setItem('serverTime', $scope.serverTime);
+      }
       $scope.now = Date.now();
       angular.forEach($scope.updateNowTimerCallbacks, function(cb) {
         if (cb.callbackFn !== undefined) {
           cb.callbackFn($scope.now);
         }
       });
-      if($scope.metricInfo){
-         Object.keys($scope.metricInfo).forEach(function(metric) {
-            $scope.metricInfo[metric].timeDiff = $scope.metricInfo[metric].timeDiff + defaultTimeInterval;
-            $window.sessionStorage.setItem('metricTimeElapsedInfo',JSON.stringify($scope.metricInfo));
-            updateHealthIndicator();
-        });
-      }
     }, 1000);
 
     $scope.stopUpdateNowTimer = function() {
@@ -265,7 +264,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
             $scope.trafficLightStatus.warnings.push(metric);
           } else if (metric.info.value === "UNAVAILABLE") {
             $scope.trafficLightStatus.unavailable.push(metric);
-          }else if ($scope.metricInfo[metric.name] && $scope.metricInfo[metric.name].timeDiff > 180000) {
+          }else if ($scope.serverTime - metric.info.timestamp > $scope.thresholdTime) {
             $scope.trafficLightStatus.outdated.push(metric);
           }
         }
@@ -286,12 +285,6 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
           element.info.timestamp = obj.timestamp;
           element.info.causes = causes;
           element.info.displayCauses = displayCauses;
-          var timeDiff = 0;
-          if(obj.metric.endsWith(".health") && $scope.metricInfo !== undefined &&
-             $scope.metricInfo[obj.metric] !== undefined){
-               $scope.metricInfo[obj.metric].timeDiff = 0;
-          }
-          $window.sessionStorage.setItem('metricTimeElapsedInfo',JSON.stringify($scope.metricInfo));
           return element;
         }
       });
@@ -308,10 +301,6 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
             displayCauses: displayCauses
           }
         };
-        if($scope.metricInfo[found.name] === undefined && found.name.endsWith(".health")){
-           $scope.metricInfo[found.name] = { "timeDiff" : 0 };
-           $window.sessionStorage.setItem('metricTimeElapsedInfo',JSON.stringify($scope.metricInfo));
-        }
         $scope.metrics.push(found);
       }
 
@@ -322,6 +311,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
           cb.callbackFn([found]);
         });
       }
+      updateHealthIndicator();
     }
 
     socket.on('platform-console-frontend-metric-update', socketMetricsUpdate);
