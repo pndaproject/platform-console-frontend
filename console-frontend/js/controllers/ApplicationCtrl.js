@@ -34,6 +34,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     var defaultTimeout = 500;
     var yarnUrl;
     var userName = $cookies.get('user');
+    $scope.areMetricLoaded = false;
     
     function displayConfirmation(message, actionIfConfirmed) {
       var modalOptions = {
@@ -337,11 +338,12 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         $scope.getApplicationSummary(app.name);
         $scope.showApplicationDetail = true;
         $scope.metricFilter = 'application\\.kpi\\.' + app.name + '\\.';
+        if($scope.areMetricLoaded)
         $scope.appMetrics = $filter('getByNameForDisplay')($scope.allMetrics, $scope.metricFilter);
       }
     };
-	
-	$scope.getApplicationSummary = function(appName){
+
+    $scope.getApplicationSummary = function(appName){
        DeploymentManagerService.getApplicationSummary(appName).then(function(data) {
          $scope.appSummaryJson = data;
        });
@@ -544,6 +546,8 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
     $scope.allMetrics = MetricService.query(function(response) {
       $scope.allMetrics= response.metrics;
+      $scope.appMetrics = $filter('getByNameForDisplay')($scope.allMetrics, $scope.metricFilter);
+      $scope.areMetricLoaded = true;
       angular.forEach(response.metrics, function(metric) {
         // turn the 'value' promise into its value when it's available
         metric.info.then(function(response) {
