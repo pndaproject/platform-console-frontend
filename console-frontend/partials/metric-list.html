@@ -84,7 +84,10 @@
           </tr>
           </thead>
           <tr dir-paginate="metric in metrics | filter:query | orderBy:orderProp | itemsPerPage: selectedMetricCount"
-              ng-class="{ 'list-group-item-danger': metric.info.value==='ERROR', 'list-group-item-warning': metric.info.value==='WARN'}" pagination-id="metricPages">
+              ng-class="{ 'list-group-item-danger': metric.info.value==='ERROR' || metric.info.value==='UNAVAILABLE',
+                         'list-group-item-warning': metric.info.value==='WARN',
+                         'list-group-item-outdated' : serverTime - metric.info.timestamp > thresholdTime && metric.name.endsWith('.health')}"
+               pagination-id="metricPages">
             <td class="metric">{{metric.name}}</td>
             <td class="source">{{metric.info.source}}</td>
             <td class="value">{{metric.info.value | formatNumbers: metric.name}}</td>
