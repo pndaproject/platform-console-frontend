@@ -357,6 +357,10 @@ metricFilters.filter('millSecondsToTimeString', function() {
       var hours = Math.floor((millseconds % oneDay) / oneHour);
       var days = Math.floor(millseconds / oneDay);
       var timeString = '';
+      if(millseconds < 0){
+         timeString = "just now";
+         return timeString;
+      }
       if (days !== 0) {
           timeString += (days !== 1) ? (days + ' days ') : (days + ' day ');
       }
@@ -366,7 +370,7 @@ metricFilters.filter('millSecondsToTimeString', function() {
       if (minutes !== 0) {
           timeString += (minutes !== 1) ? (minutes + ' minutes ') : (minutes + ' minute ');
       }
-      if (seconds !== 0 && minutes === 0 && hours === 0 && days === 0) {
+      if (seconds < 60 && minutes === 0 && hours === 0 && days === 0) {
          timeString = "just now";
       }
 
