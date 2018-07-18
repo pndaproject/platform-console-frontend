@@ -343,7 +343,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
           resolutionUrl += "/#/dashboard/Default?_g=()&_a=(filters:!()," +
           "query:(query_string:(analyze_wildcard:!t,query:%27deployment-manager%27)),title:Default)";
         } else if (source === "opentsdb") {
-          resolutionUrl = ConfigService.userInterfaceIndex[opentsdbIndex].split(",")[0];
+          resolutionUrl = ConfigService.userInterfaceIndex["PNDA logserver"];
         } else if (source === "grafana") {
         //for grafana, the string is a comma-separated list
           resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
