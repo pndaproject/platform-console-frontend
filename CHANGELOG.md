@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - PNDA-4724: Code in console doesn't handle null causes properly
 - PNDA-4750: Component status ages incorrect on Console front page
 - PNDA-4766: Adjust Console links to Access Ambari services through Knox
+- PNDA-4761: Display correct metric age
 
 ## [1.0.0] 2018-02-10
 ### Added
