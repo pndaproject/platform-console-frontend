@@ -540,9 +540,11 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     socket.on('platform-console-frontend-application-update', socketApplicationsUpdate);
 
     $scope.appMetrics = [];
+    $scope.allMetrics = [];
 
     $scope.allMetrics = MetricService.query(function(response) {
-      angular.forEach(response, function(metric) {
+      $scope.allMetrics= response.metrics;
+      angular.forEach(response.metrics, function(metric) {
         // turn the 'value' promise into its value when it's available
         metric.info.then(function(response) {
           metric.info = response[0];

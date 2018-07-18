@@ -52,7 +52,6 @@ angular.module('appComponents').directive('pndaKafka',
       scope.severity = '';
       scope.chosenRate = 'MeanRate';
       scope.selectedPageCount = "5";
-      scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
       scope.rates = [
         { value:"FifteenMinuteRate", label:"15 minutes rate" },
         { value:"FiveMinuteRate", label:"5 minutes rate" },
@@ -147,13 +146,8 @@ angular.module('appComponents').directive('pndaKafka',
               scope.class = $filter('metricNameClass')(metric.name);
               scope.timestamp = metric.info.timestamp;
               scope.severity = metric.info.value;
-              scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
-              if(scope.metricInfo && scope.metricInfo[metric.name]){
-                scope.timeDiff = scope.metricInfo[metric.name].timeDiff;
-              }
-              if(metric.info.value !== "UNAVAILABLE" && scope.timeDiff === undefined){
-                  scope.timeDiff = 0;
-              }
+              scope.serverTime = $window.localStorage.getItem('serverTime');
+              scope.timeDiff = scope.serverTime - scope.timestamp;
               scope.metricObj = metric;
               scope.isUnavailable = (metric.info.value === "UNAVAILABLE");
               scope.healthClass = "health_" + healthStatus(metric.info.value, scope.timestamp, scope.timeDiff);
@@ -248,14 +242,8 @@ angular.module('appComponents').directive('pndaKafka',
       };
 
       var healthStatusCallbackFn = function() {
-          scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
-          if(scope.metricInfo && scope.metricObj && scope.metricInfo[scope.metricObj.name]){
-            scope.timeDiff = scope.metricInfo[scope.metricObj.name].timeDiff;
-          }
-          //Initially
-          if(!scope.isUnavailable && scope.timeDiff === undefined){
-            scope.timeDiff = 0;
-          }
+        scope.serverTime = $window.localStorage.getItem('serverTime');
+        scope.timeDiff = scope.serverTime - scope.timestamp;
         scope.healthClass = " health_" + healthStatus(scope.latestHealthStatus, scope.timestamp, scope.timeDiff);
       };
 

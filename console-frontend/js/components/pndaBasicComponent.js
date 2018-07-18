@@ -46,7 +46,6 @@ angular.module('appComponents').directive('pndaBasicComponent', ['$filter', 'Hel
         scope.metricObj = {};
         scope.fullMetrics = {};
         scope.severity = '';
-        scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
         scope.showDetails = function() {
           if (scope.severity) {
             scope.showOverview({ metricObj: scope.metricObj, metrics: scope.fullMetrics });
@@ -84,13 +83,8 @@ angular.module('appComponents').directive('pndaBasicComponent', ['$filter', 'Hel
               scope.metricName = scope.forceWrapDisplayName === "true" ?
                 scope.metricNameForModalView.replace(/ /g, '<br />') : scope.metricNameForModalView;
               scope.timestamp = healthMetric.info.timestamp;
-              scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
-              if(scope.metricInfo && scope.metricInfo[healthMetric.name]){
-                scope.timeDiff = scope.metricInfo[healthMetric.name].timeDiff;
-              }
-              if(!scope.isUnavailable && scope.timeDiff === undefined){
-                  scope.timeDiff = 0;
-               }
+              scope.serverTime = $window.localStorage.getItem('serverTime');
+              scope.timeDiff = scope.serverTime - scope.timestamp;
               scope.severity = healthMetric.info.value;
               scope.metricObj = healthMetric;
               scope.class = $filter('metricNameClass')(healthMetric.name);
@@ -105,14 +99,8 @@ angular.module('appComponents').directive('pndaBasicComponent', ['$filter', 'Hel
         };
        
         var healthStatusCallbackFn = function() {
-          scope.metricInfo = JSON.parse($window.sessionStorage.getItem('metricTimeElapsedInfo')) || {};
-          if(scope.metricInfo && scope.metricObj && scope.metricInfo[scope.metricObj.name]){
-            scope.timeDiff = scope.metricInfo[scope.metricObj.name].timeDiff;
-          }
-          //Initially
-          if(!scope.isUnavailable && scope.timeDiff === undefined){
-            scope.timeDiff = 0;
-          }
+          scope.serverTime = $window.localStorage.getItem('serverTime');
+          scope.timeDiff = scope.serverTime - scope.timestamp;
           scope.healthClass = " health_" + healthStatus(scope.latestHealthStatus, scope.timestamp, scope.timeDiff);
         };
 
