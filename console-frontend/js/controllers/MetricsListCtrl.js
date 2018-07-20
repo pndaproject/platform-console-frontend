@@ -338,12 +338,14 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
           resolutionUrl = $scope.dm_endpoints.kafka_manager;
         } else if (source === "deployment-manager") {
           resolutionUrl = ConfigService.userInterfaceIndex["PNDA logserver"];
-
           // setting the search/query string to "deployment manager"
-          resolutionUrl += "/#/dashboard/Default?_g=()&_a=(filters:!()," +
+          resolutionUrl += "/#/dashboard/a2521e70-1622-11e8-9c84-9713efe53d19?_g=()&_a=(filters:!()," +
           "query:(query_string:(analyze_wildcard:!t,query:%27deployment-manager%27)),title:Default)";
         } else if (source === "opentsdb") {
-          resolutionUrl = ConfigService.userInterfaceIndex[opentsdbIndex].split(",")[0];
+          resolutionUrl = ConfigService.userInterfaceIndex["PNDA logserver"];
+          // setting the search/query string to "deployment manager"
+          resolutionUrl += "/#/dashboard/a2521e70-1622-11e8-9c84-9713efe53d19?_g=()&_a=(filters:!()," +
+          "query:(query_string:(analyze_wildcard:!t,query:%27opentsdb%27)),title:Default)";
         } else if (source === "grafana") {
         //for grafana, the string is a comma-separated list
           resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
