@@ -13,12 +13,12 @@
               </button>
               <div class="value">{{ operationalEndpoints.edgeNode }}</div>
             </div>
-            <div class="endpoint" ng-if="findComponentUrl('HTTPFS') !== ''">
-              <button class="btn name copy-to-clipboard" data-clipboard-text="{{ findComponentUrl('HTTPFS') }}" data-title="Copied" data-trigger="focus" data-delay="0,1000" bs-tooltip>
+            <div class="endpoint" ng-if="getMachineInterface('HTTPFS') !== null">
+              <button class="btn name copy-to-clipboard" data-clipboard-text="{{ getMachineInterface('HTTPFS') }}" data-title="Copied" data-trigger="focus" data-delay="0,1000" bs-tooltip>
                 <div>HttpFS</div>
                 <div class="glyphicon glyphicon-copy"></div>
               </button>
-              <div class="value">{{ findComponentUrl('HTTPFS') }}</div>
+              <div class="value">{{ getMachineInterface('HTTPFS') }}</div>
             </div>
           </div>
         </div>
