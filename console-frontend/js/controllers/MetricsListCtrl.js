@@ -191,6 +191,14 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
       return component !== undefined ? component : "";
     };
 
+    $scope.getMachineInterface = function(interfaceName) {
+      var link = null;
+      if (ConfigService.machine_interfaces.hasOwnProperty(interfaceName)) {
+        link = ConfigService.machine_interfaces[interfaceName];
+      }
+      return link;
+    };
+
     // if we want to show the same component more than once, set addIfDuplicate=true when calling this function
     $scope.getMetricData = function(metricName, callbackFn, healthStatusCbFn, addIfDuplicate) {
       var found = $filter('getByName')($scope.metrics, metricName);
