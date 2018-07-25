@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - PNDA-4766: Adjust Console links to Access Ambari services through Knox
 - PNDA-4761: Display correct metric age
 - PNDA-4809: fix opentsdb/dm cog redirect to logserver via knox
+- PNDA-4756: Show metrics consistently in applications screen
 
 ## [1.0.0] 2018-02-10
 ### Added
