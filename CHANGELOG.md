@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - PNDA-4613: Rename user parameter for deployment manager API from user to user.name to match the default knox behaviour
 - PNDA-4768: Make HTTPFS endpoint available to console
 - PNDA-4791: Set external KM link from config, not DM
+- PNDA-4500: Redesigned application detailed summary and added flink application detailed summary
 
 ### Fixed
 - PNDA-4190: Set help link for cluster manager based on the hadoop distro in use
