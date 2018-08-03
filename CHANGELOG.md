@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - PNDA-4768: Make HTTPFS endpoint available to console
 - PNDA-4791: Set external KM link from config, not DM
 - PNDA-4500: Redesigned application detailed summary and added flink application detailed summary
+- PNDA-4799: Update versions for jquery=3.3.1, mustache=2.3.0 and moment=2.22.2
 
 ### Fixed
 - PNDA-4190: Set help link for cluster manager based on the hadoop distro in use
