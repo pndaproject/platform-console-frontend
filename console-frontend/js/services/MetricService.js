@@ -57,6 +57,7 @@ angular.module('appServices').factory('MetricService', ['$resource', 'ConfigServ
           });
           response.metrics = metrics;
           response.serverTime = json.servertime;
+          response.currentTopics = json.currentTopics;
           return response;
         } else {
           console.log("not an array", json);

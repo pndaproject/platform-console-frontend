@@ -63,18 +63,6 @@ angular.module('appComponents').directive('pndaKafka',
           { value:"10", label:"10 Per Page" },
           { value:"15", label:"15 Per Page" }
         ];
-
-      setInterval(function() {
-        for (var topic in scope.topics) {
-          if (scope.topics.hasOwnProperty(topic)) {
-            var lastUpdateTime = scope.topics[topic].lastUpdateTime;
-            var isOldTopic = (scope.timeDiff > timestampTimeoutMs);
-            if (isOldTopic) {
-              delete scope.topics[topic];
-            }
-          }
-        }
-      }, 5000);
       
       scope.showComponentInfo = function() {
         scope.showInfo({ brokers: scope.brokers, metricObj: scope.metricObj });
@@ -156,11 +144,23 @@ angular.module('appComponents').directive('pndaKafka',
             } else {
               var match;
               var brokerId, broker;
-              var isOldTopic = (scope.timeDiff > timestampTimeoutMs);
-
+              scope.currentTopicList = [];
+              scope.currentTopicData = $window.localStorage.getItem('currentTopics');
+              if(scope.currentTopicData)
+               scope.currentTopicList = scope.currentTopicData.split(",");
+              //compare scope.topics with currentTopicList to check if any topic is deleted
+              if(metric.name.endsWith(".available.topics")){
+                if(scope.topics && scope.currentTopicList){
+                   for(var topicObj in scope.topics){
+                     if(scope.currentTopicList.indexOf(topicObj) === -1){
+                        delete scope.topics[topicObj];
+                      }
+                   }
+                }
+              }
               // look for topics
               // jscs:disable maximumLineLength
-              if (!isOldTopic && (match = metric.name.match(/^kafka\.brokers\.(\d+)\.topics\.(.*)\.((?:BytesInPerSec|BytesOutPerSec|MessagesInPerSec))\.(.*)/i)) !== null) {
+              if ((match = metric.name.match(/^kafka\.brokers\.(\d+)\.topics\.(.*)\.((?:BytesInPerSec|BytesOutPerSec|MessagesInPerSec))\.(.*)/i)) !== null) {
                 // example: [
                 // "kafka.brokers.1.topics.avro.internal.testbot.BytesOutPerSec.Count",
                 // "1", // broker id
@@ -169,7 +169,7 @@ angular.module('appComponents').directive('pndaKafka',
                 // "Count", // sub-metric
                 // index: 0,
                 // input:
-				// "kafka.brokers.1.topics.avro.internal.testbot.BytesOutPerSec.Count"
+                // "kafka.brokers.1.topics.avro.internal.testbot.BytesOutPerSec.Count"
                 // ]
                 brokerId = match[1];
                 var topic = match[2];
@@ -179,29 +179,34 @@ angular.module('appComponents').directive('pndaKafka',
                 if (broker.topics === undefined) {
                   broker.topics = {};
                 }
+                scope.serverTime = $window.localStorage.getItem('serverTime');
+                scope.timeDiff = scope.serverTime - metric.info.timestamp;
+                //Add topic for display purpose into scope.topics only when that topic present in currentTopicList
+                if(scope.currentTopicList.indexOf(topic) !== -1){
+                    var addTopic = function(array, topic, metric, submetric, value, broker, timestamp) {
+                      if (array[topic] === undefined) {
+                        array[topic] = {};
+                      }
 
-                var addTopic = function(array, topic, metric, submetric, value, broker) {
-                  if (array[topic] === undefined) {
-                    array[topic] = {};
-                  }
+                      if (array[topic][metric] === undefined) {
+                        array[topic][metric] = {};
+                      }
 
-                  if (array[topic][metric] === undefined) {
-                    array[topic][metric] = {};
-                  }
+                      if (array[topic][metric][submetric] === undefined) {
+                        array[topic][metric][submetric] = {};
+                      }
 
-                  if (array[topic][metric][submetric] === undefined) {
-                    array[topic][metric][submetric] = {};
-                  }
+                      array[topic][metric][submetric][broker] = value;
+                     //updating each topic with it's own timestamp
+                      array[topic].lastUpdateTime = timestamp;
+                     };
 
-                  array[topic][metric][submetric][broker] = value;
-                };
-
-                if (hideInternalTopics && (ConfigService.topics.hidden).indexOf(topic) !== -1) {
-// console.log("hiding topic", topic);
-                } else {
-                  var value = metric.info.value === undefined ? "" : interpreteValue(metric.info.value);
-                  addTopic(broker.topics, topic, inOutMetric, subMetric, value, brokerId);
-                  addTopic(scope.topics, topic, inOutMetric, subMetric, value, brokerId);
+                    if (!(hideInternalTopics && (ConfigService.topics.hidden).indexOf(topic) !== -1)) {
+                      var value = metric.info.value === undefined ? "" : interpreteValue(metric.info.value);
+                      var timestamp = metric.info.timestamp;
+                      addTopic(broker.topics, topic, inOutMetric, subMetric, value, brokerId, timestamp);
+                      addTopic(scope.topics, topic, inOutMetric, subMetric, value, brokerId, timestamp);
+                    }
                 }
               } else if ((match = metric.name.match(/^kafka\.brokers\.(\d+)\.topics\.(.*)\.health/i)) !== null) {
                 // parse the kafka brokers health metric
