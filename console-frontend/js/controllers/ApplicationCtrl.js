@@ -543,7 +543,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     $scope.appMetrics = [];
     $scope.allMetrics = [];
 
-    $scope.allMetrics = MetricService.query(function(response) {
+    MetricService.query(function(response) {
       $scope.allMetrics= response.metrics;
       $scope.appMetrics = $filter('getByNameForDisplay')($scope.allMetrics, $scope.metricFilter);
       $scope.areMetricLoaded = true;
