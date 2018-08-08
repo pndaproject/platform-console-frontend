@@ -87,9 +87,9 @@
       "resolved": "https://registry.npmjs.org/blob/-/blob-0.0.4.tgz"
     },
     "bootstrap": {
-      "version": "3.3.6",
-      "from": "bootstrap@3.3.6",
-      "resolved": "https://registry.npmjs.org/bootstrap/-/bootstrap-3.3.6.tgz"
+      "version": "3.3.7",
+      "from": "bootstrap@3.3.7",
+      "resolved": "https://registry.npmjs.org/bootstrap/-/bootstrap-3.3.7.tgz"
     },
     "callsite": {
       "version": "1.0.0",
@@ -204,9 +204,9 @@
       "resolved": "https://registry.npmjs.org/isarray/-/isarray-0.0.1.tgz"
     },
     "jquery": {
-      "version": "2.2.1",
-      "from": "jquery@2.2.1",
-      "resolved": "https://registry.npmjs.org/jquery/-/jquery-2.2.1.tgz"
+      "version": "3.0.0",
+      "from": "jquery@3.0.0",
+      "resolved": "https://registry.npmjs.org/jquery/-/jquery-3.0.0.tgz"
     },
     "json3": {
       "version": "3.2.6",
@@ -234,9 +234,9 @@
       "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.3.0.tgz"
     },
     "moment": {
-      "version": "2.12.0",
-      "from": "moment@2.12.0",
-      "resolved": "https://registry.npmjs.org/moment/-/moment-2.12.0.tgz"
+      "version": "2.22.2",
+      "from": "moment@2.22.2",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.22.2.tgz"
     },
     "ms": {
       "version": "0.7.1",
@@ -244,9 +244,9 @@
       "resolved": "https://registry.npmjs.org/ms/-/ms-0.7.1.tgz"
     },
     "mustache": {
-      "version": "0.7.3",
-      "from": "mustache@>=0.7.2 <0.8.0",
-      "resolved": "https://registry.npmjs.org/mustache/-/mustache-0.7.3.tgz"
+      "version": "2.3.0",
+      "from": "mustache@>2.3.0",
+      "resolved": "https://registry.npmjs.org/mustache/-/mustache-2.3.0.tgz"
     },
     "negotiator": {
       "version": "0.4.9",
