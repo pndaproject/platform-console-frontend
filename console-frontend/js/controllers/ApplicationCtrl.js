@@ -28,8 +28,8 @@
 
 angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filter', '$cookies',
   'DeploymentManagerService', '$timeout', 'socket', '$compile', '$window', 'ModalService',
-  'MetricService', 'UtilService', function($scope, $filter, $cookies, DeploymentManagerService,
-    $timeout, socket, $compile, $window, ModalService, MetricService, UtilService) {
+  'MetricService', 'UtilService', 'ConfigService', function($scope, $filter, $cookies, DeploymentManagerService,
+    $timeout, socket, $compile, $window, ModalService, MetricService, UtilService, ConfigService) {
 
     var defaultTimeout = 500;
     var yarnUrl;
@@ -241,10 +241,9 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       });
       
       DeploymentManagerService.getEndpoints().then(function(data) {
-          var yarnHost = data.yarn_resource_manager_host;
-          var yarnPort = data.yarn_resource_manager_port;
-          yarnUrl = "http://" + yarnHost + ":" + yarnPort + "/cluster/app";
-        });
+          var link = ConfigService.userInterfaceIndex["YARN Resource Manager"];
+          yarnUrl = link + "/cluster/app";
+      });
     };
 
     /* get package list */
