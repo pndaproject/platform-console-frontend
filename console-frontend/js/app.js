@@ -93,13 +93,18 @@ var consoleFrontendApp = angular.module('consoleFrontendApp', [
         });
     }]);
 
-consoleFrontendApp.run(function($rootScope, $location, $cookies, $http, ConfigService, HelpService, ModalService) {
+consoleFrontendApp.run(function($rootScope, $location, $cookies, $http, ConfigService, HelpService, ModalService,
+  SessionHandler, $window) {
   $rootScope.globals = $cookies.get('globals') || {};
   var userName = $cookies.get('userLoggedIn');
-  
+  var timeoutForLogout = JSON.parse($window.localStorage.getItem('timeoutForLogout'));
+  var sessionExpiryWarningDuration = JSON.parse($window.localStorage.getItem('sessionExpiryWarningDuration'));
+  var timeoutForIdle = JSON.parse($window.localStorage.getItem('timeoutForIdle'));
+  if(timeoutForLogout && sessionExpiryWarningDuration && timeoutForIdle)
+    SessionHandler.init();
+
   $rootScope.$on('$routeChangeStart', function() {
     var userName = $cookies.get('userLoggedIn');
-
     if (userName !== undefined && userName) {
       $("#navWelcomeText").text('Welcome, ' + $cookies.get('user') + '  ');
       $("#navWelcomeText").append('<span class="caret"></span>');
@@ -107,6 +112,7 @@ consoleFrontendApp.run(function($rootScope, $location, $cookies, $http, ConfigSe
 
       //$(".dropdown-menu").prepend('<li class="role"><a href="#">' + $cookies.get('userRole') + '</a></li>');
     } else {
+      SessionHandler.off();
       $location.path('/login');
     }
 
