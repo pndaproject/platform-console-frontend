@@ -14,8 +14,8 @@
   <div class="yarn-info" data-ng-show="!isUnavailable">
     <div class="memory">
       <div class="text">
-        Used Memory
-        <div class="right">{{memory.allocated | formatNumbers: 'hadoop.YARN.allocated_memory_mb_across_yarn_pools':false}}/{{memory.total | formatNumbers: 'hadoop.YARN.total_available_memory_mb_across_yarn_pools':false}}</div>
+        Used Memory (allocated/ available)
+        <div class="right">{{memory.allocated | formatNumbers: 'hadoop.YARN.allocated_memory_mb_across_yarn_pools':false}}/{{memory.available | formatNumbers: 'hadoop.YARN.total_available_memory_mb_across_yarn_pools':false}}</div>
       </div>
       <div class="graphics">
         <div class="available"></div>
@@ -24,8 +24,8 @@
     </div>
     <div class="vcores">
       <div class="text">
-        Used vCores
-        <div class="right">{{vcores.allocated}}/{{vcores.total}}</div>
+        Used vCores (allocated/ available)
+        <div class="right">{{vcores.allocated}}/{{vcores.available}}</div>
       </div>
       <div class="graphics">
         <div class="available"></div>
