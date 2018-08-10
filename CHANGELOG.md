@@ -35,6 +35,7 @@ All notable changes to this project will be documented in this file.
 - PNDA-4809: fix opentsdb/dm cog redirect to logserver via knox
 - PNDA-4756: Show metrics consistently in applications screen
 - PNDA-3039: Organise Applications List on console
+- PNDA-4833: On session invalidation user is not returned to login screen
 
 ## [1.0.0] 2018-02-10
 ### Added
