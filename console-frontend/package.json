@@ -4,9 +4,6 @@
   "scripts": {
     "start": "grunt serve"
   },
-  "engines": {
-    "node": "~0.10.0"
-  },
   "dependencies": {
     "underscore": "~1.5.1",
     "express": "^4.13.3",
