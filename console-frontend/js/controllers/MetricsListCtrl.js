@@ -387,7 +387,7 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
           resolutionUrl = ConfigService.userInterfaceIndex[flinkIndex];
         } else if (source === "HQUERY" || source === "HIVE") {
           resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
-          "#/main/view/HIVE/auto_hive_instance";
+            '#/main/services/HIVE/summary';
         } else if (source === "AMBARI" || source === "CM") {
           resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"];
         } else if ($scope.dm_endpoints.cm_status_links !== undefined) {
