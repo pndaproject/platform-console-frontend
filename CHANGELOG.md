@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [2.0.0] 2018-08-28
 ### Added
 - PNDA-4560: Provide identity to all deployment manager operations
 - PNDA-4221: Pagination selection for metrics page
