@@ -38,7 +38,9 @@ angular.module('appServices').service('HelpService', ['ConfigService', 'ModalSer
 
     this.show = function (name, key) {
       var topic = helpTopics[key];
-      var modalInfo = { title: name + " Help", body: "Help with " + key, actionButtonText: "OK" };
+      var modalInfo = { title: name + " Help",
+                    body: "Help with " + key, actionButtonText: "OK", version: topic.version};
+
 
       if (topic !== undefined) {
         if (topic.title !== undefined) {
