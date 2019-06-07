@@ -1,9 +1,9 @@
 NAME=console-frontend
-VERSION=0.1.2
-REGISTRY=containers.cisco.com/donaldh
+VERSION=release5.0
+REGISTRY=pnda
 
 build:	## Build the docker image
-	docker build -t "$(NAME):$(VERSION)" -f Dockerfile .
+	docker build -t "$(NAME):$(VERSION)" -f Dockerfile.frontend .
 
 upload:	## Upload image to registry
 	docker tag "$(NAME):$(VERSION)" "$(REGISTRY)/$(NAME):$(VERSION)"
