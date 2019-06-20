@@ -227,10 +227,8 @@ metricFilters.filter('getByName', function() {
 metricFilters.filter('getByNameForDisplay', function(getByNameFilter) {
   return function(input, name) {
     var array = getByNameFilter(input, name);
-    console.log("in: " + array.length);
     var regexp = new RegExp(name);
     array.forEach(function(item, index, array) {array[index].displayName = array[index].name.replace(regexp, '');});
-    console.log("out: " + array.length);
     return array;
   };
 });
