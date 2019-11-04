@@ -3,7 +3,7 @@ VERSION=release5.0
 REGISTRY=pnda
 
 build:	## Build the docker image
-	docker build -t "$(NAME):$(VERSION)" -f Dockerfile.frontend .
+	docker build -t "$(NAME):$(VERSION)" -f Dockerfile .
 
 upload:	## Upload image to registry
 	docker tag "$(NAME):$(VERSION)" "$(REGISTRY)/$(NAME):$(VERSION)"
