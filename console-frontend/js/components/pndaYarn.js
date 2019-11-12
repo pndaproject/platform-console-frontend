@@ -24,7 +24,8 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService', function($filter, HelpService) {
+angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService','customTimer','$window',
+        function($filter, HelpService, customTimer,$window) {
   return {
     restrict: 'E',
     scope: {
@@ -78,10 +79,11 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
               scope.severity = metric.info.value;
               scope.metricObj = metric;
               scope.timestamp = metric.info.timestamp;
-              var status = healthStatus(metric.info.value, scope.timestamp);
-              scope.healthClass = "health_" + status;
               scope.isUnavailable = (metric.info.value === "UNAVAILABLE");
-
+              scope.serverTime = $window.localStorage.getItem('serverTime');
+              scope.timeDiff = scope.serverTime - scope.timestamp;
+              var status = healthStatus(metric.info.value, scope.timestamp, scope.timeDiff);
+              scope.healthClass = "health_" + status;
 //              scope.healthClass += (enableModalView(scope.severity) ? " clickable" : " ");
               scope.latestHealthStatus = metric.info.value;
             } else if (metric.name.endsWith(".allocated_memory_mb_across_yarn_pools")) {
@@ -111,9 +113,11 @@ angular.module('appComponents').directive('pndaYarn', ['$filter', 'HelpService',
           showMetricUpdateAnimation($("pnda-yarn .health"));
         }
       };
-
-      var healthStatusCallbackFn = function(now) {
-        var status = healthStatus(scope.latestHealthStatus, scope.timestamp, now);
+      
+      var healthStatusCallbackFn = function() {
+        scope.serverTime = $window.localStorage.getItem('serverTime');
+        scope.timeDiff = scope.serverTime - scope.timestamp;
+        var status = healthStatus(scope.latestHealthStatus, scope.timestamp, scope.timeDiff);
         scope.healthClass = "health_" + status;
       };
 

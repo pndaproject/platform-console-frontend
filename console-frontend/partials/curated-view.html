@@ -1,5 +1,5 @@
 <link rel="stylesheet" type="text/css" id="theme" ng-href="{{theme}}">
-<div id="curatedView">
+<div id="curatedView" ng-if="metricLoaded">
   <div class="row first-row">
     <div id="platform" class="col-md-9 no-padding-right">
       <div class="panel panel-default">
@@ -13,12 +13,12 @@
               </button>
               <div class="value">{{ operationalEndpoints.edgeNode }}</div>
             </div>
-            <div class="endpoint" ng-if="operationalEndpoints.httpFS !== ''">
-              <button class="btn name copy-to-clipboard" data-clipboard-text="{{ operationalEndpoints.httpFS }}" data-title="Copied" data-trigger="focus" data-delay="0,1000" bs-tooltip>
+            <div class="endpoint" ng-if="getMachineInterface('HTTPFS') !== null">
+              <button class="btn name copy-to-clipboard" data-clipboard-text="{{ getMachineInterface('HTTPFS') }}" data-title="Copied" data-trigger="focus" data-delay="0,1000" bs-tooltip>
                 <div>HttpFS</div>
                 <div class="glyphicon glyphicon-copy"></div>
               </button>
-              <div class="value">{{ operationalEndpoints.httpFS }}</div>
+              <div class="value">{{ getMachineInterface('HTTPFS') }}</div>
             </div>
           </div>
         </div>
@@ -58,6 +58,9 @@
                             <div class="content">
                               <pnda-basic-component overwrite-display-name="Spark Streaming" force-wrap-display-name="true" on-get-metric-data="getMetricData('hadoop.SPARK_ON_YARN',cbFn,healthStatusCbFn)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
                             </div>
+                            <div class="content">
+                              <pnda-basic-component force-wrap-display-name="true" on-get-metric-data="getMetricData('flink',cbFn,healthStatusCbFn)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
+                            </div>
                           </div>
                         </div>
                         <div class="col-md-6">
@@ -66,6 +69,11 @@
                             <div class="content row">
                               <div class="col-md-12">
                                 <pnda-basic-component on-get-metric-data="getMetricData('hadoop.SPARK_ON_YARN',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
+                              </div>
+                            </div>
+                            <div class="content row">
+                              <div class="col-md-12">
+                                <pnda-basic-component on-get-metric-data="getMetricData('flink',cbFn,healthStatusCbFn,true)" show-overview="showModal(metricObj, metrics)" show-config="showConfigPage(metricObj)"></pnda-basic-component>
                               </div>
                             </div>
                             <div class="content row">

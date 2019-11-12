@@ -89,7 +89,9 @@
                         </tr>
                         <tr>
                           <th>Status</th>
-                          <td>{{ fullApplicationDetail.status | changeAppStatusForDisplay }}</td>
+                          <td>{{ fullApplicationDetail.status | changeAppStatusForDisplay }}
+                           <span> <button type="button" class="btn btn-link" ng-click="showInfoModal(fullApplicationDetail.name)">More info</button></span>
+                          </td>
                         </tr>
                       </table>
                     </div>
@@ -97,9 +99,10 @@
                       <pnda-tree-view json="{{ appDetailJson }}" editable="false" on-confirm-overrides="getOverrides(overrides)"></pnda-tree-view>
                     </div>
                     <div id="tab-metrics" class="tab-pane fade">
+                      <div ng-if="!areMetricLoaded" class="no-metrics-available">Loading...</div>
                       <div ng-if="appMetrics.length === 0" class="no-metrics-available">No metrics available.</div>
                       <div ng-if="appMetrics.length > 0">
-                        <table id="app-metrics" class="table table-hover table-condensed">
+                        <table id="app-metrics" class="table table-hover table-condensed" ng-if="areMetricLoaded">
                           <thead>
                           <tr>
                             <th>Metric</th>
@@ -136,7 +139,7 @@
                   <div class="panel-body">
                     <div class="tab-content">
                       <div ng-if="packagesList.length === 0">
-                        Please <a href="/#/packages">deploy a package</a> before continuing.
+                        Please <a href="#/packages">deploy a package</a> before continuing.
                       </div>
 
                       <!-- alerts -->
@@ -145,6 +148,12 @@
                           <div class="alert alert-danger top-right">
                             <a class="close" ng-click="dismissAppSubmitErrorAlert()" aria-hidden="true">&times;</a>
                             {{ appNameErrorText }}
+                          </div>
+                        </div>
+                        <div ng-if="userNameError">
+                          <div class="alert alert-danger top-right">
+                            <a class="close" ng-click="dismissAppSubmitErrorAlert()" aria-hidden="true">&times;</a>
+                            {{ userNameErrorText }}
                           </div>
                         </div>
                         <div ng-if="submitAppResponse">

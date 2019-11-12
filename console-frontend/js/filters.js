@@ -32,18 +32,18 @@ metricFilters.filter('toArray', function () {
       return obj;
     }
 
-    if ( addKey === false ) {
+    if (addKey === false) {
       return Object.values(obj);
     } else {
       return Object.keys(obj).map(function (key) {
-        return Object.defineProperty(obj[key], '$key', { enumerable: false, value: key});
+        return Object.defineProperty(obj[key], '$key', { enumerable: false, value: key });
       });
     }
   };
 });
 
-metricFilters.filter('naturalSort',function(){
-    function naturalSort (a, b) {
+metricFilters.filter('naturalSort', function() {
+  function naturalSort(a, b) {
       var aparts = a.split(/(\d+)/).filter(Boolean);
       var bparts = b.split(/(\d+)/).filter(Boolean);
       var i;
@@ -62,39 +62,41 @@ metricFilters.filter('naturalSort',function(){
         if (isNaN(apartnum) && isNaN(bpartnum)) {
           if (apartstr < bpartstr) {
             return -1;
-          }
-          else if (apartstr > bpartstr){
+          } else if (apartstr > bpartstr) {
             return 1;
           }
         }
+
         // if string vs number, number < string
         else if (isNaN(apartnum)) {
           return 1;
-        }
-        else if (isNaN(bpartnum)) {
+        } else if (isNaN(bpartnum)) {
           return -1;
         }
+
         // if both parts numbers compare as numbers
         else {
           if (apartnum < bpartnum) {
             return -1;
-          }
-          else if (apartnum > bpartnum){
+          } else if (apartnum > bpartnum) {
             return 1;
           }
         }
+
         // if same move to next part
       }
+
       // no more parts in a, a < b
       return -1;
     }
-    return function(arrInput) {
-        var arr = arrInput.sort(function(a, b) {
-            var sortResult = naturalSort(a.$key,b.$key);
-            return sortResult;
-        });
-        return arr;
-    };
+
+  return function(arrInput) {
+    var arr = arrInput.sort(function(a, b) {
+      var sortResult = naturalSort(a.$key, b.$key);
+      return sortResult;
+    });
+    return arr;
+  };
 });
 
 metricFilters.filter('formatNumbers', ['ConfigService', '$filter', function(ConfigService, $filter) {
@@ -214,21 +216,19 @@ metricFilters.filter('getByName', function() {
         matches.push(input[i]);
       }
     }
+
     return matches;
   };
 });
 
-
-// return a list of all element matching the regex name in an array of metrics 
+// return a list of all element matching the regex name in an array of metrics
 // and also add a more appropriate display name (i.e. stripped from the internal
 // filtering info).
 metricFilters.filter('getByNameForDisplay', function(getByNameFilter) {
   return function(input, name) {
     var array = getByNameFilter(input, name);
-    console.log("in: "+array.length);
     var regexp = new RegExp(name);
-    array.forEach(function(item, index, array) {array[index].displayName = array[index].name.replace(regexp,'');});
-    console.log("out: "+array.length);
+    array.forEach(function(item, index, array) {array[index].displayName = array[index].name.replace(regexp, '');});
     return array;
   };
 });
@@ -236,6 +236,7 @@ metricFilters.filter('getByNameForDisplay', function(getByNameFilter) {
 // transform a metric name into a class that can be referenced in a CSS file
 metricFilters.filter('metricNameClass', function() {
   return function(metricName) {
+	if(metricName !== undefined)
     return metricName.toString().replace(/\./g, '-');
   };
 });
@@ -243,6 +244,7 @@ metricFilters.filter('metricNameClass', function() {
 // transform an application name into an ID that can be referenced in a CSS file
 metricFilters.filter('applicationNameId', function() {
   return function(appName) {
+	if(appName !== undefined)
     return "app_" + appName.toString().replace(/\./g, '-');
   };
 });
@@ -264,8 +266,8 @@ metricFilters.filter('metricNameForDisplay', function() {
         display = "Impala";
         break;
       case "opentsdb.health":
-          display = "OpenTSDB";
-          break;
+        display = "OpenTSDB";
+        break;
       case "hadoop.HBASE.health":
         display = "HBase";
         break;
@@ -290,6 +292,9 @@ metricFilters.filter('metricNameForDisplay', function() {
       case "hadoop.SPARK_ON_YARN.health":
         display = "Spark";
         break;
+      case "flink.health":
+          display = "Flink";
+          break;
     }
     return display;
   };
@@ -339,6 +344,38 @@ metricFilters.filter('simplifyTime', function() {
   };
 });
 
+metricFilters.filter('millSecondsToTimeString', function() {
+     return function(millseconds) {
+      var oneSecond = 1000;
+      var oneMinute = oneSecond * 60;
+      var oneHour = oneMinute * 60;
+      var oneDay = oneHour * 24;
+      var seconds = Math.floor((millseconds % oneMinute) / oneSecond);
+      var minutes = Math.floor((millseconds % oneHour) / oneMinute);
+      var hours = Math.floor((millseconds % oneDay) / oneHour);
+      var days = Math.floor(millseconds / oneDay);
+      var timeString = '';
+      if(millseconds < 0){
+         timeString = "just now";
+         return timeString;
+      }
+      if (days !== 0) {
+          timeString += (days !== 1) ? (days + ' days ') : (days + ' day ');
+      }
+      if (hours !== 0) {
+          timeString += (hours !== 1) ? (hours + ' hours ') : (hours + ' hour ');
+      }
+      if (minutes !== 0) {
+          timeString += (minutes !== 1) ? (minutes + ' minutes ') : (minutes + ' minute ');
+      }
+      if (seconds < 60 && minutes === 0 && hours === 0 && days === 0) {
+         timeString = "just now";
+      }
+
+      return timeString;
+     };
+});
+
 metricFilters.filter('range', function() {
   return function(input, total) {
     total = parseInt(total, Constants.RADIX_DECIMAL);
@@ -385,5 +422,19 @@ metricFilters.filter('addJsonSpaces', function() {
     }
 
     return output;
+  };
+});
+
+// Replace underscore with spaces
+metricFilters.filter('underscoreRemoved', function () {
+  return function (input) {
+      return input.replace(/_/g, ' ');
+  };
+});
+
+//Make the first letter capital
+metricFilters.filter('capitalize', function() {
+  return function(input) {
+   return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
   };
 });

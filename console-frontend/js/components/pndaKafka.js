@@ -28,8 +28,9 @@
 var hideInternalTopics = true;
 var timestampTimeoutMs = 3 * 60 * 1000;
 
-angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'HelpService', 'ConfigService',
-  function($filter, $window, HelpService, ConfigService) {
+angular.module('appComponents').directive('pndaKafka',
+['$filter', '$window', 'HelpService', 'ConfigService','customTimer',
+  function($filter, $window, HelpService, ConfigService,customTimer) {
   return {
     restrict: 'E',
     scope: {
@@ -39,7 +40,8 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
     },
     templateUrl: 'partials/components/pnda-kafka.html',
     link: function(scope) {
-      // initialise the scope, which will be updated when the callback function gets called by the controller
+      // initialise the scope, which will be updated when the callback
+		// function gets called by the controller
       scope.metricName = '';
       scope.class = 'hidden';
       scope.healthClass = '';
@@ -49,34 +51,19 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
       scope.metricObj = {};
       scope.severity = '';
       scope.chosenRate = 'MeanRate';
+      scope.selectedPageCount = "5";
       scope.rates = [
         { value:"FifteenMinuteRate", label:"15 minutes rate" },
         { value:"FiveMinuteRate", label:"5 minutes rate" },
         { value:"OneMinuteRate", label:"1 minute rate" },
         { value:"MeanRate", label:"Mean rate" }
       ];
-
-      setInterval(function() {
-        var currentTimestamp = Date.now();
-        for (var topic in scope.topics) {
-            if (scope.topics.hasOwnProperty(topic)) {
-              var lastUpdateTime = scope.topics[topic].lastUpdateTime;
-              var isOldTopic = (currentTimestamp - lastUpdateTime > timestampTimeoutMs);
-              if (isOldTopic){
-                delete scope.topics[topic];
-              }
-            }
-        }
-      }, 5000);
-
-
-      /*
-      scope.showDetails = function() {
-        if (enableModalView(scope.severity)) {
-          scope.showOverview({metricObj: scope.metricObj});
-        }
-      };
-      */
+      scope.pagesmenu = [
+          { value:"5", label:"5 Per Page" },
+          { value:"10", label:"10 Per Page" },
+          { value:"15", label:"15 Per Page" }
+        ];
+      
       scope.showComponentInfo = function() {
         scope.showInfo({ brokers: scope.brokers, metricObj: scope.metricObj });
       };
@@ -101,7 +88,7 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
       function interpreteValue(value) {
         return (isNaN(value) ? value.replace(/\"/g, '') : Number(value));
       }
-
+      
       scope.numberOfTopicsShown = function() {
         var nb = 0;
         angular.forEach(scope.topics, function(topic) {
@@ -147,26 +134,42 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
               scope.class = $filter('metricNameClass')(metric.name);
               scope.timestamp = metric.info.timestamp;
               scope.severity = metric.info.value;
-              scope.healthClass = "health_" + healthStatus(metric.info.value, scope.timestamp);
+              scope.serverTime = $window.localStorage.getItem('serverTime');
+              scope.timeDiff = scope.serverTime - scope.timestamp;
+              scope.metricObj = metric;
+              scope.isUnavailable = (metric.info.value === "UNAVAILABLE");
+              scope.healthClass = "health_" + healthStatus(metric.info.value, scope.timestamp, scope.timeDiff);
               scope.healthClass += (enableModalView(scope.severity) ? " clickable" : " ");
               scope.latestHealthStatus = metric.info.value;
-              scope.metricObj = metric;
             } else {
               var match;
               var brokerId, broker;
-              var currentTimestamp = Date.now();
-              var isOldTopic = (currentTimestamp - metric.info.timestamp > timestampTimeoutMs);
+              scope.currentTopicList = [];
+              scope.currentTopicData = $window.localStorage.getItem('currentTopics');
+              if(scope.currentTopicData)
+               scope.currentTopicList = scope.currentTopicData.split(",");
+              //compare scope.topics with currentTopicList to check if any topic is deleted
+              if(metric.name.endsWith(".available.topics")){
+                if(scope.topics && scope.currentTopicList){
+                   for(var topicObj in scope.topics){
+                     if(scope.currentTopicList.indexOf(topicObj) === -1){
+                        delete scope.topics[topicObj];
+                      }
+                   }
+                }
+              }
               // look for topics
               // jscs:disable maximumLineLength
-              if (!isOldTopic && (match = metric.name.match(/^kafka\.brokers\.(\d+)\.topics\.(.*)\.((?:BytesInPerSec|BytesOutPerSec|MessagesInPerSec))\.(.*)/i)) !== null) {
+              if ((match = metric.name.match(/^kafka\.brokers\.(\d+)\.topics\.(.*)\.((?:BytesInPerSec|BytesOutPerSec|MessagesInPerSec))\.(.*)/i)) !== null) {
                 // example: [
-                //   "kafka.brokers.1.topics.avro.internal.testbot.BytesOutPerSec.Count",
-                //   "1", // broker id
-                //   "avro.internal.testbot", // topic
-                //   "BytesOutPerSec", // in or out metric
-                //   "Count", // sub-metric
-                //   index: 0,
-                //   input: "kafka.brokers.1.topics.avro.internal.testbot.BytesOutPerSec.Count"
+                // "kafka.brokers.1.topics.avro.internal.testbot.BytesOutPerSec.Count",
+                // "1", // broker id
+                // "avro.internal.testbot", // topic
+                // "BytesOutPerSec", // in or out metric
+                // "Count", // sub-metric
+                // index: 0,
+                // input:
+                // "kafka.brokers.1.topics.avro.internal.testbot.BytesOutPerSec.Count"
                 // ]
                 brokerId = match[1];
                 var topic = match[2];
@@ -176,38 +179,44 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
                 if (broker.topics === undefined) {
                   broker.topics = {};
                 }
+                scope.serverTime = $window.localStorage.getItem('serverTime');
+                scope.timeDiff = scope.serverTime - metric.info.timestamp;
+                //Add topic for display purpose into scope.topics only when that topic present in currentTopicList
+                if(scope.currentTopicList.indexOf(topic) !== -1){
+                    var addTopic = function(array, topic, metric, submetric, value, broker, timestamp) {
+                      if (array[topic] === undefined) {
+                        array[topic] = {};
+                      }
 
-                var addTopic = function(array, topic, metric, submetric, value, broker) {
-                  if (array[topic] === undefined) {
-                    array[topic] = {};
-                  }
+                      if (array[topic][metric] === undefined) {
+                        array[topic][metric] = {};
+                      }
 
-                  if (array[topic][metric] === undefined) {
-                    array[topic][metric] = {};
-                  }
+                      if (array[topic][metric][submetric] === undefined) {
+                        array[topic][metric][submetric] = {};
+                      }
 
-                  if (array[topic][metric][submetric] === undefined) {
-                    array[topic][metric][submetric] = {};
-                  }
+                      array[topic][metric][submetric][broker] = value;
+                     //updating each topic with it's own timestamp
+                      array[topic].lastUpdateTime = timestamp;
+                     };
 
-                  array[topic][metric][submetric][broker] = value;
-                };
-
-                if (hideInternalTopics && (ConfigService.topics.hidden).indexOf(topic) !== -1) {
-//                  console.log("hiding topic", topic);
-                } else {
-                  var value = metric.info.value === undefined ? "" : interpreteValue(metric.info.value);
-                  addTopic(broker.topics, topic, inOutMetric, subMetric, value, brokerId);
-                  addTopic(scope.topics, topic, inOutMetric, subMetric, value, brokerId);
+                    if (!(hideInternalTopics && (ConfigService.topics.hidden).indexOf(topic) !== -1)) {
+                      var value = metric.info.value === undefined ? "" : interpreteValue(metric.info.value);
+                      var timestamp = metric.info.timestamp;
+                      addTopic(broker.topics, topic, inOutMetric, subMetric, value, brokerId, timestamp);
+                      addTopic(scope.topics, topic, inOutMetric, subMetric, value, brokerId, timestamp);
+                    }
                 }
               } else if ((match = metric.name.match(/^kafka\.brokers\.(\d+)\.topics\.(.*)\.health/i)) !== null) {
                 // parse the kafka brokers health metric
                 var topicExists = match[2];
                 if ((!hideInternalTopics || (ConfigService.topics.hidden).indexOf(topicExists) === -1) &&
-                    Date.now() - metric.info.timestamp <= timestampTimeoutMs) {
+                    scope.timeDiff <= timestampTimeoutMs) {
                   if (scope.topics[topicExists] === undefined) {
                     scope.topics[topicExists] = {};
                   }
+
                   scope.topics[topicExists].lastUpdateTime = metric.info.timestamp;
                 }
               } else if ((match = metric.name.match(/^kafka\.brokers\.(\d+)\.(.*)/i)) !== null) {
@@ -237,8 +246,10 @@ angular.module('appComponents').directive('pndaKafka', ['$filter', '$window', 'H
         }
       };
 
-      var healthStatusCallbackFn = function(now) {
-        scope.healthClass = " health_" + healthStatus(scope.latestHealthStatus, scope.timestamp, now);
+      var healthStatusCallbackFn = function() {
+        scope.serverTime = $window.localStorage.getItem('serverTime');
+        scope.timeDiff = scope.serverTime - scope.timestamp;
+        scope.healthClass = " health_" + healthStatus(scope.latestHealthStatus, scope.timestamp, scope.timeDiff);
       };
 
       scope.onGetMetricData({ cbFn: callbackFn, healthStatusCbFn: healthStatusCallbackFn });

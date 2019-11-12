@@ -24,8 +24,8 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appComponents').directive('pndaBasicComponent', ['$filter', 'HelpService',
-  function($filter, HelpService) {
+angular.module('appComponents').directive('pndaBasicComponent', ['$filter', 'HelpService', 'customTimer','$window',
+  function($filter, HelpService, customTimer, $window) {
     return {
       restrict: 'E',
       scope: {
@@ -63,7 +63,6 @@ angular.module('appComponents').directive('pndaBasicComponent', ['$filter', 'Hel
         scope.clickCog = function() {
           scope.showConfig({ metricObj: scope.metricObj });
         };
-
         // the callback function expects an array of matching metrics
         var callbackFn = function(metricData) {
           if (metricData.length > 0) {
@@ -83,24 +82,26 @@ angular.module('appComponents').directive('pndaBasicComponent', ['$filter', 'Hel
 
               scope.metricName = scope.forceWrapDisplayName === "true" ?
                 scope.metricNameForModalView.replace(/ /g, '<br />') : scope.metricNameForModalView;
-
               scope.timestamp = healthMetric.info.timestamp;
+              scope.serverTime = $window.localStorage.getItem('serverTime');
+              scope.timeDiff = scope.serverTime - scope.timestamp;
               scope.severity = healthMetric.info.value;
               scope.metricObj = healthMetric;
               scope.class = $filter('metricNameClass')(healthMetric.name);
               scope.isUnavailable = (healthMetric.info.value === "UNAVAILABLE");
-
               scope.latestHealthStatus = healthMetric.info.value;
-              scope.healthClass = " health_" + healthStatus(healthMetric.info.value, scope.timestamp);
+              scope.healthClass = " health_" + healthStatus(healthMetric.info.value, scope.timestamp, scope.timeDiff);
 
               // animate all relevant health objects
               showMetricUpdateAnimation($("." + $filter('metricNameClass')(healthMetric.name)));
             }
           }
         };
-
-        var healthStatusCallbackFn = function(now) {
-          scope.healthClass = " health_" + healthStatus(scope.latestHealthStatus, scope.timestamp, now);
+       
+        var healthStatusCallbackFn = function() {
+          scope.serverTime = $window.localStorage.getItem('serverTime');
+          scope.timeDiff = scope.serverTime - scope.timestamp;
+          scope.healthClass = " health_" + healthStatus(scope.latestHealthStatus, scope.timestamp, scope.timeDiff);
         };
 
         scope.onGetMetricData({ cbFn: callbackFn, healthStatusCbFn: healthStatusCallbackFn });

@@ -33,8 +33,19 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
     socket, $filter, $modal, $interval, $location, $window) {
 
     var locationParameters = $location.search();
+    var defaultTimeInterval = 1000;
+    $scope.thresholdTime = 180000;
     $scope.theme = (locationParameters.theme === undefined ? '' : 'css/generated/themes/'
     + locationParameters.theme + '.css');
+
+    $scope.metricpages = [
+        { value:"10", label:"10 metric per page" },
+        { value:"20", label:"20 metric per page" },
+        { value:"50", label:"50 metric per page" },
+        { value:"100", label:"100 metric per page" }
+    ];
+
+    $scope.selectedMetricCount = 50;
 
     $scope.showModal = function(healthInfo, metricsInfo) {
       var fields = {
@@ -90,35 +101,49 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
       $scope.trafficLightStatus = {
         errors: [],
         warnings: [],
+        unavailable: [],
+        outdated: [],
         status: "unknown"
       };
     }
 
     function computeTrafficLightStatus() {
       return $scope.trafficLightStatus.errors.length > 0 ? "ERROR" :
-        $scope.trafficLightStatus.warnings.length > 0 ? "WARN" : "OK";
+        $scope.trafficLightStatus.warnings.length > 0 ? "WARN" :
+        $scope.trafficLightStatus.outdated.length > 0 ? "OUTDATED" :
+        $scope.trafficLightStatus.unavailable.length > 0 ? "ERROR" : "OK";
     }
 
     resetTrafficLightStatus();
+    $scope.metrics = [];
+    $scope.metricLoaded = false;
 
-    $scope.metrics = MetricService.query(function(response) {
+    MetricService.query(function(response) {
+      $scope.metrics = response.metrics;
+      $scope.metricLoaded = true;
+      $window.localStorage.setItem('serverTime',response.serverTime);
+      $window.localStorage.setItem('currentTopics',response.currentTopics);
+      $scope.serverTime = JSON.parse($window.localStorage.getItem('serverTime'));
       resetTrafficLightStatus();
-      angular.forEach(response, function(metric) {
+      angular.forEach(response.metrics, function(metric) {
         // turn the 'value' promise into its value when it's available
         metric.info.then(function(response) {
           metric.info = response[0];
           metric.info.causes = (metric.info.causes === undefined || metric.info.causes === ""
             || metric.info.causes === "[\"\"]" ? [] :
             UtilService.isJson(metric.info.causes) ? JSON.parse(metric.info.causes) : [metric.info.causes]);
-          metric.info.displayCauses = metric.info.causes.length > 0;
+          metric.info.displayCauses = (metric.info.causes != null) ? (metric.info.causes.length > 0) : false;
           if (metric.name.endsWith(".health")) {
             if (metric.info.value === "ERROR") {
               $scope.trafficLightStatus.errors.push(metric);
             } else if (metric.info.value === "WARN") {
               $scope.trafficLightStatus.warnings.push(metric);
+            }else if (metric.info.value === "UNAVAILABLE") {
+              $scope.trafficLightStatus.unavailable.push(metric);
+            }else if ($scope.serverTime - metric.info.timestamp > $scope.thresholdTime) {
+              $scope.trafficLightStatus.outdated.push(metric);
             }
           }
-
           $scope.trafficLightStatus.status = computeTrafficLightStatus();
 
           // if there is a callback function for this metric, call it
@@ -167,6 +192,14 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
       return component !== undefined ? component : "";
     };
 
+    $scope.getMachineInterface = function(interfaceName) {
+      var link = null;
+      if (ConfigService.machine_interfaces.hasOwnProperty(interfaceName)) {
+        link = ConfigService.machine_interfaces[interfaceName];
+      }
+      return link;
+    };
+
     // if we want to show the same component more than once, set addIfDuplicate=true when calling this function
     $scope.getMetricData = function(metricName, callbackFn, healthStatusCbFn, addIfDuplicate) {
       var found = $filter('getByName')($scope.metrics, metricName);
@@ -196,6 +229,10 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
     $scope.now = Date.now();
     $scope.updateNowTimerCallbacks = [];
     var stop = $interval(function() {
+      if($scope.serverTime){
+         $scope.serverTime = $scope.serverTime + 1000;
+         $window.localStorage.setItem('serverTime', $scope.serverTime);
+      }
       $scope.now = Date.now();
       angular.forEach($scope.updateNowTimerCallbacks, function(cb) {
         if (cb.callbackFn !== undefined) {
@@ -234,6 +271,10 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
             $scope.trafficLightStatus.errors.push(metric);
           } else if (metric.info.value === "WARN") {
             $scope.trafficLightStatus.warnings.push(metric);
+          } else if (metric.info.value === "UNAVAILABLE") {
+            $scope.trafficLightStatus.unavailable.push(metric);
+          }else if ($scope.serverTime - metric.info.timestamp > $scope.thresholdTime) {
+            $scope.trafficLightStatus.outdated.push(metric);
           }
         }
       });
@@ -242,6 +283,11 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
 
     // update metrics when socket.io updates are received.
     function socketMetricsUpdate(obj) {
+      //Add latest kafka topics to storage
+      if(obj.metric.endsWith(".available.topics")){
+       var currentTopicsData = JSON.parse(obj.value.replace(/'/g, '"'));
+       $window.localStorage.setItem('currentTopics',currentTopicsData);
+      }
       var causes = (obj.causes === undefined || obj.causes === "" || obj.causes === "[\"\"]" ? [] : obj.causes
       && UtilService.isJson(obj.causes) ? JSON.parse(obj.causes) : [obj.causes]);
 
@@ -269,7 +315,9 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
             displayCauses: displayCauses
           }
         };
-        $scope.metrics.push(found);
+        if(!obj.metric.endsWith(".available.topics")){
+          $scope.metrics.push(found);
+        }
       }
 
       // if there is a callback function for this metric, call it
@@ -279,7 +327,6 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
           cb.callbackFn([found]);
         });
       }
-
       updateHealthIndicator();
     }
 
@@ -287,17 +334,12 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
 
     $scope.dm_endpoints;
     $scope.operationalEndpoints = {
-      edgeNode: ConfigService.edge_node,
-      httpFS: ""
+      edgeNode: ConfigService.edge_node
     };
     DeploymentManagerService.getEndpoints().then(function(data) {
       $scope.dm_endpoints = data;
-      $scope.operationalEndpoints.httpFS = data.webhdfs_host + ":" + data.webhdfs_port;
 
       // update the list of links in the Config Service using endpoints from the deployment manager endpoints API
-      ConfigService.userInterfaceIndex["Kafka Manager"] = $scope.dm_endpoints.kafka_manager;
-      ConfigService.userInterfaceIndex["YARN Resource Manager"] = "http://" + data.yarn_resource_manager_host + ":" +
-        data.yarn_resource_manager_port;
       if ('hue_host' in data) {
         ConfigService.userInterfaceIndex.Hue = "http://" + data.hue_host + ":" + data.hue_port;
       }
@@ -306,21 +348,24 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
     function findResolutionUrlForSource(source, showDefault) {
       var resolutionUrl = "/";
       var opentsdbIndex = "OpenTSDB";
+      var flinkIndex = "Flink";
       if ($scope.dm_endpoints !== undefined) {
         if (source === "kafka") {
           resolutionUrl = $scope.dm_endpoints.kafka_manager;
         } else if (source === "deployment-manager") {
           resolutionUrl = ConfigService.userInterfaceIndex["PNDA logserver"];
           // setting the search/query string to "deployment manager"
-          resolutionUrl += "/#/dashboard/Default?_g=()&_a=(filters:!()," +
+          resolutionUrl += "/#/dashboard/a2521e70-1622-11e8-9c84-9713efe53d19?_g=()&_a=(filters:!()," +
           "query:(query_string:(analyze_wildcard:!t,query:%27deployment-manager%27)),title:Default)";
         } else if (source === "opentsdb") {
-          resolutionUrl = ConfigService.userInterfaceIndex[opentsdbIndex].split(",")[0];
-        }else if(source === "grafana"){
+          resolutionUrl = ConfigService.userInterfaceIndex["PNDA logserver"];
+          // setting the search/query string to "deployment manager"
+          resolutionUrl += "/#/dashboard/a2521e70-1622-11e8-9c84-9713efe53d19?_g=()&_a=(filters:!()," +
+          "query:(query_string:(analyze_wildcard:!t,query:%27opentsdb%27)),title:Default)";
+        } else if (source === "grafana") {
         //for grafana, the string is a comma-separated list
-        resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
-        } 
-        else if ((source === "hdfs01" || source === "HDFS") && showDefault !== true) {
+          resolutionUrl = $scope.dm_endpoints[source].split(',')[0];
+        } else if ((source === "hdfs01" || source === "HDFS") && showDefault !== true) {
           if (ConfigService.hadoop_distro === 'CDH') {
             resolutionUrl = ConfigService.userInterfaceIndex.Hue + "/filebrowser/";
           } else {
@@ -332,10 +377,20 @@ angular.module('appControllers').controller('MetricListCtrl', ['$scope', 'Metric
         } else if (source === "OOZIE") {
           resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
             '#/main/views/WORKFLOW_MANAGER/1.0.0/PNDA_WORKFLOW';
+        } else if (source === "SPARK") {
+          resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
+            '#/main/services/SPARK/summary';
+        } else if (source === "HBASE") {
+          resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
+            '#/main/services/HBASE/summary';
+        } else if (source === "flink") {
+          resolutionUrl = ConfigService.userInterfaceIndex[flinkIndex];
+        } else if (source === "HQUERY" || source === "HIVE") {
+          resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"] +
+            '#/main/services/HIVE/summary';
         } else if (source === "AMBARI" || source === "CM") {
           resolutionUrl = ConfigService.userInterfaceIndex["Hadoop Cluster Manager"];
-        }
-         else if ($scope.dm_endpoints.cm_status_links !== undefined) {
+        } else if ($scope.dm_endpoints.cm_status_links !== undefined) {
           resolutionUrl = $scope.dm_endpoints.cm_status_links[source];
         }
       }

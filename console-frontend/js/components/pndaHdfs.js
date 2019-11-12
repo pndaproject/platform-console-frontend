@@ -24,7 +24,8 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService', function($filter, HelpService) {
+angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService','customTimer','$window',
+        function($filter, HelpService, customTimer,$window) {
   return {
     restrict: 'E',
     scope: {
@@ -86,10 +87,17 @@ angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService',
               scope.metricName = $filter('metricNameForDisplay')(metric.name);
 
               scope.class = $filter('metricNameClass')(metric.name);
+              var hdfsElement = document.getElementsByTagName("pnda-hdfs");
+              if(hdfsElement && hdfsElement.length > 0){
+                var offset = hdfsElement[0].offsetHeight;
+                $window.localStorage.setItem('hdfsOffset', offset);
+              }
               scope.severity = metric.info.value;
               scope.timestamp = metric.info.timestamp;
-              var status = healthStatus(metric.info.value, scope.timestamp);
               scope.isUnavailable = (metric.info.value === "UNAVAILABLE");
+              scope.serverTime = $window.localStorage.getItem('serverTime');
+              scope.timeDiff = scope.serverTime - scope.timestamp;
+              var status = healthStatus(metric.info.value, scope.timestamp, scope.timeDiff);
 
 //              scope.healthClass += (enableModalView(scope.severity) ? " clickable" : " ");
               scope.healthClass = "health_" + status;
@@ -145,8 +153,10 @@ angular.module('appComponents').directive('pndaHdfs', ['$filter', 'HelpService',
         }
       };
 
-      var healthStatusCallbackFn = function(now) {
-        var status = healthStatus(scope.latestHealthStatus, scope.timestamp, now);
+      var healthStatusCallbackFn = function() {
+        scope.serverTime = $window.localStorage.getItem('serverTime');
+        scope.timeDiff = scope.serverTime - scope.timestamp;
+        var status = healthStatus(scope.latestHealthStatus, scope.timestamp, scope.timeDiff);
         scope.healthClass = " health_" + status;
         scope.showInfoIcon = status === 'WARN' || status === 'ERROR';
       };

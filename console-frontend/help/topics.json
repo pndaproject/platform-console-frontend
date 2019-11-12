@@ -52,6 +52,11 @@
         "In PNDA, it allows for both batch mode and streaming computation."],
       "link": "http://spark.apache.org"
     },
+     "flink.health": {
+      "body": ["Apache Flink is an open-source stream processing framework for distributed, high-performing, always-available, and accurate data streaming applications.",
+        "In PNDA, it allows for both batch mode and streaming computation."],
+      "link": "http://flink.apache.org/"
+    },
     "hadoop.OOZIE.health": {
       "body": ["Apache Oozie is a workflow scheduler system to manage Apache Hadoop jobs.",
         "In PNDA, batch mode Spark jobs are run on a regular schedule by Oozie."],
@@ -102,7 +107,10 @@
     },
     "hadoop.CLUSTER_MANAGER.health": {
       "body": ["The cluster manager is provided as part of the Hadoop distribution. It monitors all the hosts and services that make up the cluster."],
-      "link": "http://pnda.io/pnda-guide/cluster-manager/"
+      "link": {
+        "CDH": "https://www.cloudera.com/products/product-components/cloudera-manager.html",
+        "HDP": "https://ambari.apache.org/"
+      }
     }
   }
 }

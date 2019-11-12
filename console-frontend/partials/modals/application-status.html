@@ -1,0 +1,300 @@
+<div class="modal" tabindex="-1" role="dialog">
+  <div id="applicationOverviewModal" class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header border-none" ng-show="title">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4>{{name}} summary</h4>
+      </div>      
+      <hr style="margin:0px 15px 15px 15px; border:1px;border-style:ridge;"/>
+      <div id="applicationOverview" class="modal-body" ng-hide="error">
+        <div class="row lightblue margin-5 blue-border font-header">
+             <div class="col-md-4">Component</div>
+             <div class="col-md-2">Application Type</div>
+             <div class="col-md-2">Id</div>
+             <div class="col-md-4">Status</div>
+        </div>
+		<div ng-repeat="flinkComponent in flinkComponents">
+            <div class="row pad-top-10">
+            <div class="col-md-4 margin-left-5">{{ flinkComponent.name }}
+            <a ng-if="flinkComponent.tracking_url.length > 0" href="{{flinkComponent.tracking_url}}" target="_blank">
+                <span class="glyphicon glyphicon glyphicon-new-window pad-left-10"></span>
+            </a>
+            </div>
+            <div class="col-md-2 width-16">{{flinkComponent.componentType}}</div>
+            <div class="col-md-2 word-break"><a href="{{yarnUrl +'/' + flinkComponent.yarnId}}" target="_blank">{{ flinkComponent.yarnId }}</a></div>
+            <div class="col-md-4" style="width:33% !important;">{{ flinkComponent.aggregate_status | underscoreRemoved | capitalize }}
+            <!-- If flink's information field has vertices then we will display a table on hover -->
+            <span ng-if ="flinkComponent.information && flinkComponent.information.vertices" class="glyphicon glyphicon-info-sign pad-left-10" 
+                  ng-mouseover="showSummary(flinkComponent.yarnId)" ng-mouseleave="hideSummary(flinkComponent.yarnId)">
+            </span>
+             <table id="stageJobSummary-{{ flinkComponent.yarnId }}" class="flink-summary-table border-enabled hidden">
+                <thead>
+                <tr>
+                    <th>Vertices</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="vertice in flinkComponent.information.vertices">
+                <td>{{vertice.name}}</td>
+                <td>{{vertice.status}}</td>
+                </tr>
+                </tbody>
+             </table>
+             <!-- If flink's information field has yarn_diagnostics then we will display message on hover -->
+             <span ng-if ="flinkComponent.information && !flinkComponent.information.vertices && flinkComponent.information.length > 0"
+                  class="glyphicon glyphicon-info-sign tooltip-text pad-left-10" tooltip="{{ flinkComponent.information }}">
+             </span>
+             </div>
+            </div>
+        </div>
+        <div ng-repeat="sparkComponent in sparkComponents">
+            <div class="row pad-top-10">
+            <div class="col-md-4 margin-left-5">{{ sparkComponent.name }}</div>
+            <div class="col-md-2 width-16">{{sparkComponent.componentType}}</div>
+            <div class="col-md-2 word-break"><a href="{{yarnUrl +'/' + sparkComponent.yarnId}}" target="_blank">{{ sparkComponent.yarnId }}</a></div>
+            <div class="col-md-4">{{ sparkComponent.aggregate_status | underscoreRemoved | capitalize }}
+            <span ng-if ="sparkComponent.information && sparkComponent.information.stageSummary" class="glyphicon glyphicon-info-sign pad-left-10" 
+                  ng-mouseover="showSummary(sparkComponent.yarnId)" ng-mouseleave="hideSummary(sparkComponent.yarnId)"></span>
+            <span ng-if ="sparkComponent.information  && !sparkComponent.information.stageSummary" class="glyphicon tooltip-text glyphicon-info-sign pad-left-10" tooltip="{{ sparkComponent.information }}"></span>
+                
+                 <table id="stageJobSummary-{{ sparkComponent.yarnId }}" class="spark-stage-job-summary hidden">
+                     <tr>
+                        <th colspan="2">Job Summary</th>
+                        <th colspan="2">Stage Summary</th>
+                      </tr>
+                       <tr>
+                         <td>Unknown</td>
+                         <td>{{ sparkComponent.information.jobSummary.unknown }}</td>
+                         <td>Active</td>
+                         <td>{{ sparkComponent.information.stageSummary.active }}</td>
+                       </tr>
+                       <tr>
+                         <td>Number of Jobs</td>
+                         <td>{{ sparkComponent.information.jobSummary.number_of_jobs }}</td>
+                         <td>Number of Stages</td>
+                         <td>{{ sparkComponent.information.stageSummary.number_of_stages }}</td>
+                       </tr>
+                         <tr>
+                           <td>Running</td>
+                           <td>{{ sparkComponent.information.jobSummary.running }}</td>
+                           <td>Complete</td>
+                           <td>{{ sparkComponent.information.stageSummary.complete }}</td>
+                         </tr>
+                          <tr>
+                            <td>Succeeded</td>
+                            <td>{{ sparkComponent.information.jobSummary.succeeded }}</td>
+                            <td>Pending</td>
+                            <td>{{ sparkComponent.information.stageSummary.pending }}</td>
+                          </tr>
+                           <tr>
+                             <td>Failed</td>
+                             <td>{{ sparkComponent.information.jobSummary.failed }}</td>
+                             <td>Failed</td>
+                             <td>{{ sparkComponent.information.stageSummary.failed }}</td>
+                           </tr>
+                      </table>
+             </div>
+            </div>
+        </div>
+        <div ng-repeat="oozieComponent in oozieComponents">
+            <div id="oozieComponents">
+            <div class="row">
+                <div class="col-md-4">
+                <span id="showOozie" ng-show="{{ oozieComponent.actions }}" class="glyphicon glyphicon-triangle-right" ng-click="showSubComponent()" data-toggle="collapse" data-target="#oozieSubComponents"></span>
+                <span id="hideOozie" ng-show="{{ oozieComponent.actions }}" class="glyphicon glyphicon-triangle-bottom hidden" ng-click="hideSubComponent()" data-toggle="collapse" data-target="#oozieSubComponents"></span>
+                {{oozieComponent.name}}
+                </div>
+                <div class="col-md-2">{{oozieComponent.componentType}}</div>
+                <div class="col-md-2">
+                <span ng-attr-title="{{oozieComponent.oozieId}}" class="word-break">{{ oozieComponent.oozieId }}</span>
+                </div>
+                <div class="col-md-4">{{ oozieComponent.aggregate_status | underscoreRemoved | capitalize }}</div>
+            </div>
+                <div class="panel-body">
+                    <div class="collapse" id="oozieSubComponents">
+                    <div ng-if="oozieComponent.actions != undefined" class="row margin-left-20">                   
+                            <div id="workflows" ng-repeat="workflow in oozieComponent.actions" class="margin-left-20">
+                            <!-- Following can be a workflow pr subworkflow or a job -->
+                            <div class="row">
+                            <div class="col-md-4">
+                            <span id="showWorkflow-{{$index}}" ng-show="{{ workflow.actions }}" class="glyphicon glyphicon-triangle-right" ng-click="showWorkflow($index)" data-toggle="collapse" data-target="#oozieWorkflow-{{$index}}"></span>
+                            <span id="hideWorkflow-{{$index}}" ng-show="{{ workflow.actions }}" class="glyphicon glyphicon-triangle-bottom hidden" ng-click="hideWorkflow($index)" data-toggle="collapse" data-target="#oozieWorkflow-{{$index}}"></span>
+                            {{workflow.name}}
+                            </div>
+                            <div class="col-md-2 margin-left-neg-35"  ng-if="!workflow.applicationType">-</div>
+                            <div class="col-md-2 margin-left-neg-35" ng-if="workflow.applicationType">{{workflow.applicationType}}</div>
+                            <div class="col-md-2 margin-left-3">
+                            <span ng-if="workflow.oozieId" class="word-break">{{ workflow.oozieId }}</span>
+                            <span ng-if="workflow.yarnId" class="word-break">
+                                <a href="{{yarnUrl +'/' + workflow.yarnId}}" target="_blank">{{ workflow.yarnId }}</a>
+                            </span>
+                            </div>                         
+                            <div class="col-md-4 margin-left-16">{{ workflow.status  | underscoreRemoved | capitalize }}
+                             <span ng-if ="workflow.information && workflow.information.stageSummary" class="glyphicon glyphicon-info-sign pad-left-10" 
+                                          ng-mouseover="showSummary(workflow.yarnId)" ng-mouseleave="hideSummary(workflow.yarnId)"></span>
+                             <span ng-if ="workflow.information  && !workflow.information.stageSummary" class="glyphicon tooltip-test glyphicon-info-sign pad-left-10" 
+                                          data-title="{{ workflow.information }}" bs-tooltip></span>
+                             <table id="stageJobSummary-{{ subworkflow.yarnId }}" class="stage-job-summary hidden">
+                                    <tr>
+                                       <th colspan="2">Stage Summary</th>
+                                       <th colspan="2">Job Summary</th>
+                                    </tr>
+                                    <tr>
+                                     <td>Active</td>
+                                     <td>{{ workflow.information.stageSummary.active }}</td>
+                                     <td>Unknown</td>
+                                     <td>{{ workflow.information.jobSummary.unknown }}</td>
+                                    </tr>
+                                    <tr>
+                                       <td>Number of Stages</td>
+                                       <td>{{ workflow.information.stageSummary.number_of_stages }}</td>
+                                       <td>Number of Jobs</td>
+                                       <td>{{ workflow.information.jobSummary.number_of_jobs }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Complete</td>
+                                        <td>{{ workflow.information.stageSummary.complete }}</td>
+                                        <td>Running</td>
+                                        <td>{{ workflow.information.jobSummary.running }}</td>
+                                    </tr>
+                                    <tr>
+                                       <td>Pending</td>
+                                       <td>{{ workflow.information.stageSummary.pending }}</td>
+                                       <td>Succeeded</td>
+                                       <td>{{ workflow.information.jobSummary.succeeded }}</td>
+                                    </tr>
+                                    <tr>
+                                         <td>Failed</td>
+                                         <td>{{ workflow.information.stageSummary.failed }}</td>
+                                         <td>Failed</td>
+                                         <td>{{ workflow.information.jobSummary.failed }}</td>
+                                    </tr>
+                              </table>
+                            </div>
+                            </div>
+                            <div class="collapse" id="oozieWorkflow-{{$index}}">                          
+                            <div ng-if="workflow.actions != undefined">
+                                <div ng-repeat="subworkflow in workflow.actions" class="margin-left-20">
+                                    <!-- Following can be a subworkflow or a job -->
+                                    <div class="row">
+                                    <div class="col-md-4 margin-left-10">{{ subworkflow.name }}</div>
+                                    <div class="col-md-2 margin-left-neg-58" ng-if="!subworkflow.applicationType">-</div>                                    
+                                    <!-- Checking if it is oozie coordinator or workflow -->
+                                    <div class="col-md-2 margin-left-neg-58" ng-if="subworkflow.applicationType">{{subworkflow.applicationType}}</div>
+                                    <div class="col-md-2 margin-left-5">
+                                    <span class="word-break" ng-if="subworkflow.oozieId">{{ subworkflow.oozieId }}</span>
+                                    <span class="word-break" ng-if="subworkflow.yarnId">
+                                    <a href="{{yarnUrl +'/' + subworkflow.yarnId}}" target="_blank">{{ subworkflow.yarnId }}</a></span>
+                                    </div>
+                                    <div class="col-md-4 margin-left-18">
+                                    {{ subworkflow.status | underscoreRemoved | capitalize }}
+                                    <span ng-if ="subworkflow.information && subworkflow.information.stageSummary" class="glyphicon glyphicon-info-sign pad-left-10" 
+                                          ng-mouseover="showSummary(subworkflow.yarnId)" ng-mouseleave="hideSummary(subworkflow.yarnId)"></span>
+                                    <span ng-if ="subworkflow.information  && !subworkflow.information.stageSummary" class="glyphicon tooltip-test glyphicon-info-sign pad-left-10" 
+                                          data-title="{{ subworkflow.information }}" bs-tooltip></span>
+                                    <table id="stageJobSummary-{{ subworkflow.yarnId }}" class="stage-job-summary hidden">
+                                               <tr>
+                                                <th colspan="2">Job Summary</th>
+                                                <th colspan="2">Stage Summary</th>
+                                                </tr>
+                                                <tr>
+                                                <td>Unknown</td>
+                                                <td>{{ subworkflow.information.jobSummary.unknown }}</td>
+                                                <td>Active</td>
+                                                <td>{{ subworkflow.information.stageSummary.active }}</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Number of Jobs</td>
+                                                <td>{{ subworkflow.information.jobSummary.number_of_jobs }}</td>
+                                                <td>Number of Stages</td>
+                                                <td>{{ subworkflow.information.stageSummary.number_of_stages }}</td>
+                                                </tr>
+                                                <tr>
+                                                 <td>Running</td>
+                                                <td>{{ subworkflow.information.jobSummary.running }}</td>
+                                                <td>Complete</td>
+                                                <td>{{ subworkflow.information.stageSummary.complete }}</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Succeeded</td>
+                                                <td>{{ subworkflow.information.jobSummary.succeeded }}</td>
+                                                <td>Pending</td>
+                                                <td>{{ subworkflow.information.stageSummary.pending }}</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Failed</td>
+                                                <td>{{ subworkflow.information.jobSummary.failed }}</td>
+                                                <td>Failed</td>
+                                                <td>{{ subworkflow.information.stageSummary.failed }}</td>
+                                                </tr>
+                                            </table>                                    
+                                    </div>
+                                    </div>
+                                    <div ng-if="subworkflow.actions != undefined" class="row margin-left-20">
+                                       <div ng-repeat="job in subworkflow.actions" class="row margin-left-20">
+                                            <div class="col-md-4">{{ job.name }}</div>
+                                            <div class="col-md-2 margin-left-neg-90">{{ job.applicationType }}</div>
+                                            <div class="col-md-2 margin-left-10">
+                                            <span class="word-break"><a href="{{yarnUrl +'/' + job.yarnId}}" target="_blank">{{job.yarnId}}</a></span>
+                                            </div>
+                                            <div class="col-md-3 margin-left-26">{{ job.status | underscoreRemoved | capitalize }}
+                                            <span ng-if ="job.information && job.information.stageSummary" class="glyphicon glyphicon-info-sign pad-left-10" ng-mouseover="showSummary(job.yarnId)"
+                                            ng-mouseleave="hideSummary(job.yarnId)"></span>
+                                            <span ng-if ="job.information  && !job.information.stageSummary" class="glyphicon tooltip-test glyphicon-info-sign pad-left-10" data-title="{{ job.information }}" bs-tooltip>
+                                            </span>
+                                            <table id="stageJobSummary-{{ job.yarnId }}" class="stage-job-summary hidden">
+                                               <tr>
+                                                <th colspan="2">Job Summary</th>
+                                                <th colspan="2">Stage Summary</th>
+                                                </tr>
+                                                <tr>
+                                                <td>Unknown</td>
+                                                <td>{{ job.information.jobSummary.unknown }}</td>
+                                                <td>Active</td>
+                                                <td>{{ job.information.stageSummary.active }}</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Number of Jobs</td>
+                                                <td>{{ job.information.jobSummary.number_of_jobs }}</td>
+                                                <td>Number of Stages</td>
+                                                <td>{{ job.information.stageSummary.number_of_stages }}</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Running</td>
+                                                <td>{{ job.information.jobSummary.running }}</td>
+                                                <td>Complete</td>
+                                                <td>{{ job.information.stageSummary.complete }}</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Succeeded</td>
+                                                <td>{{ job.information.jobSummary.succeeded }}</td>
+                                                <td>Pending</td>
+                                                <td>{{ job.information.stageSummary.pending }}</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Failed</td>
+                                                <td>{{ job.information.jobSummary.failed }}</td>
+                                                <td>Failed</td>
+                                                <td>{{ job.information.stageSummary.failed }}</td>
+                                                </tr>
+                                            </table>
+                                            </div>                                          
+                                       </div>
+                                   </div> <!-- subworkflow ends here -->
+                                </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div><!-- Oozie component div -->
+        </div>
+      <div class="modal-footer border-none">
+        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+      </div>
+  </div>
+</div>
+</div>

@@ -43,6 +43,10 @@ hr {
     margin: 30px 0 0;
 }
 
+.margin-right-10{
+	margin-right:10px !important;
+}
+
 .app-status {
     margin-top: -28px;
     margin-right: -50px;
@@ -296,6 +300,101 @@ pnda-tree-view {
     padding-left: 10px;
 }
 
+.search-icon{
+	display:table-cell;
+	top:-20px;
+	float:right;
+	padding-right:20px;
+	color:#dddddd;
+}
+
+.border-enabled{
+	border:1px solid #dddddd;
+}
+
+.scroll-bar{
+	max-height:270px;
+	overflow-y:scroll;
+	overflow-x:hidden;
+}
+
+.pagination > li > a{
+	line-height:0.8 !important;
+	color: gray !important;
+}
+
+.pagination > li > span{
+	color: gray !important;
+}
+
+div#applicationList{
+    overflow-y:auto;
+    width:100%;
+}
+
+.pagination > .active > a{
+	border-color:gray !important;
+	background-color:gray !important;
+	color:white !important;
+}
+.pagination{
+	margin-bottom:0 !important;
+}
+
+.page-number-button{
+	position:relative;
+	top:-50px;
+	float:right;
+	padding-right:7px;
+	outline:none;
+	background:white;
+}
+
+.page-number-menu{
+	margin-top:-15px;
+	left:25%;
+	padding:5px;
+}
+
+.position-absolute{
+	position: absolute;
+}
+
+.positive-relative{
+	position: relative;
+}
+.margin-bottom-only{
+	margin:0 0 10px 0;
+}
+
+.enlarged-icon{
+	font-size:21px;
+}
+.wide100{
+	width:100%;
+}
+
+.wide80{
+	width:80%;
+}
+
+.wide50{
+	width:50%;
+}
+
+.wide30{
+	width:30%;
+}
+.wide40{
+	width:40%;
+}
+.word-wrap-enabled{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+
 .loader-container {
     height: 30px;
     margin-left: 10px;
@@ -310,4 +409,257 @@ pnda-tree-view {
         display: inline-block;
         margin-right: 1px;
     }
+}
+/* Application Status */
+.lightblue{
+	background-color: #e7f3fd;
+}
+
+.blue-border{
+	border: 1px solid #a0c8ea;
+}
+
+.font-header{
+	padding-top: 10px;
+	font-weight: bolder;
+	line-height: 0.5;
+}
+
+.margin-5{
+	margin-right: 5px;
+	margin-left: 5px;
+}
+
+.margin-left-3{
+	margin-left: 3px;
+}
+
+.margin-left-5{
+	margin-left: 5px;
+}
+
+.margin-left-10{
+   margin-left: 10px;
+}
+
+.margin-left-16{
+   margin-left: 16px;
+}
+
+.margin-left-18{
+   margin-left: 18px;
+}
+
+.margin-left-20{
+   margin-left: 20px;
+}
+
+.margin-left-26{
+  margin-left: 26px;
+}
+
+.margin-left-neg-13{
+   margin-left: -13px;
+}
+
+.margin-left-neg-20{
+   margin-left: -20px;
+}
+
+.margin-left-neg-35{
+   margin-left: -35px;
+}
+
+.margin-left-neg-58{
+   margin-left: -58px;
+}
+
+.margin-left-neg-90{
+   margin-left: -90px;
+}
+
+.pad-top-10{
+    padding-top: 10px;
+}
+
+.pad-left-10{
+  padding-left: 10px;
+}
+
+div#oozieComponents{
+	margin-left: 0px;
+	padding-top: 10px;
+}
+
+.width-16{
+	width: 16%;
+}
+
+.word-break{
+	display: block;
+	word-wrap: break-word;
+	width: 200px;
+}
+
+.stage-job-summary{
+    position: absolute;
+    width: 300px;
+    background: #fff;
+    margin-top: -134px;
+    box-shadow: 1px 3px 4px #ccc;
+    margin-left: -14px;
+    border: 1px solid black;
+}
+
+table.stage-job-summary:before{
+	border: solid;
+    top: 100%;
+    content: "";
+    border-color: rgba(194, 225, 245, 0);
+    border-top-color: black;
+    left: 45px;
+    border-width: 8px;
+    position: absolute;
+}
+
+table.stage-job-summary th{
+	background: #f9f9f9;
+	border: 1px solid black;
+}
+
+table.stage-job-summary th, table.stage-job-summary td{
+	padding-left: 10px;
+}
+
+table.stage-job-summary tbody tr td:nth-child(1),table.stage-job-summary tbody tr td:nth-child(3){
+	font-weight: bold;
+	width: 38%; 
+	border-left: 1px solid black;
+}
+
+.spark-stage-job-summary{
+    position: absolute;
+    width: 278px;
+    background: #fff;
+    margin-top: 1px;
+    box-shadow: 1px 3px 4px #ccc;
+    margin-left: -17px;
+    border: 1px solid black;
+}
+
+table.spark-stage-job-summary:before{
+    border: solid;
+    content: "";
+    border-color: rgba(194, 225, 245, 0);
+    border-bottom-color: black;
+    left: 31%;
+    bottom: 100%;
+    border-width: 8px;
+    position: absolute;
+}
+
+table.spark-stage-job-summary th{
+	background: #f9f9f9;
+	border: 1px solid black;
+}
+
+table.stage-job-summary th, table.stage-job-summary td{
+	padding-left: 10px;
+}
+
+table.spark-stage-job-summary tbody tr td:nth-child(1),table.spark-stage-job-summary tbody tr td:nth-child(3){
+	font-weight: bold;
+	width: 38%; 
+	border-left: 1px solid black;
+}
+
+div#applicationOverview {
+    min-height: 180px;
+    max-height: 370px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.border-none{
+	border: 0px !important;
+}
+
+#applicationStatusError{
+	width: 450px;
+	margin-top: 200px;
+	margin-left: 100px;
+}
+
+div#applicationOverviewModal{
+	width:1200px !important;
+	overflow-x: auto;
+}
+
+#applicationOverview table{
+	font-size:12px;
+}
+.tooltip-text:hover:after{
+      content: attr(tooltip);
+      padding: 4px 8px;
+      color: white;
+      position: absolute;
+      background-color: black;
+      width: 1000%;
+	  left: -20px;
+	  margin-top:10px;
+	  top: 100%;
+	  z-index: 20;
+	  white-space: prewrap;
+	  -moz-border-radius: 5px;
+	  -webkit-border-radius: 5px;
+	  border-radius: 5px;
+	  -moz-box-shadow: 0px 0px 4px #222;
+	  -webkit-box-shadow: 0px 0px 4px #222;
+	  box-shadow: 0px 0px 4px #222;
+	  background-image: -moz-linear-gradient(top, #000000, #000000);
+	  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #000000),color-stop(1, #000000));
+	  background-image: -webkit-linear-gradient(top, #000000, #000000);
+	  background-image: -moz-linear-gradient(top, #000000, #000000);
+	  background-image: -ms-linear-gradient(top, #000000, #000000);
+	  background-image: -o-linear-gradient(top, #000000, #000000);
+}
+
+.flink-summary-table{
+    position: absolute;
+    width: 193px;
+    background: #fff;
+    top: 25px;
+    left: 0px;
+    box-shadow: 1px 3px 4px #ccc;
+    border: 1px solid black;
+}
+table.flink-summary-table:before {
+    border: solid;
+    bottom: 100%;
+    content: "";
+    border-color: rgba(245, 225, 245, 0);
+    border-bottom-color: black;
+    left: 80px;
+    top: -15px;
+    border-width: 8px;
+    position: absolute;
+}
+table.flink-summary-table > thead > tr > th, table.flink-summary-table > tbody > tr > td{
+        border:1px solid black;
+        padding: 4px;
+}
+.glyphicon-warning-sign{
+   color: orange;
+}
+.custom-timer{
+    display: block;
+    font-size: 10px;
+    color: #444;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.list-group-item-outdated{
+   background:lightgray;
 }

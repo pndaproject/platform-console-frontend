@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # Please check pnda-build/ for the build products
+set -e
 
 VERSION=${1}
 

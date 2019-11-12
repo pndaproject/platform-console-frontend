@@ -1,4 +1,3 @@
-
 <div class="row first-row row-eq-height">
   <div class="col-sm-6">
     <div class="panel panel-default">
@@ -11,6 +10,7 @@
             <span ng-class="{ 'active': trafficLightStatus.status==='ERROR'}" id="red"></span>
             <span ng-class="{ 'active': trafficLightStatus.status==='WARN'}" id="orange"></span>
             <span ng-class="{ 'active': trafficLightStatus.status==='OK'}" id="green"></span>
+            <span ng-class="{ 'active': trafficLightStatus.status==='OUTDATED'}" id="gray"></span>
           </div>
         </div>
         <div class="col-sm-10">
@@ -26,6 +26,18 @@
             <div class="list-group" ng-switch="trafficLightStatus.status">
               <div ng-switch-when="OK" class="list-group-item list-group-item-success">All components are online</div>
               <div ng-switch-default></div>
+            </div>
+            <div class="list-group" ng-switch="trafficLightStatus.unavailable.length">
+              <div ng-switch-when="0"></div>
+              <div ng-click="showModalTable(trafficLightStatus.unavailable, 'Unavailable Metrics')" ng-switch-default class="list-group-item list-group-item-danger">
+                  <span class="badge">{{trafficLightStatus.unavailable.length}}</span>
+                  Error - Some components are not reporting health status and may be offline</div>
+            </div>
+            <div ng-switch="trafficLightStatus.outdated.length">
+              <div ng-switch-when="0"></div>
+              <div ng-click="showModalTable(trafficLightStatus.outdated, 'Outdated Metrics')" ng-switch-default class="list-group-item" style="background:lightgray;">
+                   <span class="badge">{{trafficLightStatus.outdated.length}}</span>
+                   Warning - Some metrics are outdated</div>
             </div>
           </div>
         </div>
@@ -48,8 +60,18 @@
   <div class="col-sm-12">
     <div class="panel panel-default">
       <div class="panel-heading">
-        Metrics
-        <div id="search">Search: <input ng-model="query"></div>
+      <div class="row">
+      <div class="col-md-6 col-sm-3 col-xs-12">Metrics</div>
+      <div id="search" class="pull-left col-md-2 col-sm-2 col-xs-12" style="padding-top: 4px">Search: <input ng-model="query"></div>
+      <div class="col-md-4 col-sm-7 col-xs-12 text-right">
+          <p>
+            <span>Show Metric:</span>
+            <button type="button" class="btn btn-default btn-sm" ng-model="selectedMetricCount" data-html="1" bs-options="page.value as page.label for page in metricpages" bs-select>
+             Select<span class="caret"></span>
+            </button>
+          </p>
+      </div>
+      </div>
       </div>
       <div class="panel-body">
         <table id="metrics" class="table table-hover table-condensed">
@@ -61,8 +83,11 @@
             <th></th>
           </tr>
           </thead>
-          <tr ng-repeat="metric in metrics | filter:query | limitTo:50 | orderBy:orderProp"
-              ng-class="{ 'list-group-item-danger': metric.info.value==='ERROR', 'list-group-item-warning': metric.info.value==='WARN'}">
+          <tr dir-paginate="metric in metrics | filter:query | orderBy:orderProp | itemsPerPage: selectedMetricCount"
+              ng-class="{ 'list-group-item-danger': metric.info.value==='ERROR' || metric.info.value==='UNAVAILABLE',
+                         'list-group-item-warning': metric.info.value==='WARN',
+                         'list-group-item-outdated' : serverTime - metric.info.timestamp > thresholdTime && metric.name.endsWith('.health')}"
+               pagination-id="metricPages">
             <td class="metric">{{metric.name}}</td>
             <td class="source">{{metric.info.source}}</td>
             <td class="value">{{metric.info.value | formatNumbers: metric.name}}</td>
@@ -73,7 +98,16 @@
             </td>
           </tr>
         </table>
-      </div>
+        <hr/>
+        <div class="pull-left" style="margin-top: 15px;"><label>Total number of metrics:</label> {{metrics.length}}</div>
+        <div class="pull-right">
+        <dir-pagination-controls
+        pagination-id="metricPages" max-size="6"
+        direction-links="true"
+        boundary-links="true">
+        </dir-pagination-controls>
+        </div>
+    </div>
     </div>
   </div>
 </div>

@@ -33,7 +33,9 @@ var consoleFrontendApp = angular.module('consoleFrontendApp', [
     'logout',
     'appFilters',
     'appComponents',
-    'ngSanitize'
+    'ngSanitize',
+    'angularUtils.directives.dirPagination',
+    'ngIdle'
   ])
   .provider('ConfigService', function () {
     var options = {};
@@ -48,8 +50,9 @@ var consoleFrontendApp = angular.module('consoleFrontendApp', [
 
       return options;
     }];
-  })
-
+  }).config(['$httpProvider', function($httpProvider) {
+    $httpProvider.defaults.withCredentials = true;
+  }])
   .config(['$routeProvider',
     function($routeProvider) {
       $routeProvider.
@@ -90,35 +93,32 @@ var consoleFrontendApp = angular.module('consoleFrontendApp', [
         });
     }]);
 
-consoleFrontendApp.run(function($rootScope, $location, $cookies, $http, ConfigService, HelpService, ModalService) {
+consoleFrontendApp.run(function($rootScope, $location, $cookies, $http, ConfigService, HelpService, ModalService,
+  SessionHandler, $window) {
   $rootScope.globals = $cookies.get('globals') || {};
   var userName = $cookies.get('userLoggedIn');
+  var timeoutForLogout = JSON.parse($window.localStorage.getItem('timeoutForLogout'));
+  var sessionExpiryWarningDuration = JSON.parse($window.localStorage.getItem('sessionExpiryWarningDuration'));
+  var timeoutForIdle = JSON.parse($window.localStorage.getItem('timeoutForIdle'));
+  if(timeoutForLogout && sessionExpiryWarningDuration && timeoutForIdle)
+    SessionHandler.init();
 
-  // $rootScope.authData = $cookies.get('authData') || null;
-  
   $rootScope.$on('$routeChangeStart', function() {
     var userName = $cookies.get('userLoggedIn');
-
     if (userName !== undefined && userName) {
-      // jquery to add content to navbar for identifying the user
       $("#navWelcomeText").text('Welcome, ' + $cookies.get('user') + '  ');
       $("#navWelcomeText").append('<span class="caret"></span>');
       $(".role").remove();
-      $(".dropdown-menu").prepend('<li class="role"><a href="#">' + $cookies.get('userRole') + '</a></li>');
+
+      //$(".dropdown-menu").prepend('<li class="role"><a href="#">' + $cookies.get('userRole') + '</a></li>');
+    } else {
+      SessionHandler.off();
+      $location.path('/login');
     }
 
     // redirect to login page if not logged in and trying to access a restricted page
     var restrictedPage = $.inArray($location.path(), ['/login']) === -1;
 
-    // check if LDAP login is enabled
-    var ldapLoginDisabled = (ConfigService.disable_ldap_login !== undefined
-      && ConfigService.disable_ldap_login === true);
-
-    // if ldap login is disabled or if the user is already authenticated, let them in
-    var loggedIn = userName || ldapLoginDisabled;
-    if (!loggedIn) {
-      $location.path('/login');
-    }
   });
   
   $rootScope.pageHelp = function() {
@@ -149,8 +149,6 @@ function bootstrapApplication() {
 
       consoleFrontendApp.config(['ConfigServiceProvider', function (ConfigServiceProvider) {
         ConfigServiceProvider.config(json.data);
-
-//        console.log("conf/metrics.json loaded successfully", json.data);
       }]);
 
       return $http.get('conf/dummy-metrics.json');
@@ -170,7 +168,6 @@ function bootstrapApplication() {
         delete json.data.user_interfaces;
         json.data.user_interfaces = undefined;
         ConfigServiceProvider.config(json.data);
-
         var userInterfacesIndex = {};
         if (userInterfaces !== undefined) {
           for (var i = 0; i < userInterfaces.length; i++) {
@@ -182,8 +179,6 @@ function bootstrapApplication() {
         }
 
         ConfigServiceProvider.config({ userInterfaceIndex: userInterfacesIndex });
-
-//        console.log("conf/PNDA.json loaded successfully", json.data);
       }]);
 
       bootstrapApplication();

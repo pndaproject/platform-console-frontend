@@ -26,13 +26,16 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *-------------------------------------------------------------------------------*/
 
-angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filter', 'DeploymentManagerService',
-  '$timeout', 'socket', '$compile', '$window', 'ModalService', 'MetricService', 'UtilService',
-  function($scope, $filter, DeploymentManagerService,
-    $timeout, socket, $compile, $window, ModalService, MetricService, UtilService) {
+angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filter', '$cookies',
+  'DeploymentManagerService', '$timeout', 'socket', '$compile', '$window', 'ModalService',
+  'MetricService', 'UtilService', 'ConfigService', function($scope, $filter, $cookies, DeploymentManagerService,
+    $timeout, socket, $compile, $window, ModalService, MetricService, UtilService, ConfigService) {
 
     var defaultTimeout = 500;
-
+    var yarnUrl;
+    var userName = $cookies.get('user');
+    $scope.areMetricLoaded = false;
+    
     function displayConfirmation(message, actionIfConfirmed) {
       var modalOptions = {
         closeButtonText: 'Cancel',
@@ -64,6 +67,9 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
             break;
           case 400:
             text = "Request body validation failed. Please try again.";
+            break;
+          case 403:
+            text = "Not authorized.";
             break;
           case 404:
             text = "Not found.";
@@ -116,11 +122,11 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
       $scope.response = true;
       $scope.responseText = getStatusText(status);
-      
+
       // NOTCREATED status when app gets deleted and DM doesn't know about it.
       if ((status === "NOTCREATED" && information === null) || status === "DESTROYING") {
         $scope.alertClass = "alert-success";
-        $timeout($scope.getAppsList, 2000);
+        $timeout($scope.getAppsList(status), 2000);
       } else if (status === 200 || status === "CREATED" || status === "STARTED") {
         $scope.alertClass = "alert-success";
         $timeout($scope.refreshAppsList(applicationName, status, isNewApp), 3000);
@@ -155,6 +161,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       if (error.data.information) {
         msg += ' ' + error.data.information;
       }
+
       $scope.responseText = msg;
       $scope.alertClass = "alert-danger";
     };
@@ -187,6 +194,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
             // the app has been created successfully, so we can now reset the creatingApp flag
             $scope.creatingApp = false;
+            $scope.newApp = false;
           }, defaultTimeout);
         }
       } else {
@@ -204,7 +212,8 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     };
 
     /* get applications list */
-    $scope.getAppsList = function() {
+    $scope.getAppsList = function(status) {
+      status = status || false;
       DeploymentManagerService.getApplications().then(function(data) {
         $scope.dmError = false;
 
@@ -219,14 +228,21 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         $scope.applications = data;
         $scope.viewAppProps = false;
         $scope.response = false;
-        $scope.newApp = false;
         $scope.showApplicationDetail = false;
+        if(status !== "DESTROYING"){
+            $scope.newApp = false;
+        }
 
         // by default, select the first application
         // makes the functionality of the page more obvious
         if ($scope.applications.length > 0 && !$scope.dmError) {
           $scope.getApplicationDetails($scope.applications[0]);
         }
+      });
+      
+      DeploymentManagerService.getEndpoints().then(function(data) {
+          var link = ConfigService.userInterfaceIndex["YARN Resource Manager"];
+          yarnUrl = link + "/cluster/app";
       });
     };
 
@@ -256,6 +272,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     $scope.startOrStopApplication = function(name, status) {
       var action = status === Constants.APPLICATION.CREATED ? "start" : status === Constants.APPLICATION.STARTED
       ? "stop" : undefined;
+      
       if (action !== undefined) {
         displayConfirmation("Are you sure you want to " + action + " " + name + "?", function() {
           var found = $scope.applications.find(function(element) {
@@ -263,16 +280,18 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
               return element;
             }
           });
-          if (action === 'start') {
-            found.status = 'STARTING';
-          } else if (action === 'stop') {
-            found.status = 'STOPPING';
-          }
 
           // $scope.animateApplication(name, false);
-          var res = DeploymentManagerService.performApplicationAction(name, action);
+          var res = DeploymentManagerService.performApplicationAction(name, action, userName);
           res.then(function(result) {
           $scope.successCallback(result, name);
+          if (action === 'start') {
+              found.status = 'STARTING';
+              $scope.getApplicationSummary(name);
+          } else if (action === 'stop') {
+              found.status = 'STOPPING';
+              $scope.getApplicationSummary(name);
+          }
         }, function(error) {
           $scope.errorCallback(error);
         });
@@ -289,10 +308,10 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
               return element;
             }
           });
-          found.status = 'DESTROYING';
-          var res = DeploymentManagerService.destroyApplication(name);
+          var res = DeploymentManagerService.destroyApplication(name, userName);
           res.then(function(result) {
             $scope.successCallback(result, name);
+            found.status = 'DESTROYING';
           }, function(error) {
             $scope.errorCallback(error);
           });
@@ -315,11 +334,18 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
           $scope.appDetailJson = data;
           $scope.viewAppProps = true;
         });
+        $scope.getApplicationSummary(app.name);
         $scope.showApplicationDetail = true;
-        $scope.newApp = false;
         $scope.metricFilter = 'application\\.kpi\\.' + app.name + '\\.';
+        if($scope.areMetricLoaded)
         $scope.appMetrics = $filter('getByNameForDisplay')($scope.allMetrics, $scope.metricFilter);
       }
+    };
+
+    $scope.getApplicationSummary = function(appName){
+       DeploymentManagerService.getApplicationSummary(appName).then(function(data) {
+         $scope.appSummaryJson = data;
+       });
     };
 
     $scope.createNewApp = function() {
@@ -333,6 +359,91 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       $scope.reloadAppProperties = false;
       $scope.confirmProperties = false;
     };
+	
+  $scope.showInfoModal = function(appName){
+    $scope.getApplicationSummary(appName);
+    var fields = {};
+    if($scope.appSummaryJson === undefined){
+       fields = {
+       error: "ERROR: Request is not successful."
+       };
+       ModalService.createModalView('partials/modals/application-status-error.html', fields);
+    
+    }else if($scope.appSummaryJson !== undefined 
+            && $scope.appSummaryJson[Object.keys($scope.appSummaryJson)[0]].status !== undefined){
+        fields = {
+            error: "No Data found. Please refresh the page and try again later.",
+            title: 'application',
+            name: appName
+        };
+        ModalService.createModalView('partials/modals/application-status-error.html', fields);
+
+    }else{
+     var oozieComponents = [];
+     var sparkComponents = [];
+     var flinkComponents = [];
+     fields = {
+         title: 'warning',
+         name: appName,
+         yarnUrl: yarnUrl
+     };
+    fields.showSubComponent = function(){
+         $('#showOozie').addClass("hidden");
+         if($('#hideOozie').hasClass("hidden"))
+            $('#hideOozie').removeClass("hidden");
+    };
+    fields.hideSubComponent = function(){
+         $('#hideOozie').addClass("hidden");
+         if($('#showOozie').hasClass("hidden"))
+           $('#showOozie').removeClass("hidden");
+    };
+    fields.showWorkflow = function(index){
+         $('#showWorkflow-'+index).addClass("hidden");
+         if($('#hideWorkflow-'+index).hasClass("hidden"))
+            $('#hideWorkflow-'+index).removeClass("hidden");
+    };
+    fields.hideWorkflow = function(index){
+         $('#hideWorkflow-'+index).addClass("hidden");
+         if($('#showWorkflow-'+index).hasClass("hidden"))
+            $('#showWorkflow-'+index).removeClass("hidden");
+     };
+     fields.showSummary = function(id){
+        if($('#stageJobSummary-'+id).hasClass("hidden"))
+           $('#stageJobSummary-'+id).removeClass("hidden");
+    };
+    fields.hideSummary = function(id){
+        if(!$('#stageJobSummary-'+id).hasClass("hidden"))
+            $('#stageJobSummary-'+id).addClass("hidden");
+    };
+    for (var keys in $scope.appSummaryJson[appName]){
+       if(keys.startsWith("flink"))
+          flinkComponents.push($scope.appSummaryJson[appName][keys]);
+     
+        if(keys.startsWith("oozie")){
+          if($scope.appSummaryJson[appName].hasOwnProperty(keys)){
+                var oozieObject = {};
+                for(var property in $scope.appSummaryJson[appName][keys]){
+                oozieObject[property] = $scope.appSummaryJson[appName][keys][property];
+                }
+                oozieComponents.push(oozieObject);
+           }
+        }
+        if(keys.startsWith("spark")){
+            if($scope.appSummaryJson[appName].hasOwnProperty(keys)){
+                var sparkObject = {};
+                for(var prop in $scope.appSummaryJson[appName][keys]){
+                    sparkObject[prop] = $scope.appSummaryJson[appName][keys][prop];
+                }
+                sparkComponents.push(sparkObject);
+            }
+        }
+     }
+     fields.flinkComponents = flinkComponents;
+     fields.sparkComponents = sparkComponents;
+     fields.oozieComponents = oozieComponents;
+     ModalService.createModalView('partials/modals/application-status.html', fields);
+    }
+   };
 
     $scope.appInfo = null;
     $scope.json = {};
@@ -390,7 +501,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         $scope.appNameErrorText += "Characters allowed: a-z, A-Z, 0-9, -, _.";
       } else {
         $scope.creatingApp = true;
-        var submitApp = DeploymentManagerService.createApplication(applicationName, finalAppJson);
+        var submitApp = DeploymentManagerService.createApplication(applicationName, finalAppJson, userName);
         submitApp.then(function(result) {
           $scope.successCallback(result, applicationName, true);
         }, function(error) {
@@ -428,11 +539,15 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     }
 
     socket.on('platform-console-frontend-application-update', socketApplicationsUpdate);
-    
-    $scope.appMetrics = [];
 
-    $scope.allMetrics = MetricService.query(function(response) {
-      angular.forEach(response, function(metric) {
+    $scope.appMetrics = [];
+    $scope.allMetrics = [];
+
+    MetricService.query(function(response) {
+      $scope.allMetrics= response.metrics;
+      $scope.appMetrics = $filter('getByNameForDisplay')($scope.allMetrics, $scope.metricFilter);
+      $scope.areMetricLoaded = true;
+      angular.forEach(response.metrics, function(metric) {
         // turn the 'value' promise into its value when it's available
         metric.info.then(function(response) {
           metric.info = response[0];
@@ -442,7 +557,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         });
       });
     });
-    
+
     // update metrics when socket.io updates are received.
     function socketMetricsUpdate(obj) {
       var causes = (obj.causes === undefined || obj.causes === "" ? [] : obj.causes
@@ -477,13 +592,13 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
         // console.log("Found new app metric: " + found.name);
         $scope.allMetrics.push(found);
-        
+
         // if there's a new metric, re-filter the list
         if ($scope.fullApplicationDetail !== undefined && $scope.fullApplicationDetail.name !== undefined) {
           $scope.appMetrics = $filter('getByNameForDisplay')($scope.allMetrics, $scope.metricFilter);
         }
       }
     }
- 
+
     socket.on('platform-console-frontend-metric-update', socketMetricsUpdate);
   }]);

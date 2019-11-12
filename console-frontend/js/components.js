@@ -34,17 +34,12 @@ var timestampTimeoutMs = 3 * 60 * 1000; // 3 minutes
 // - WARN
 // - WARN_NO_RECENT_UPDATE
 // - ERROR
-function healthStatus(lastKnownHealthStatus, lastUpdateTimestamp, now) {
+function healthStatus(lastKnownHealthStatus, lastUpdateTimestamp, diff) {
   // if it's already a warning or an error, leave it as it is
   if (lastKnownHealthStatus !== "OK") {
     return lastKnownHealthStatus;
   }
-
-  // otherwise figure out if it's overdue
-  var currentTimestamp = (now !== undefined ? now : Date.now());
-
-  return (currentTimestamp - lastUpdateTimestamp > timestampTimeoutMs
-    ? "WARN_NO_RECENT_UPDATE" : lastKnownHealthStatus);
+  return (diff > timestampTimeoutMs ? "WARN_NO_RECENT_UPDATE" : lastKnownHealthStatus);
 }
 
 function enableModalView(severity) {

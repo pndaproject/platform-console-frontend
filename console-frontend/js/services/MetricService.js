@@ -25,19 +25,16 @@
 *-------------------------------------------------------------------------------*/
 
 angular.module('appServices').factory('MetricService', ['$resource', 'ConfigService', '$http', '$q', '$filter',
-  function($resource, ConfigService, $http, $q, $filter) {
+  '$cookies', '$window', function($resource, ConfigService, $http, $q, $filter, $cookies, $window) {
     var dataManager = ConfigService.backend["data-manager"];
-    var host = dataManager.host;
-    var port = dataManager.port;
-    var MetricService = $resource('http://' + host + ':' + port + '/metrics/:metricId?values=y', {}, {
-      query: { method:'GET', params:{ metricId:'' }, isArray:true, transformResponse: function(data) {
+    var MetricService = $resource('/api/dm/metrics/:metricId?values=y', {}, {
+      query: { method:'GET', params:{ metricId:'' }, transformResponse: function(data) {
         var json = JSON.parse(data);
-
         // if we received an array, it's the list of metrics
         if (json.metrics !== undefined && angular.isArray(json.metrics)) {
           // for each metric, get its latest value asynchronously using the /metrics/metricId API
           var metrics = [];
-
+          var response = {};
           angular.forEach(json.metrics, function (metric) {
             var deferred = $q.defer();
             deferred.resolve(metric.info);
@@ -45,7 +42,7 @@ angular.module('appServices').factory('MetricService', ['$resource', 'ConfigServ
             metrics.push(promisedMetric);
           });
 
-          var dummyValue = { source: "default", value: "UNAVAILABLE",timestamp: 1451606400000 };
+          var dummyValue = { source: "default", value: "UNAVAILABLE", timestamp: 1451606400000 };
 
           // add dummy metrics to make sure all components appear
           angular.forEach(ConfigService.dummy_metrics, function(m) {
@@ -58,9 +55,20 @@ angular.module('appServices').factory('MetricService', ['$resource', 'ConfigServ
               }
             }
           });
-          return metrics;
+          response.metrics = metrics;
+          response.serverTime = json.servertime;
+          response.currentTopics = json.currentTopics;
+          return response;
         } else {
           console.log("not an array", json);
+          if (json === "not authenticated") {
+            $cookies.remove('globals');
+            $cookies.remove('userLoggedIn');
+            $cookies.remove('user');
+            $cookies.remove('userRole');
+            $window.location.reload();
+          }
+
           return [json];
         }
 
