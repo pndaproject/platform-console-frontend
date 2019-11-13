@@ -53,6 +53,9 @@ var consoleFrontendApp = angular.module('consoleFrontendApp', [
   }).config(['$httpProvider', function($httpProvider) {
     $httpProvider.defaults.withCredentials = true;
   }])
+  .config(['$locationProvider', function($locationProvider) {
+  $locationProvider.hashPrefix('');
+  }])
   .config(['$routeProvider',
     function($routeProvider) {
       $routeProvider.
