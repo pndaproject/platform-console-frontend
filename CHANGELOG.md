@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.1.1] 2019-11-12
+### Fixed
+- WS-2018-0001 Vulnerability 
+
+## [2.1.0] 2019-11-12
+### Added
+- Docker Container support 
+
 ## [2.0.0] 2018-08-28
 ### Added
 - PNDA-4560: Provide identity to all deployment manager operations
