@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.1.2] 2019-11-13
+### Fixed
+- Bug with hash-bang prefix at URL in angular 1.6 
+
 ## [2.1.1] 2019-11-12
 ### Fixed
 - WS-2018-0001 Vulnerability 
