@@ -335,14 +335,13 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
     $scope.viewAppProps = false;
 
-    $scope.getApplicationDetails = function(app) { 
+    $scope.getApplicationDetails = function(app) {
       if (app !== undefined && app !== $scope.fullApplicationDetail) {
         $scope.fullApplicationDetail = app;
         $scope.viewAppProps = false;
         DeploymentManagerService.getApplicationInfo(app.name).then(function(data) {
           $scope.appDetailJson = data;
           $scope.viewAppProps = true;
-          $scope.fullApplicationDetail = data;
         });
         $scope.getApplicationSummary(app.name);
         $scope.showApplicationDetail = true;
