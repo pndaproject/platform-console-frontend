@@ -28,7 +28,7 @@
               <tbody>
               <tr ng-repeat-start="app in applications | orderBy:orderProp" ng-class="{'started': app.status === 'STARTED', 'app-selected': app.name === fullApplicationDetail.name && !newApp}" id="{{app.name | applicationNameId}}">
                 <td ng-click="getApplicationDetails(app)" style="cursor:pointer"><a ng-click="getApplicationDetails(app)" href="#/applications">{{ app.name }}</a></td>
-                <td ng-click="getApplicationDetails(app)" style="cursor:pointer">{{ app.status | changeAppStatusForDisplay }}</td>
+                <td ng-click="getApplicationDetails(app)" style="cursor:pointer"> {{ app.state }} </td>
                 <td class="application" >
                   <div ng-if="app.status === 'CREATED'">
                     <button type="button" class="btn btn-default btn-sm" ng-click="startOrStopApplication(app.name, app.status)">
@@ -71,7 +71,7 @@
                   <ul class="nav nav-tabs">
                     <li class="active"><a data-toggle="tab" href="#tab-overview">Overview</a></li>
                     <li><a data-toggle="tab" href="#tab-deployment-properties">Deployment Properties</a></li>
-                    <li class="disabled"><a data-toggle="tab" href="#tab-menu2" disabled>Logs</a></li>
+                    <li><a data-toggle="tab" href="#tab-logs" >Logs</a></li>
                     <li class="disabled"><a data-toggle="tab" href="#tab-menu3" disabled>Stats</a></li>
                     <li><a data-toggle="tab" href="#tab-metrics">Metrics</a></li>
                   </ul>
@@ -89,7 +89,7 @@
                         </tr>
                         <tr>
                           <th>Status</th>
-                          <td>{{ fullApplicationDetail.status | changeAppStatusForDisplay }}
+                          <td>{{ app.state }}
                            <span> <button type="button" class="btn btn-link" ng-click="showInfoModal(fullApplicationDetail.name)">More info</button></span>
                           </td>
                         </tr>
@@ -97,6 +97,25 @@
                     </div>
                     <div id="tab-deployment-properties" class="tab-pane fade" ng-if="viewAppProps">
                       <pnda-tree-view json="{{ appDetailJson }}" editable="false" on-confirm-overrides="getOverrides(overrides)"></pnda-tree-view>
+                    </div>
+                    <div id="tab-logs" class="tab-pane fade">
+                      <table class="table table-condensed">
+                        <tr>
+                          <style>                                                                                                                                
+                            div.scroll{                                                                                                                         
+                                margin:4px, 4px;                                                                                                                
+                                padding: 4px;                                                                                                                   
+                                width: 1200px;                                                                                                                  
+                                height: 250px;                                                                                                             
+                                overflow-y: scroll;
+                                white-space:pre-wrap;                                                                                                               
+                                text-align: justify;                                                                                                            
+                              }                                                                                                                                 
+                         </style>
+                         <div class="scroll"><p><br>{{ app.log }}</p>    
+                         </div>                                                                 
+                        </tr>      
+                      </table>
                     </div>
                     <div id="tab-metrics" class="tab-pane fade">
                       <div ng-if="!areMetricLoaded" class="no-metrics-available">Loading...</div>

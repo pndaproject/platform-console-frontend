@@ -27,15 +27,14 @@
 *-------------------------------------------------------------------------------*/
 
 angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filter', '$cookies',
-  'DeploymentManagerService', '$timeout', 'socket', '$compile', '$window', 'ModalService',
+  'DeploymentManagerService', '$timeout', '$interval', 'socket', '$compile', '$window', 'ModalService',
   'MetricService', 'UtilService', 'ConfigService', function($scope, $filter, $cookies, DeploymentManagerService,
-    $timeout, socket, $compile, $window, ModalService, MetricService, UtilService, ConfigService) {
+    $timeout, $interval, socket, $compile, $window, ModalService, MetricService, UtilService, ConfigService) {
 
     var defaultTimeout = 500;
     var yarnUrl;
     var userName = $cookies.get('user');
     $scope.areMetricLoaded = false;
-    
     function displayConfirmation(message, actionIfConfirmed) {
       var modalOptions = {
         closeButtonText: 'Cancel',
@@ -122,7 +121,6 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
       $scope.response = true;
       $scope.responseText = getStatusText(status);
-
       // NOTCREATED status when app gets deleted and DM doesn't know about it.
       if ((status === "NOTCREATED" && information === null) || status === "DESTROYING") {
         $scope.alertClass = "alert-success";
@@ -186,6 +184,12 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
     $scope.refreshAppsList = function(applicationName, status, isNewApp) {
       DeploymentManagerService.getApplications().then(function(data) {
         $scope.applications = data;
+        if ($scope.applications.length > 0){   
+          for (var i = 0; i < $scope.applications.length; i++){
+                $scope.getAppState($scope.applications[i]);
+                $scope.getAppLogs($scope.applications[i]);
+          }
+        }
       });
       if (status === 'CREATED' && isNewApp) {
         if ($scope.applications.length > 0) {
@@ -236,7 +240,11 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
         // by default, select the first application
         // makes the functionality of the page more obvious
         if ($scope.applications.length > 0 && !$scope.dmError) {
-          $scope.getApplicationDetails($scope.applications[0]);
+            for (var i = ($scope.applications.length -1) ; i >= 0 ; i-- ){
+                $scope.getAppState($scope.applications[i]);
+                $scope.getAppLogs($scope.applications[i]);
+            }
+            $scope.getApplicationDetails($scope.applications[0]);
         }
       });
       
@@ -312,6 +320,7 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
           res.then(function(result) {
             $scope.successCallback(result, name);
             found.status = 'DESTROYING';
+            delete state_data[name];
           }, function(error) {
             $scope.errorCallback(error);
           });
@@ -326,13 +335,14 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
 
     $scope.viewAppProps = false;
 
-    $scope.getApplicationDetails = function(app) {
+    $scope.getApplicationDetails = function(app) { 
       if (app !== undefined && app !== $scope.fullApplicationDetail) {
         $scope.fullApplicationDetail = app;
         $scope.viewAppProps = false;
         DeploymentManagerService.getApplicationInfo(app.name).then(function(data) {
           $scope.appDetailJson = data;
           $scope.viewAppProps = true;
+          $scope.fullApplicationDetail = data;
         });
         $scope.getApplicationSummary(app.name);
         $scope.showApplicationDetail = true;
@@ -359,7 +369,57 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       $scope.reloadAppProperties = false;
       $scope.confirmProperties = false;
     };
-	
+
+    $scope.getAppLogs = function(appFull) {
+      var stop_l ; 
+      var startAppLog = true;
+      if (appFull['status'] == 'CREATED'){
+            appFull['log'] = 'Application is not started yet'; 
+            var startAppLog = false;                                                
+          }else {                                                                       
+            appFull['log'] = 'Fetching logs for '+appFull.name+' application';                                                     
+       }
+      if (startAppLog) {    
+         stop_l = $interval(function(){
+         DeploymentManagerService.getApplicationLogs(appFull.name).then(function(data) {
+             appFull['log'] = data;
+             if (appFull.state  == 'Succeeded'){
+                $interval.cancel(stop_l);                                                   
+                stop_l = undefined;                                                         
+             }          
+          });
+        }, 4000);
+      }
+    };
+
+    var state_data = {};
+    $scope.getAppState = function(appFull){
+       var stop;
+       var startAppState = true;
+       if (appFull.status == 'CREATED'){
+             appFull['state'] = 'Ready';
+             startAppState = false;
+       }else if (state_data[appFull.name]){
+            appFull['state'] = state_data[appFull.name];
+       }else{
+            appFull['state'] = 'Loading...';                    
+       }
+       if (startAppState){
+           stop = $interval(function(){
+                   state_data[appFull.name] = state_data[appFull.name];  
+                   DeploymentManagerService.getApplicationState(appFull.name).then(function(data) {  
+                      appFull['state'] = data;
+                      state_data[appFull.name] = data;
+                      if (data  == 'Succeeded'){
+                         $interval.cancel(stop);                                                
+                         stop = undefined;                                              
+                       }          
+                   });
+            }, 4000);
+       }
+    };
+
+
   $scope.showInfoModal = function(appName){
     $scope.getApplicationSummary(appName);
     var fields = {};
