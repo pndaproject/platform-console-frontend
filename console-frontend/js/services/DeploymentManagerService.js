@@ -162,6 +162,27 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
             packages = results[0].data;
             return packages;
           });
+      }, 
+
+      getApplicationLogs: function(appName) {
+        
+        return $q.all([
+          $http.get(applicationSummaryAPI + "/" + appName + "/log")
+        ])
+        .then(function(results) {
+          var logs = results[0].data;
+          return logs;
+        });
+      },
+      getApplicationState: function(appName) {
+        
+        return $q.all([
+          $http.get(applicationSummaryAPI + "/" + appName + "/state")
+        ])
+        .then(function(results) {
+          var state = results[0].data;
+          return state;
+        });
       },
       getApplicationSummary: function(appName) {
           return $q.all([
