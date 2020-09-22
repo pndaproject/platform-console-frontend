@@ -44,12 +44,22 @@
                     </button>
                   </div>
                   <div ng-if="app.status === 'STARTED'">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="startOrStopApplication(app.name, app.status)">
-                      <span class="glyphicon glyphicon-stop icon-stop" aria-hidden="true"></span>Stop
-                    </button>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="destroyApplication(app.name)">
-                      <span class="glyphicon glyphicon-trash icon-undeploy " aria-hidden="true"></span>Delete
-                    </button>
+                    <div ng-if="app.state !== 'Succeeded' && app.state !== 'Failed'">
+                      <button type="button" class="btn btn-default btn-sm disabled" ng-click="restartApplication(app.name)">
+                        <span class="glyphicon glyphicon-repeat icon-repeat" aria-hidden="true"></span> Restart
+                      </button>
+                      <button type="button" class="btn btn-default btn-sm" ng-click="destroyApplication(app.name)">
+                        <span class="glyphicon glyphicon-trash icon-undeploy " aria-hidden="true"></span>Delete
+                      </button>  
+                    </div>
+                    <div ng-if="app.state == 'Succeeded' || app.state == 'Failed'">
+                      <button type="button" class="btn btn-default btn-sm" ng-click="restartApplication(app.name)">
+                        <span class="glyphicon glyphicon-repeat icon-repeat" aria-hidden="true"></span> Restart
+                      </button>
+                      <button type="button" class="btn btn-default btn-sm" ng-click="destroyApplication(app.name)">
+                        <span class="glyphicon glyphicon-trash icon-undeploy " aria-hidden="true"></span>Delete
+                      </button>  
+                    </div>
                   </div>
                   <div ng-if="app.status === 'STOPPING'">
                     <button type="button" class="btn btn-default btn-sm disabled">

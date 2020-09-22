@@ -215,6 +215,11 @@ angular.module('appServices').factory('DeploymentManagerService', ['$resource', 
         var res = $http.delete(applicationsApi);
         return res;
       },
+      restartApplication: function(name, userName) {
+        var applicationsApi = "/api/dm/applications/" + name +'?user.name=' + userName;
+        var res = $http.post(applicationsApi);
+        return res;
+      },
       performApplicationAction: function(name, action, userName) {
         var applicationsApi = "/api/dm/applications/" + name + "/" + action + '?user.name=' + userName;
         var res = $http.post(applicationsApi);
