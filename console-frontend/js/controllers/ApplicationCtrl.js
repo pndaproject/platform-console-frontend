@@ -307,6 +307,27 @@ angular.module('appControllers').controller('ApplicationCtrl', ['$scope', '$filt
       }
     };
 
+    $scope.restartApplication = function(name) {
+      if (name !== undefined) {
+        // $scope.animateApplication(name, false);
+        displayConfirmation("Are you sure you want to restart " + name + "?", function() {
+          var found = $scope.applications.find(function(element) {
+            if (element.name === name) {
+              return element;
+            }
+          });
+          var res = DeploymentManagerService.restartApplication(name, userName);
+          res.then(function(result) {
+            $scope.successCallback(result, name);
+            found.status = 'DESTROYING';
+            delete state_data[name];
+          }, function(error) {
+            $scope.errorCallback(error);
+          });
+        });
+      }
+    };
+
     $scope.destroyApplication = function(name) {
       if (name !== undefined) {
         // $scope.animateApplication(name, false);
