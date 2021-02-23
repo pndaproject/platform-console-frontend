@@ -3,12 +3,15 @@
     <div class="modal-content">
       <div class="modal-header" ng-show="modalOptions.title">
         <button type="button" class="close" ng-click="$hide()">&times;</button>
-        <h4>{{modalOptions.title}}</h4>
+        <h4>{{modalOptions.title}}</h4> 
       </div>
       <div class="modal-body" ng-show="modalOptions.body">
         {{modalOptions.body}}
       </div>
       <div class="modal-body" ng-show="modalOptions.bodyArray">
+          <span ng-show="modalOptions.version !=='' && modalOptions.version !== undefined">
+              Version {{modalOptions.version}}
+          </span>
         <div ng-repeat="body in modalOptions.bodyArray">
           {{body}}
         </div>
